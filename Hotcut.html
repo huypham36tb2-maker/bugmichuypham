@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🐛 Bug Mic App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            background: #1a1a24;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7), inset 0 1px 3px rgba(255,255,255,0.1);
+            border: 1px solid #2a2a3a;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #ff6ec4, #7873f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255,110,196,0.3);
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .theme-dot.active {
+            border-color: #fff;
+            transform: scale(1.15);
+            box-shadow: 0 0 15px var(--glow-color), 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .theme-dot.green {
+            background: #00ff9d;
+            --glow-color: #00ff9d;
+        }
+
+        .theme-dot.purple {
+            background: #a855f7;
+            --glow-color: #a855f7;
+        }
+
+        .theme-dot.red {
+            background: #ef4444;
+            --glow-color: #ef4444;
+        }
+
+        .toggle-section {
+            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 12px;
+            background: #222231;
+            border: 1px solid #2a2a3a;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-toggle {
+            width: 100%;
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(145deg, #00ff9d, #00cc88);
+            color: #0a0a0f;
+            box-shadow: 0 8px 25px rgba(0,255,157,0.4);
+            transition: all 0.3s;
+        }
+
+        .btn-toggle.stop {
+            background: linear-gradient(145deg, #ef4444, #dc2626);
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(239,68,68,0.4);
+        }
+
+        .panel {
+            background: #222231;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #2a2a3a;
+        }
+
+        .panel-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #8888aa;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pregain-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pregain-value {
+            font-size: 28px;
+            font-weight: 900;
+            color: #00ff9d;
+            min-width: 100px;
+            text-align: right;
+            text-shadow: 0 0 10px rgba(0,255,157,0.3);
+        }
+
+        .slider-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: #333344;
+            border-radius: 10px;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00ff9d;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px rgba(0,255,157,0.6);
+            cursor: pointer;
+        }
+
+        .eq-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #1a1a24;
+            border-radius: 12px;
+        }
+
+        .eq-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            gap: 8px;
+        }
+
+        .eq-slider {
+            width: 16px;
+            height: 120px;
+            background: #333344;
+            border-radius: 20px;
+            appearance: slider-vertical;
+            -webkit-appearance: slider-vertical;
+            cursor: pointer;
+        }
+
+        .eq-freq {
+            font-size: 10px;
+            color: #6666aa;
+            text-align: center;
+        }
+
+        .btn-reset {
+            background: #333344;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-reset:hover {
+            background: #454566;
+        }
+
+        .select-container {
+            margin-bottom: 15px;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px 18px;
+            background: #1a1a24;
+            color: #fff;
+            border: 2px solid #333344;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300ff9d%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 12px auto;
+        }
+
+        .intensity-row {
+            margin-top: 20px;
+        }
+
+        .intensity-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #aaaaaa;
+        }
+
+        .intensity-value {
+            font-weight: 600;
+            color: #00ff9d;
+        }
+
+        .music-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .music-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .file-upload {
+            background: #333344;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 0.5;
+        }
+
+        .volume-icon {
+            font-size: 18px;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 11px;
+            color: #444466;
+            border-top: 1px solid #2a2a3a;
+            padding-top: 15px;
+            line-height: 1.6;
+        }
+
+        .accent-green {
+            --accent-color: #00ff9d;
+            --glow-color: #00ff9d;
+        }
+        
+        .accent-purple {
+            --accent-color: #a855f7;
+            --glow-color: #a855f7;
+        }
+        
+        .accent-red {
+            --accent-color: #ef4444;
+            --glow-color: #ef4444;
+        }
+    </style>
+</head>
+<body class="accent-green">
+    <div class="app-container">
+        <div class="header">
+            <div class="logo">🐛 BUG MIC</div>
+            <div class="theme-selector">
+                <div class="theme-dot green active" onclick="setTheme('green')"></div>
+                <div class="theme-dot purple" onclick="setTheme('purple')"></div>
+                <div class="theme-dot red" onclick="setTheme('red')"></div>
+            </div>
+        </div>
+
+        <div class="toggle-section">
+            <button class="btn-toggle" id="mainToggle">BẮT ĐẦU XẢ</button>
+        </div>
+
+        <!-- PRE GAIN -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>PRE GAIN</span>
+                <span>Hệ số khuếch đại</span>
+            </div>
+            <div class="pregain-row">
+                <div class="slider-container">
+                    <input type="range" id="pregainSlider" min="1" max="100000000" value="1" step="1">
+                </div>
+                <div class="pregain-value" id="pregainDisplay">1x</div>
+            </div>
+        </div>
+
+        <!-- EQUALIZER -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>🎚️ EQUALIZER MIC</span>
+                <button class="btn-reset" onclick="resetEQ()">⟳ Reset</button>
+            </div>
+            <div class="eq-container" id="eqContainer">
+                <div class="eq-column">
+                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="31Hz">
+                    <span class="eq-freq">31Hz</span>
+                </div>
+                <div class="eq-column">
+                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="63Hz">
+                    <span class="eq-freq">63Hz</span>
+                </div>
+                <div class="eq-column">
+                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="125Hz">
+                    <span class="eq-freq">125Hz</span>
+                </div>
+                <div class="eq-column">
+                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="250Hz">
+                    <span class="eq-freq">250Hz</span>
+                </div>
+                <div class="eq-column">
+                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="500Hz">
+                    <span class="eq-freq">500Hz</span>
+                </div>
+                <div class="eq-column">
+                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="1kHz">
+                    <span class="eq-freq">1kHz</span>
+                </div>
+                <div class="eq-column">
+                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="2kHz">
+                    <span class="eq-freq">2kHz</span>
+                </div>
+                <div class="eq-column">
+                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="4kHz">
+                    <span class="eq-freq">4kHz</span>
+                </div>
+                <div class="eq-column">
+                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="8kHz">
+                    <span class="eq-freq">8kHz</span>
+                </div>
+                <div class="eq-column">
+                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="16kHz">
+                    <span class="eq-freq">16kHz</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- EFFECTS -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>EFFECT MODE</span>
+                <span>🎭 Hiệu ứng</span>
+            </div>
+            <div class="select-container">
+                <select id="fxSelect">
+                    <option value="normal">Bình thường</option>
+                    <option value="robot">Robot</option>
+                    <option value="deep">Trầm ấm</option>
+                    <option value="bright">Sáng</option>
+                    <option value="echo">Echo</option>
+                    <option value="reverb">Reverb</option>
+                </select>
+            </div>
+            <div class="intensity-row">
+                <div class="intensity-label">
+                    <span>Cường độ (Intensity)</span>
+                    <span class="intensity-value" id="intensityValue">50%</span>
+                </div>
+                <input type="range" id="intensitySlider" min="0" max="100" value="50">
+            </div>
+        </div>
+
+        <!-- BACKGROUND MUSIC -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>🎵 NHẠC NỀN</span>
+                <span>Background Music</span>
+            </div>
+            <div class="music-row">
+                <div class="music-controls">
+                    <input type="file" id="musicFile" class="file-upload" accept="audio/mp3,audio/wav,audio/ogg">
+                    <div class="volume-control">
+                        <span class="volume-icon">🔉</span>
+                        <input type="range" id="musicVolume" min="0" max="100" value="30">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            💡 Mẹo: Mở Messenger/Discord/TikTok sau khi bắt đầu xả<br>
+            🎙️ Tăng PRE GAIN để tạo hiệu ứng "bug mic" mạnh mẽ<br>
+            ⚡ Giữ trình duyệt mở ở nền để tiếp tục xử lý âm thanh
+        </footer>
+    </div>
+
+    <script>
+        // ========== GLOBAL STATE ==========
+        let audioContext = null;
+        let isRunning = false;
+        let micStream = null;
+        let nodes = {
+            source: null,
+            preGain: null,
+            eqFilters: [],
+            fxChain: [],
+            compressor: null,
+            masterGain: null,
+            backgroundBuffer: null,
+            backgroundSource: null,
+            backgroundGain: null
+        };
+
+        const themeColorMap = {
+            green: { primary: '#00ff9d', glow: '#00ff9d' },
+            purple: { primary: '#a855f7', glow: '#a855f7' },
+            red: { primary: '#ef4444', glow: '#ef4444' }
+        };
+
+        // ========== INITIALIZATION ==========
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                audioContext.resume();
+            }
+        }
+
+        // ========== BUILD AUDIO GRAPH ==========
+        async function startProcessing() {
+            try {
+                // Setup
+                initAudio();
+                if (audioContext.state === 'suspended') await audioContext.resume();
+
+                // Get mic
+                micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+
+                // Create source
+                nodes.source = audioContext.createMediaStreamSource(micStream);
+
+                // Pre-gain (extreme gain)
+                nodes.preGain = audioContext.createGain();
+                const pregainVal = parseFloat(document.getElementById('pregainSlider').value);
+                nodes.preGain.gain.value = pregainVal;
+
+                // Equalizer filters (10 bands)
+                nodes.eqFilters = [];
+                const eqSliders = document.querySelectorAll('.eq-slider');
+                eqSliders.forEach((slider, idx) => {
+                    const filter = audioContext.createBiquadFilter();
+                    filter.type = 'peaking';
+                    filter.frequency.value = [31, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000][idx];
+                    filter.Q.value = 1.0;
+                    filter.gain.value = parseFloat(slider.value);
+                    nodes.eqFilters.push(filter);
+                });
+
+                // Compressor (to prevent super loud clipping)
+                nodes.compressor = audioContext.createDynamicsCompressor();
+                nodes.compressor.threshold.value = -20;
+                nodes.compressor.knee.value = 30;
+                nodes.compressor.ratio.value = 12;
+                nodes.compressor.attack.value = 0.003;
+                nodes.compressor.release.value = 0.25;
+
+                // Master gain
+                nodes.masterGain = audioContext.createGain();
+                nodes.masterGain.gain.value = 1.0;
+
+                // Build graph: source -> preGain -> eqFilters -> fxChain -> compressor -> masterGain -> destination
+                let currentNode = nodes.source;
+                nodes.source.connect(nodes.preGain);
+                currentNode = nodes.preGain;
+
+                // Connect EQ filters in series
+                for (let i = 0; i < nodes.eqFilters.length; i++) {
+                    currentNode.connect(nodes.eqFilters[i]);
+                    currentNode = nodes.eqFilters[i];
+                }
+
+                // FX chain placeholder (will be configured based on selected effect)
+                // We'll connect FX dynamically
+                nodes.fxChain = [];
+                configureFX(currentNode);
+
+                // Background music
+                const fileInput = document.getElementById('musicFile');
+                if (fileInput.files && fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    const arrayBuffer = await file.arrayBuffer();
+                    nodes.backgroundBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                    nodes.backgroundGain = audioContext.createGain();
+                    nodes.backgroundGain.gain.value = parseFloat(document.getElementById('musicVolume').value) / 100;
+                    nodes.backgroundSource = audioContext.createBufferSource();
+                    nodes.backgroundSource.buffer = nodes.backgroundBuffer;
+                    nodes.backgroundSource.loop = true;
+                    nodes.backgroundSource.connect(nodes.backgroundGain);
+                    nodes.backgroundGain.connect(nodes.masterGain);
+                    nodes.backgroundSource.start();
+                }
+
+                // Connect master to output
+                nodes.masterGain.connect(audioContext.destination);
+
+                isRunning = true;
+                updateUI(true);
+                document.getElementById('mainToggle').classList.add('stop');
+                document.getElementById('mainToggle').textContent = 'DỪNG XẢ';
+            } catch (err) {
+                console.error('Mic error:', err);
+                alert('Không thể truy cập microphone. Vui lòng kiểm tra quyền truy cập.');
+            }
+        }
+
+        // ========== FX CONFIGURATION ==========
+        function configureFX(inputNode) {
+            // Clear old fx nodes
+            if (nodes.fxChain.length > 0) {
+                nodes.fxChain.forEach(node => {
+                    try { node.disconnect(); } catch(e) {}
+                });
+            }
+            nodes.fxChain = [];
+
+            // Disconnect from previous FX to master
+            // We'll reconnect properly later
+
+            // Get selected effect
+            const fxSelect = document.getElementById('fxSelect').value;
+            const intensity = parseFloat(document.getElementById('intensitySlider').value) / 100;
+
+            // Always apply robot / deep / bright via filters
+            let outputNode = inputNode;
+
+            if (fxSelect === 'robot') {
+                // Use ring modulation: amplitude modulation + highpass/lowpass
+                const ringMod = audioContext.createOscillator();
+                ringMod.frequency.value = 5 + intensity * 20; // 5-25 Hz
+                const ringGain = audioContext.createGain();
+                ringGain.gain.value = 0.5;
+                const ringModGain = audioContext.createGain();
+                ringModGain.gain.value = 1;
+                
+                // We'll create a simple AM effect: modulate amplitude
+                inputNode.connect(ringModGain);
+                ringMod.connect(ringModGain.gain);
+                ringModGain.connect(nodes.fxChain[0] = audioContext.createGain());
+                ringMod.start();
+                
+                // Add a distortion-like saturator (waveshaper)
+                const shaper = audioContext.createWaveShaper();
+                shaper.curve = makeDistortionCurve(50 * intensity);
+                ringModGain.connect(shaper);
+                outputNode = shaper;
+            } else if (fxSelect === 'deep') {
+                const lowpass = audioContext.createBiquadFilter();
+                lowpass.type = 'lowpass';
+                lowpass.frequency.value = 200 + intensity * 500;
+                inputNode.connect(lowpass);
+                outputNode = lowpass;
+            } else if (fxSelect === 'bright') {
+                const highpass = audioContext.createBiquadFilter();
+                highpass.type = 'highpass';
+                highpass.frequency.value = 2000 + intensity * 4000;
+                inputNode.connect(highpass);
+                outputNode = highpass;
+            } else if (fxSelect === 'echo') {
+                const delay = audioContext.createDelay(1.0);
+                delay.delayTime.value = 0.2 + intensity * 0.3;
+                const feedback = audioContext.createGain();
+                feedback.gain.value = 0.3 + intensity * 0.4;
+                inputNode.connect(delay);
+                delay.connect(feedback);
+                feedback.connect(delay);
+                outputNode = delay;
+            } else if (fxSelect === 'reverb') {
+                // simple reverb (using convolver if we had a buffer, but we'll use multiple delays)
+                const convolver = audioContext.createConvolver();
+                convolver.buffer = createReverbIR(audioContext, 2 * intensity + 0.5);
+                inputNode.connect(convolver);
+                outputNode = convolver;
+            }
+
+            // Connect outputNode to compressor
+            outputNode.connect(nodes.compressor);
+        }
+
+        function makeDistortionCurve(amount) {
+            const k = amount;
+            const n = 44100;
+            const curve = new Float32Array(n);
+            const deg = Math.PI / 180;
+            for (let i = 0; i < n; i++) {
+                const x = i * 2 / n - 1;
+                curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
+            }
+            return curve;
+        }
+
+        function createReverbIR(ctx, duration) {
+            const rate = ctx.sampleRate;
+            const length = rate * (duration + 0.5);
+            const impulse = ctx.createBuffer(2, length, rate);
+            for (let channel = 0; channel < 2; channel++) {
+                const data = impulse.getChannelData(channel);
+                for (let i = 0; i < length; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.5);
+                }
+            }
+            return impulse;
+        }
+
+        // ========== STOP PROCESSING ==========
+        function stopProcessing() {
+            if (!isRunning) return;
+            
+            if (nodes.source) nodes.source.disconnect();
+            if (nodes.preGain) nodes.preGain.disconnect();
+            if (nodes.eqFilters.length) nodes.eqFilters.forEach(f => f.disconnect());
+            if (nodes.compressor) nodes.compressor.disconnect();
+            if (nodes.masterGain) nodes.masterGain.disconnect();
+            
+            if (nodes.backgroundSource) {
+                nodes.backgroundSource.stop();
+                nodes.backgroundSource.disconnect();
+                nodes.backgroundGain.disconnect();
+            }
+
+            if (micStream) {
+                micStream.getTracks().forEach(track => track.stop());
+            }
+
+            micStream = null;
+            nodes.source = null;
+            nodes.preGain = null;
+            nodes.eqFilters = [];
+            nodes.compressor = null;
+            nodes.masterGain = null;
+            nodes.backgroundSource = null;
+            nodes.backgroundGain = null;
+            nodes.fxChain = [];
+
+            isRunning = false;
+            updateUI(false);
+            document.getElementById('mainToggle').classList.remove('stop');
+            document.getElementById('mainToggle').textContent = 'BẮT ĐẦU XẢ';
+        }
+
+        // ========== UI UPDATE ==========
+        function updateUI(running) {
+            if (running) {
+                document.getElementById('mainToggle').textContent = 'DỪNG XẢ';
+                document.getElementById('mainToggle').classList.add('stop');
+            } else {
+                document.getElementById('mainToggle').textContent = 'BẮT ĐẦU XẢ';
+                document.getElementById('mainToggle').classList.remove('stop');
+            }
+        }
+
+        // ========== EVENT LISTENERS ==========
+        document.getElementById('mainToggle').addEventListener('click', () => {
+            if (isRunning) {
+                stopProcessing();
+            } else {
+                startProcessing();
+            }
+        });
+
+        // PRE GAIN SLIDER
+        document.getElementById('pregainSlider').addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            const display = val >= 1000000 ? (val/1000000).toFixed(1) + 'M' : val >= 1000 ? (val/1000).toFixed(1) + 'k' : val;
+            document.getElementById('pregainDisplay').textContent = display + 'x';
+            if (nodes.preGain) nodes.preGain.gain.value = val;
+        });
+
+        // EQ SLIDERS
+        document.querySelectorAll('.eq-slider').forEach((slider, idx) => {
+            slider.addEventListener('input', (e) => {
+                if (nodes.eqFilters[idx]) {
+                    nodes.eqFilters[idx].gain.value = parseFloat(e.target.value);
+                }
+            });
+        });
+
+        // FX SELECT
+        document.getElementById('fxSelect').addEventListener('change', (e) => {
+            if (isRunning) {
+                // Reconfigure FX: disconnect from compressor, reconnect
+                // Simplest: restart processing (with same audio source)
+                // But better: we'll just update the FX chain without full restart
+                if (nodes.compressor) {
+                    // Disconnect all fx nodes and reconnect
+                    nodes.eqFilters.forEach(filter => {
+                        filter.disconnect();
+                    });
+                    // Reconnect the last eq to compressor through the new FX
+                    const lastEq = nodes.eqFilters[nodes.eqFilters.length - 1];
+                    configureFX(lastEq);
+                }
+            }
+        });
+
+        // INTENSITY
+        document.getElementById('intensitySlider').addEventListener('input', (e) => {
+            document.getElementById('intensityValue').textContent = e.target.value + '%';
+            if (isRunning) {
+                // Reconfigure FX
+                document.getElementById('fxSelect').dispatchEvent(new Event('change'));
+            }
+        });
+
+        // MUSIC VOLUME
+        document.getElementById('musicVolume').addEventListener('input', (e) => {
+            if (nodes.backgroundGain) {
+                nodes.backgroundGain.gain.value = parseFloat(e.target.value) / 100;
+            }
+        });
+
+        // RESET EQ
+        function resetEQ() {
+            document.querySelectorAll('.eq-slider').forEach((slider, idx) => {
+                slider.value = 0;
+                if (nodes.eqFilters[idx]) {
+                    nodes.eqFilters[idx].gain.value = 0;
+                }
+            });
+        }
+
+        // THEME
+        function setTheme(color) {
+            const themeInfo = themeColorMap[color];
+            document.body.className = `accent-${color}`;
+            document.querySelectorAll('.theme-dot').forEach(dot => dot.classList.remove('active'));
+            document.querySelector(`.theme-dot.${color}`).classList.add('active');
+            
+            // Update colors dynamically for sliders (simplified)
+            const sliderThumbs = document.querySelectorAll('input[type="range"]::-webkit-slider-thumb');
+            // Note: This is complex, we'll use CSS variable approach in a real app
+            // For simplicity, we'll use inline style updates for key elements
+            const primaryColor = themeInfo.primary;
+            document.querySelectorAll('.btn-toggle').forEach(btn => {
+                btn.style.background = `linear-gradient(145deg, ${primaryColor}, ${primaryColor}cc)`;
+            });
+            document.querySelectorAll('.theme-dot.active').forEach(dot => {
+                dot.style.borderColor = '#fff';
+            });
+        }
+
+        // Keep audio context alive when page is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (audioContext && isRunning) {
+                audioContext.resume();
+            }
+        });
+
+        // Initial settings
+        document.getElementById('pregainSlider').dispatchEvent(new Event('input'));
+    </script>
+</body>
+</html>
