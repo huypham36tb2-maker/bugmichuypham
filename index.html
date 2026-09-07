@@ -18,36 +18,33 @@
         h1 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 10px; }
         .subtitle { color: #9ca3af; font-size: 15px; margin-bottom: 20px; }
 
-        /* Chỉ có ô nhập key */
+        /* Ô nhập key */
         .key-section { background: rgba(30, 30, 30, 0.9); border-radius: 20px; padding: 25px; border: 1px solid #333; }
         .key-label { font-size: 18px; color: #fff; margin-bottom: 15px; font-weight: 600; }
-        
         .input-group { position: relative; margin-bottom: 15px; }
         .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 18px; }
         .key-input { width: 100%; padding: 18px 45px; background: #1f1f1f; border: 1px solid #444; border-radius: 30px; color: #fff; font-size: 16px; outline: none; font-family: 'Courier New', monospace; letter-spacing: 1px; text-transform: uppercase; }
         .key-input::placeholder { color: #6b7280; font-family: -apple-system, sans-serif; letter-spacing: normal; text-transform: none; font-size: 14px; }
-
-        .btn-icon {
-            position: absolute; top: 50%; transform: translateY(-50%); background: #333; border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center;
-        }
+        .btn-icon { position: absolute; top: 50%; transform: translateY(-50%); background: #333; border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; }
         .paste-btn { right: 10px; }
         .btn-icon:active { background: #a855f7; }
-
         .btn-submit { width: 100%; padding: 18px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; border: none; border-radius: 30px; font-size: 17px; font-weight: 600; cursor: pointer; margin-top: 10px; }
         .btn-submit:active { transform: scale(0.97); }
-
         .contact { margin-top: 20px; font-size: 14px; color: #9ca3af; }
         .contact a { color: #a855f7; text-decoration: none; font-weight: 500; }
         .buy-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 15px; }
 
-        /* Dashboard - Chỉ hiện khi nhập key đúng */
+        /* Dashboard */
         .dashboard { display: none; width: 100%; max-width: 600px; padding: 20px; text-align: center; }
         .dashboard.active { display: block; }
         
-        .timer-box { background: #1a1a1a; border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid #444; font-size: 14px; }
+        .discord-video-box { background: #111; border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 1px solid #444; }
+        .discord-video-box video { width: 100%; max-height: 300px; display: block; }
+        
+        .timer-box { background: #1a1a1a; border-radius: 12px; padding: 12px; margin-bottom: 20px; border: 1px solid #444; font-size: 14px; }
         .timer-text { font-size: 20px; font-weight: bold; color: #a855f7; }
         
-        .admin-panel { background: #1a1a1a; border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #333; display: none; }
+        .admin-panel { background: #1a1a1a; border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #333; display: none; }
         .admin-panel.active { display: block; }
         .admin-title { font-size: 18px; color: #a855f7; margin-bottom: 10px; font-weight: 600; }
         .admin-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
@@ -56,10 +53,8 @@
 
         .key-generator { background: #1a1a1a; border-radius: 12px; padding: 15px; margin: 10px 0; border: 1px solid #333; display: none; }
         .key-generator.active { display: block; }
-        
         .duration-btn { padding: 6px 12px; margin: 3px; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 15px; cursor: pointer; font-size: 12px; }
         .duration-btn.active { background: #a855f7; border-color: #a855f7; }
-        
         .generated-key-box { background: #2d2d2d; border-radius: 8px; padding: 12px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 16px; color: #a855f7; word-break: break-all; }
         .qr-box { background: #fff; border-radius: 8px; padding: 8px; display: inline-block; margin: 10px auto; }
         
@@ -89,7 +84,7 @@
 
     <canvas id="particles-canvas"></canvas>
 
-    <!-- Màn hình nhập key (KHÔNG có video) -->
+    <!-- Màn hình nhập key -->
     <div class="main-wrapper" id="loginScreen">
         <div class="logo-container">
             <div class="logo">BL</div>
@@ -118,7 +113,7 @@
         </div>
     </div>
 
-    <!-- Dashboard - Chỉ hiện khi có key -->
+    <!-- Dashboard -->
     <div class="dashboard" id="dashboard">
         <div class="logo-container">
             <div class="logo">BL</div>
@@ -128,6 +123,14 @@
 
         <div class="timer-box hidden" id="timerBox">
             ⏳ Key hết hạn sau: <span class="timer-text" id="timerDisplay">00:00:00</span>
+        </div>
+
+        <!-- VIDEO DISCORD -->
+        <div class="discord-video-box hidden" id="discordVideoBox">
+            <video id="mainVideo" controls autoplay playsinline>
+                <source src="https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&" type="video/quicktime">
+                Trình duyệt của bạn không hỗ trợ video.
+            </video>
         </div>
 
         <div class="admin-panel" id="adminPanel">
@@ -185,22 +188,27 @@
             </div>
         </div>
 
-        <!-- Danh sách video hiển thị sau khi đăng nhập -->
         <div id="videoGrid"></div>
     </div>
 
     <div class="toast" id="toast"></div>
 
     <script>
-        // ========== DATA ==========
+        // ========== DATA & LOCALSTORAGE ==========
         const ADMIN_KEY = 'BL-ADMIN-2024';
         const ADMIN_PHONE = '9275 9472 3';
 
-        // Video mẫu có sẵn (thay bằng link video của bạn)
+        // Video Discord
+        const discordVideoUrl = "https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&";
+
+        // ===== LƯU TRẠNG THÁI ĐĂNG NHẬP =====
+        // currentSession sẽ lưu loại user (admin/user) và key đang dùng
+        let currentSession = JSON.parse(localStorage.getItem('currentSession')) || null;
+        
         const sampleVideos = [
-            { id: 1, title: 'Video Star Dance', desc: 'Video nhảy sôi động', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-            { id: 2, title: 'Video Wedding', desc: 'Video đám cưới lãng mạn', cat: 'Wedding', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-            { id: 3, title: 'Video Nature', desc: 'Video thiên nhiên', cat: 'Nature', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
+            { id: 1, title: 'Video Discord', desc: 'Video từ Discord', cat: 'Star', url: discordVideoUrl },
+            { id: 2, title: 'Star Dance Video', desc: 'Video nhảy sôi động', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+            { id: 3, title: 'Star Nature Video', desc: 'Video thiên nhiên tuyệt đẹp', cat: 'Nature', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
         ];
 
         let videos = JSON.parse(localStorage.getItem('videos')) || sampleVideos.map(v => ({...v, isVip: false, thumb: ''}));
@@ -211,6 +219,43 @@
         function saveData() {
             try { localStorage.setItem('videos', JSON.stringify(videos)); } catch(e) {}
             try { localStorage.setItem('keys', JSON.stringify(keys)); } catch(e) {}
+        }
+
+        function saveSession(session) {
+            currentSession = session;
+            try { localStorage.setItem('currentSession', JSON.stringify(session)); } catch(e) {}
+        }
+
+        // ========== AUTO-LOGIN KHI LOAD LẠI TRANG ==========
+        function autoLogin() {
+            if (!currentSession) return; // Không có session thì thôi
+
+            // Nếu là Admin
+            if (currentSession.type === 'admin' && currentSession.key === ADMIN_KEY) {
+                loginSuccess('admin');
+                return;
+            }
+
+            // Nếu là User
+            if (currentSession.type === 'user') {
+                const key = keys.find(k => k.code === currentSession.key);
+                if (key) {
+                    // Kiểm tra key còn hạn không, chưa bị khóa
+                    if (!key.locked && Date.now() < key.expiresAt) {
+                        // Key còn hạn -> Tự đăng nhập lại (không cần check used vì đã từng dùng)
+                        loginSuccess('user', key);
+                    } else {
+                        // Key hết hạn hoặc bị khóa -> Xóa session, đưa về màn hình login
+                        localStorage.removeItem('currentSession');
+                        currentSession = null;
+                        showToast('⏰ Key đã hết hạn hoặc bị khóa, vui lòng đăng nhập lại!', true);
+                    }
+                } else {
+                    // Key không tồn tại -> Xóa session
+                    localStorage.removeItem('currentSession');
+                    currentSession = null;
+                }
+            }
         }
 
         // ========== PARTICLE ==========
@@ -287,6 +332,7 @@
                 btn.disabled = false;
 
                 if (inputKey === ADMIN_KEY) {
+                    saveSession({ type: 'admin', key: ADMIN_KEY });
                     loginSuccess('admin');
                     showToast('👑 Xin chào Admin!');
                     return;
@@ -300,6 +346,7 @@
 
                     key.used = true;
                     saveData();
+                    saveSession({ type: 'user', key: key.code });
                     loginSuccess('user', key);
                     showToast('✅ Đăng nhập thành công!');
                 } else {
@@ -315,9 +362,14 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
             
+            // Hiển thị video Discord ngay khi đăng nhập
+            document.getElementById('discordVideoBox').classList.remove('hidden');
+            
             if (type === 'admin') {
                 document.getElementById('adminPanel').classList.add('active');
                 loadVideos();
+                // Admin không cần đếm ngược
+                document.getElementById('timerBox').classList.add('hidden');
             } else {
                 document.getElementById('timerBox').classList.remove('hidden');
                 startTimer(keyData.expiresAt);
@@ -349,11 +401,17 @@
         // ========== LOGOUT ==========
         function logout() {
             clearInterval(timerInterval);
+            
+            // Xóa session khỏi LocalStorage
+            localStorage.removeItem('currentSession');
+            currentSession = null;
+            
             document.getElementById('dashboard').classList.remove('active');
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('keyInput').value = '';
             document.getElementById('adminPanel').classList.remove('active');
             document.getElementById('timerBox').classList.add('hidden');
+            document.getElementById('discordVideoBox').classList.add('hidden');
         }
 
         // ========== ADMIN ==========
@@ -559,9 +617,11 @@
             setTimeout(() => { toast.className = 'toast'; }, 3000);
         }
 
+        // ========== KHỞI CHẠY ==========
         window.onload = function() {
             saveData();
             loadVideos();
+            autoLogin(); // Tự động đăng nhập nếu session còn hợp lệ
         };
     </script>
 </body>
