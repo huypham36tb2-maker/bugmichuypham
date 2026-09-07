@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bạch Long Minh Tool</title>
-    <!-- Thư viện QR Code -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -14,30 +13,18 @@
         
         .main-wrapper { position: relative; z-index: 1; width: 100%; max-width: 500px; padding: 20px; text-align: center; }
         
-        .logo-container { margin-top: 20px; margin-bottom: 15px; }
-        .logo { width: 60px; height: 60px; background: linear-gradient(135deg, #a855f7, #7c3aed); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; color: #fff; margin: 0 auto 10px; }
-        h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 5px; }
-        .subtitle { color: #9ca3af; font-size: 14px; margin-bottom: 15px; }
+        .logo-container { margin-top: 40px; margin-bottom: 30px; }
+        .logo { width: 80px; height: 80px; background: linear-gradient(135deg, #a855f7, #7c3aed); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #fff; margin: 0 auto 15px; }
+        h1 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .subtitle { color: #9ca3af; font-size: 15px; margin-bottom: 20px; }
 
-        /* Video Preview */
-        .video-preview-box {
-            background: #1a1a1a; border: 1px solid #333; border-radius: 12px; overflow: hidden; margin-bottom: 15px;
-        }
-        .video-preview-content { height: 220px; background: #000; position: relative; }
-        .video-preview-content video { width: 100%; height: 100%; object-fit: contain; }
+        /* Chỉ có ô nhập key */
+        .key-section { background: rgba(30, 30, 30, 0.9); border-radius: 20px; padding: 25px; border: 1px solid #333; }
+        .key-label { font-size: 18px; color: #fff; margin-bottom: 15px; font-weight: 600; }
         
-        .video-preview-label {
-            position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); 
-            color: #fff; padding: 5px 10px; border-radius: 15px; font-size: 12px;
-        }
-
-        /* Key Entry */
-        .key-section { background: rgba(30, 30, 30, 0.9); border-radius: 15px; padding: 15px; border: 1px solid #333; }
-        .key-label { font-size: 16px; color: #fff; margin-bottom: 10px; font-weight: 600; }
-        
-        .input-group { position: relative; margin-bottom: 10px; }
+        .input-group { position: relative; margin-bottom: 15px; }
         .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 18px; }
-        .key-input { width: 100%; padding: 15px 45px; background: #1f1f1f; border: 1px solid #444; border-radius: 25px; color: #fff; font-size: 15px; outline: none; font-family: 'Courier New', monospace; letter-spacing: 1px; text-transform: uppercase; }
+        .key-input { width: 100%; padding: 18px 45px; background: #1f1f1f; border: 1px solid #444; border-radius: 30px; color: #fff; font-size: 16px; outline: none; font-family: 'Courier New', monospace; letter-spacing: 1px; text-transform: uppercase; }
         .key-input::placeholder { color: #6b7280; font-family: -apple-system, sans-serif; letter-spacing: normal; text-transform: none; font-size: 14px; }
 
         .btn-icon {
@@ -46,14 +33,14 @@
         .paste-btn { right: 10px; }
         .btn-icon:active { background: #a855f7; }
 
-        .btn-submit { width: 100%; padding: 15px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; border: none; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn-submit { width: 100%; padding: 18px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; border: none; border-radius: 30px; font-size: 17px; font-weight: 600; cursor: pointer; margin-top: 10px; }
         .btn-submit:active { transform: scale(0.97); }
 
-        .contact { margin-top: 15px; font-size: 13px; color: #9ca3af; }
+        .contact { margin-top: 20px; font-size: 14px; color: #9ca3af; }
         .contact a { color: #a855f7; text-decoration: none; font-weight: 500; }
-        .buy-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; padding: 8px 15px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; margin-top: 10px; font-size: 14px; }
+        .buy-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 15px; }
 
-        /* Dashboard */
+        /* Dashboard - Chỉ hiện khi nhập key đúng */
         .dashboard { display: none; width: 100%; max-width: 600px; padding: 20px; text-align: center; }
         .dashboard.active { display: block; }
         
@@ -102,27 +89,16 @@
 
     <canvas id="particles-canvas"></canvas>
 
-    <!-- Màn hình chính -->
+    <!-- Màn hình nhập key (KHÔNG có video) -->
     <div class="main-wrapper" id="loginScreen">
         <div class="logo-container">
             <div class="logo">BL</div>
             <h1>Bạch Long Minh</h1>
-            <p class="subtitle">Công cụ giải trí & chia sẻ video</p>
-        </div>
-
-        <!-- Video Preview thật từ link Discord -->
-        <div class="video-preview-box">
-            <div class="video-preview-content">
-                <span class="video-preview-label">🎬 Preview</span>
-                <video controls autoplay muted loop>
-                    <source src="https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&" type="video/quicktime">
-                    Trình duyệt của bạn không hỗ trợ video.
-                </video>
-            </div>
+            <p class="subtitle">Nhập License Key để tiếp tục</p>
         </div>
 
         <div class="key-section">
-            <div class="key-label">🔑 Nhập License Key</div>
+            <div class="key-label">🔑 Nhập Key</div>
             
             <div class="input-group">
                 <span class="input-icon">🔑</span>
@@ -142,11 +118,12 @@
         </div>
     </div>
 
-    <!-- Dashboard -->
+    <!-- Dashboard - Chỉ hiện khi có key -->
     <div class="dashboard" id="dashboard">
         <div class="logo-container">
             <div class="logo">BL</div>
             <h1>Bạch Long Minh</h1>
+            <p class="subtitle">Chào mừng bạn!</p>
         </div>
 
         <div class="timer-box hidden" id="timerBox">
@@ -195,7 +172,7 @@
                 </select>
                 <div style="margin-bottom:5px; font-size:13px;">
                     <strong>Hoặc chọn Video mẫu:</strong><br>
-                    <button class="sample-btn" onclick="pickSampleVideo(1)">Video Discord</button>
+                    <button class="sample-btn" onclick="pickSampleVideo(1)">Mẫu 1</button>
                     <button class="sample-btn" onclick="pickSampleVideo(2)">Mẫu 2</button>
                     <button class="sample-btn" onclick="pickSampleVideo(3)">Mẫu 3</button>
                 </div>
@@ -208,6 +185,7 @@
             </div>
         </div>
 
+        <!-- Danh sách video hiển thị sau khi đăng nhập -->
         <div id="videoGrid"></div>
     </div>
 
@@ -218,13 +196,11 @@
         const ADMIN_KEY = 'BL-ADMIN-2024';
         const ADMIN_PHONE = '9275 9472 3';
 
-        // Video Discord bạn cung cấp
-        const discordVideoUrl = "https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&";
-
+        // Video mẫu có sẵn (thay bằng link video của bạn)
         const sampleVideos = [
-            { id: 1, title: 'Video Discord', desc: 'Video từ Discord', cat: 'Star', url: discordVideoUrl },
-            { id: 2, title: 'Star Dance Video', desc: 'Video nhảy sôi động', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-            { id: 3, title: 'Star Nature Video', desc: 'Video thiên nhiên tuyệt đẹp', cat: 'Nature', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
+            { id: 1, title: 'Video Star Dance', desc: 'Video nhảy sôi động', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+            { id: 2, title: 'Video Wedding', desc: 'Video đám cưới lãng mạn', cat: 'Wedding', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+            { id: 3, title: 'Video Nature', desc: 'Video thiên nhiên', cat: 'Nature', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
         ];
 
         let videos = JSON.parse(localStorage.getItem('videos')) || sampleVideos.map(v => ({...v, isVip: false, thumb: ''}));
@@ -278,7 +254,7 @@
         function animateParticles() { drawParticles(); requestAnimationFrame(animateParticles); }
         animateParticles();
 
-        // ========== HÀM DÁN KEY ==========
+        // ========== DÁN KEY ==========
         function pasteKey() {
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText().then(text => {
