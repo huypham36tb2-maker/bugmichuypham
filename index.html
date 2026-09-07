@@ -18,7 +18,6 @@
         h1 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 10px; }
         .subtitle { color: #9ca3af; font-size: 15px; margin-bottom: 20px; }
 
-        /* Ô nhập key */
         .key-section { background: rgba(30, 30, 30, 0.9); border-radius: 20px; padding: 25px; border: 1px solid #333; }
         .key-label { font-size: 18px; color: #fff; margin-bottom: 15px; font-weight: 600; }
         .input-group { position: relative; margin-bottom: 15px; }
@@ -34,7 +33,6 @@
         .contact a { color: #a855f7; text-decoration: none; font-weight: 500; }
         .buy-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 15px; }
 
-        /* Dashboard */
         .dashboard { display: none; width: 100%; max-width: 600px; padding: 20px; text-align: center; }
         .dashboard.active { display: block; }
         
@@ -125,7 +123,7 @@
             ⏳ Key hết hạn sau: <span class="timer-text" id="timerDisplay">00:00:00</span>
         </div>
 
-        <!-- VIDEO DISCORD -->
+        <!-- VIDEO -->
         <div class="discord-video-box hidden" id="discordVideoBox">
             <video id="mainVideo" controls autoplay playsinline>
                 <source src="https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&" type="video/quicktime">
@@ -195,14 +193,12 @@
 
     <script>
         // ========== DATA & LOCALSTORAGE ==========
-        const ADMIN_KEY = 'BL-ADMIN-2024';
+        const ADMIN_KEY = 'HUYPHAM2012'; // Đã đổi key admin thành huypham2012 (tự động viết hoa)
         const ADMIN_PHONE = '9275 9472 3';
 
-        // Video Discord
         const discordVideoUrl = "https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&";
 
         // ===== LƯU TRẠNG THÁI ĐĂNG NHẬP =====
-        // currentSession sẽ lưu loại user (admin/user) và key đang dùng
         let currentSession = JSON.parse(localStorage.getItem('currentSession')) || null;
         
         const sampleVideos = [
@@ -226,32 +222,26 @@
             try { localStorage.setItem('currentSession', JSON.stringify(session)); } catch(e) {}
         }
 
-        // ========== AUTO-LOGIN KHI LOAD LẠI TRANG ==========
+        // ========== AUTO-LOGIN ==========
         function autoLogin() {
-            if (!currentSession) return; // Không có session thì thôi
+            if (!currentSession) return;
 
-            // Nếu là Admin
             if (currentSession.type === 'admin' && currentSession.key === ADMIN_KEY) {
                 loginSuccess('admin');
                 return;
             }
 
-            // Nếu là User
             if (currentSession.type === 'user') {
                 const key = keys.find(k => k.code === currentSession.key);
                 if (key) {
-                    // Kiểm tra key còn hạn không, chưa bị khóa
                     if (!key.locked && Date.now() < key.expiresAt) {
-                        // Key còn hạn -> Tự đăng nhập lại (không cần check used vì đã từng dùng)
                         loginSuccess('user', key);
                     } else {
-                        // Key hết hạn hoặc bị khóa -> Xóa session, đưa về màn hình login
                         localStorage.removeItem('currentSession');
                         currentSession = null;
                         showToast('⏰ Key đã hết hạn hoặc bị khóa, vui lòng đăng nhập lại!', true);
                     }
                 } else {
-                    // Key không tồn tại -> Xóa session
                     localStorage.removeItem('currentSession');
                     currentSession = null;
                 }
@@ -368,7 +358,6 @@
             if (type === 'admin') {
                 document.getElementById('adminPanel').classList.add('active');
                 loadVideos();
-                // Admin không cần đếm ngược
                 document.getElementById('timerBox').classList.add('hidden');
             } else {
                 document.getElementById('timerBox').classList.remove('hidden');
@@ -401,8 +390,6 @@
         // ========== LOGOUT ==========
         function logout() {
             clearInterval(timerInterval);
-            
-            // Xóa session khỏi LocalStorage
             localStorage.removeItem('currentSession');
             currentSession = null;
             
@@ -621,7 +608,7 @@
         window.onload = function() {
             saveData();
             loadVideos();
-            autoLogin(); // Tự động đăng nhập nếu session còn hợp lệ
+            autoLogin(); // Tự động đăng nhập
         };
     </script>
 </body>
