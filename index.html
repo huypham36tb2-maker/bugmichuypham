@@ -2,819 +2,579 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🐛 Bug Mic App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Star Video - Tặng Video Miễn Phí</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background: #0a0a0f;
-            color: #e0e0e0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 12px;
+            color: white;
+            overflow-x: hidden;
         }
 
-        .app-container {
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 500px;
-            background: #1a1a24;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.7), inset 0 1px 3px rgba(255,255,255,0.1);
-            border: 1px solid #2a2a3a;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #ff6ec4, #7873f5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(255,110,196,0.3);
-        }
-
-        .theme-selector {
-            display: flex;
-            gap: 10px;
-        }
-
-        .theme-dot {
-            width: 36px;
-            height: 36px;
+        .star {
+            position: absolute;
+            background: white;
             border-radius: 50%;
-            border: 3px solid transparent;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            animation: twinkle 2s infinite;
         }
 
-        .theme-dot.active {
-            border-color: #fff;
-            transform: scale(1.15);
-            box-shadow: 0 0 15px var(--glow-color), 0 4px 15px rgba(0,0,0,0.4);
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
 
-        .theme-dot.green {
-            background: #00ff9d;
-            --glow-color: #00ff9d;
-        }
-
-        .theme-dot.purple {
-            background: #a855f7;
-            --glow-color: #a855f7;
-        }
-
-        .theme-dot.red {
-            background: #ef4444;
-            --glow-color: #ef4444;
-        }
-
-        .toggle-section {
-            margin-bottom: 20px;
-            border-radius: 16px;
-            padding: 12px;
-            background: #222231;
-            border: 1px solid #2a2a3a;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        .btn-toggle {
-            width: 100%;
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
-            border-radius: 16px;
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border: none;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .video-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-preview {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
             cursor: pointer;
-            background: linear-gradient(145deg, #00ff9d, #00cc88);
-            color: #0a0a0f;
-            box-shadow: 0 8px 25px rgba(0,255,157,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-preview::before {
+            content: '▶';
+            font-size: 50px;
+            color: white;
+            text-shadow: 0 0 20px rgba(255,255,255,0.8);
+            z-index: 2;
+        }
+
+        .video-preview.play {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.5); }
+            50% { box-shadow: 0 0 40px rgba(255,255,255,0.8); }
+        }
+
+        .video-title {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .video-description {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+
+        .btn-get {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-get:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-get:active {
+            transform: scale(0.95);
+        }
+
+        .btn-get.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            color: #333;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f44336;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        .video-player {
+            width: 100%;
+            height: 400px;
+            background: black;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+        }
+
+        .download-link {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
             transition: all 0.3s;
         }
 
-        .btn-toggle.stop {
-            background: linear-gradient(145deg, #ef4444, #dc2626);
-            color: #fff;
-            box-shadow: 0 8px 25px rgba(239,68,68,0.4);
+        .download-link:hover {
+            transform: scale(1.05);
+            background: #45a049;
         }
 
-        .panel {
-            background: #222231;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid #2a2a3a;
+        .features-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            backdrop-filter: blur(10px);
         }
 
-        .panel-title {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #8888aa;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .pregain-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .pregain-value {
-            font-size: 28px;
-            font-weight: 900;
-            color: #00ff9d;
-            min-width: 100px;
-            text-align: right;
-            text-shadow: 0 0 10px rgba(0,255,157,0.3);
-        }
-
-        .slider-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            height: 8px;
-            background: #333344;
-            border-radius: 10px;
-            appearance: none;
-            -webkit-appearance: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #00ff9d;
-            border: 2px solid #fff;
-            box-shadow: 0 0 10px rgba(0,255,157,0.6);
-            cursor: pointer;
-        }
-
-        .eq-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #1a1a24;
-            border-radius: 12px;
-        }
-
-        .eq-column {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-            gap: 8px;
-        }
-
-        .eq-slider {
-            width: 16px;
-            height: 120px;
-            background: #333344;
-            border-radius: 20px;
-            appearance: slider-vertical;
-            -webkit-appearance: slider-vertical;
-            cursor: pointer;
-        }
-
-        .eq-freq {
-            font-size: 10px;
-            color: #6666aa;
+        .features-title {
+            font-size: 2em;
+            margin-bottom: 30px;
             text-align: center;
         }
 
-        .btn-reset {
-            background: #333344;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background 0.2s;
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
         }
 
-        .btn-reset:hover {
-            background: #454566;
-        }
-
-        .select-container {
-            margin-bottom: 15px;
-        }
-
-        select {
-            width: 100%;
-            padding: 14px 18px;
-            background: #1a1a24;
-            color: #fff;
-            border: 2px solid #333344;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 500;
-            appearance: none;
-            -webkit-appearance: none;
-            cursor: pointer;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300ff9d%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px top 50%;
-            background-size: 12px auto;
-        }
-
-        .intensity-row {
-            margin-top: 20px;
-        }
-
-        .intensity-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #aaaaaa;
-        }
-
-        .intensity-value {
-            font-weight: 600;
-            color: #00ff9d;
-        }
-
-        .music-row {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .music-controls {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .file-upload {
-            background: #333344;
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            padding: 12px;
-            font-size: 14px;
-            cursor: pointer;
-            flex: 1;
+            padding: 20px;
+            text-align: center;
         }
 
-        .volume-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 0.5;
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
         }
 
-        .volume-icon {
-            font-size: 18px;
+        .statistics-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            color: #333;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
         }
 
         footer {
-            margin-top: 20px;
             text-align: center;
-            font-size: 11px;
-            color: #444466;
-            border-top: 1px solid #2a2a3a;
-            padding-top: 15px;
-            line-height: 1.6;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            margin-top: 40px;
         }
 
-        .accent-green {
-            --accent-color: #00ff9d;
-            --glow-color: #00ff9d;
-        }
-        
-        .accent-purple {
-            --accent-color: #a855f7;
-            --glow-color: #a855f7;
-        }
-        
-        .accent-red {
-            --accent-color: #ef4444;
-            --glow-color: #ef4444;
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+                padding: 0 20px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
     </style>
 </head>
-<body class="accent-green">
-    <div class="app-container">
-        <div class="header">
-            <div class="logo">🐛 BUG MIC</div>
-            <div class="theme-selector">
-                <div class="theme-dot green active" onclick="setTheme('green')"></div>
-                <div class="theme-dot purple" onclick="setTheme('purple')"></div>
-                <div class="theme-dot red" onclick="setTheme('red')"></div>
+<body>
+    <!-- Ngôi sao nền -->
+    <div class="stars-bg" id="starsBg"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>⭐ Tặng Video Star Miễn Phí ⭐</h1>
+            <p class="subtitle">Nhận video chất lượng cao miễn phí - Cập nhật mỗi ngày!</p>
+        </header>
+
+        <!-- Video Grid -->
+        <div class="video-grid" id="videoGrid">
+            <!-- Video 1 -->
+            <div class="video-card" data-video-id="1">
+                <div class="video-preview">
+                </div>
+                <h3 class="video-title">Star Dance Video</h3>
+                <p class="video-description">Video biểu diễn âm nhạc sôi động với hiệu ứng sao đẹp mắt</p>
+                <button class="btn-get" onclick="getVideo(1, this)">Nhận Video Miễn Phí</button>
+            </div>
+
+            <!-- Video 2 -->
+            <div class="video-card" data-video-id="2">
+                <div class="video-preview">
+                </div>
+                <h3 class="video-title">Star Wedding Video</h3>
+                <p class="video-description">Video đám cưới lãng mạn với phông nền sao lấp lánh</p>
+                <button class="btn-get" onclick="getVideo(2, this)">Nhận Video Miễn Phí</button>
+            </div>
+
+            <!-- Video 3 -->
+            <div class="video-card" data-video-id="3">
+                <div class="video-preview">
+                </div>
+                <h3 class="video-title">Star Nature Video</h3>
+                <p class="video-description">Video thiên nhiên tuyệt đẹp với bầu trời đầy sao</p>
+                <button class="btn-get" onclick="getVideo(3, this)">Nhận Video Miễn Phí</button>
+            </div>
+
+            <!-- Video 4 -->
+            <div class="video-card" data-video-id="4">
+                <div class="video-preview">
+                </div>
+                <h3 class="video-title">Star Party Video</h3>
+                <p class="video-description">Video tiệc tùng với hiệu ứng ánh sáng sao rực rỡ</p>
+                <button class="btn-get" onclick="getVideo(4, this)">Nhận Video Miễn Phí</button>
             </div>
         </div>
 
-        <div class="toggle-section">
-            <button class="btn-toggle" id="mainToggle">BẮT ĐẦU XẢ</button>
-        </div>
-
-        <!-- PRE GAIN -->
-        <div class="panel">
-            <div class="panel-title">
-                <span>PRE GAIN</span>
-                <span>Hệ số khuếch đại</span>
-            </div>
-            <div class="pregain-row">
-                <div class="slider-container">
-                    <input type="range" id="pregainSlider" min="1" max="100000000" value="1" step="1">
+        <!-- Features Section -->
+        <div class="features-section">
+            <h2 class="features-title">✨ Tính Năng Nổi Bật ✨</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Miễn Phí 100%</h3>
+                    <p>Không phải trả phí, không giới hạn lượt tải</p>
                 </div>
-                <div class="pregain-value" id="pregainDisplay">1x</div>
-            </div>
-        </div>
-
-        <!-- EQUALIZER -->
-        <div class="panel">
-            <div class="panel-title">
-                <span>🎚️ EQUALIZER MIC</span>
-                <button class="btn-reset" onclick="resetEQ()">⟳ Reset</button>
-            </div>
-            <div class="eq-container" id="eqContainer">
-                <div class="eq-column">
-                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="31Hz">
-                    <span class="eq-freq">31Hz</span>
+                <div class="feature-item">
+                    <div class="feature-icon">🎬</div>
+                    <h3>Chất Lượng HD</h3>
+                    <p>Video độ phân giải cao, nét và đẹp</p>
                 </div>
-                <div class="eq-column">
-                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="63Hz">
-                    <span class="eq-freq">63Hz</span>
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Tải Nhanh</h3>
+                    <p>Tải video nhanh chóng, không mất thời gian</p>
                 </div>
-                <div class="eq-column">
-                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="125Hz">
-                    <span class="eq-freq">125Hz</span>
-                </div>
-                <div class="eq-column">
-                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="250Hz">
-                    <span class="eq-freq">250Hz</span>
-                </div>
-                <div class="eq-column">
-                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="500Hz">
-                    <span class="eq-freq">500Hz</span>
-                </div>
-                <div class="eq-column">
-                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="1kHz">
-                    <span class="eq-freq">1kHz</span>
-                </div>
-                <div class="eq-column">
-                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="2kHz">
-                    <span class="eq-freq">2kHz</span>
-                </div>
-                <div class="eq-column">
-                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="4kHz">
-                    <span class="eq-freq">4kHz</span>
-                </div>
-                <div class="eq-column">
-                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="8kHz">
-                    <span class="eq-freq">8kHz</span>
-                </div>
-                <div class="eq-column">
-                    <input type="range" class="eq-slider" min="-15" max="15" value="0" data-freq="16kHz">
-                    <span class="eq-freq">16kHz</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- EFFECTS -->
-        <div class="panel">
-            <div class="panel-title">
-                <span>EFFECT MODE</span>
-                <span>🎭 Hiệu ứng</span>
-            </div>
-            <div class="select-container">
-                <select id="fxSelect">
-                    <option value="normal">Bình thường</option>
-                    <option value="robot">Robot</option>
-                    <option value="deep">Trầm ấm</option>
-                    <option value="bright">Sáng</option>
-                    <option value="echo">Echo</option>
-                    <option value="reverb">Reverb</option>
-                </select>
-            </div>
-            <div class="intensity-row">
-                <div class="intensity-label">
-                    <span>Cường độ (Intensity)</span>
-                    <span class="intensity-value" id="intensityValue">50%</span>
-                </div>
-                <input type="range" id="intensitySlider" min="0" max="100" value="50">
-            </div>
-        </div>
-
-        <!-- BACKGROUND MUSIC -->
-        <div class="panel">
-            <div class="panel-title">
-                <span>🎵 NHẠC NỀN</span>
-                <span>Background Music</span>
-            </div>
-            <div class="music-row">
-                <div class="music-controls">
-                    <input type="file" id="musicFile" class="file-upload" accept="audio/mp3,audio/wav,audio/ogg">
-                    <div class="volume-control">
-                        <span class="volume-icon">🔉</span>
-                        <input type="range" id="musicVolume" min="0" max="100" value="30">
-                    </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Cập Nhật Mới</h3>
+                    <p>Thêm video mới mỗi ngày</p>
                 </div>
             </div>
         </div>
 
+        <!-- Statistics -->
+        <div class="statistics-section">
+            <h2 class="features-title">📊 Thống Kê 📊</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-label">Người dùng</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5,000+</div>
+                    <div class="stat-label">Video đã tải</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Video Star</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.9/5</div>
+                    <div class="stat-label">Đánh giá</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
         <footer>
-            💡 Mẹo: Mở Messenger/Discord/TikTok sau khi bắt đầu xả<br>
-            🎙️ Tăng PRE GAIN để tạo hiệu ứng "bug mic" mạnh mẽ<br>
-            ⚡ Giữ trình duyệt mở ở nền để tiếp tục xử lý âm thanh
+            <p>© 2024 Free Star Video. Tất cả quyền được bảo lưu.</p>
+            <p>Video Star Miễn Phí - Mang niềm vui đến mọi nhà</p>
         </footer>
     </div>
 
+    <!-- Modal -->
+    <div class="video-modal" id="videoModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">✕</button>
+            <div class="video-player" id="videoPlayer">
+                🎬
+            </div>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="#" class="download-link" id="downloadLink" onclick="downloadVideo(event)">⬇️ Tải Video Ngay</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
     <script>
-        // ========== GLOBAL STATE ==========
-        let audioContext = null;
-        let isRunning = false;
-        let micStream = null;
-        let nodes = {
-            source: null,
-            preGain: null,
-            eqFilters: [],
-            fxChain: [],
-            compressor: null,
-            masterGain: null,
-            backgroundBuffer: null,
-            backgroundSource: null,
-            backgroundGain: null
+        // Tạo ngôi sao nền
+        function createStars() {
+            const starsBg = document.getElementById('starsBg');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 5 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsBg.appendChild(star);
+            }
+        }
+
+        // Dữ liệu video
+        const videos = {
+            1: {
+                title: 'Star Dance Video',
+                description: 'Video biểu diễn âm nhạc sôi động với hiệu ứng sao đẹp mắt',
+                download: 'video_dance.mp4'
+            },
+            2: {
+                title: 'Star Wedding Video',
+                description: 'Video đám cưới lãng mạn với phông nền sao lấp lánh',
+                download: 'video_wedding.mp4'
+            },
+            3: {
+                title: 'Star Nature Video',
+                description: 'Video thiên nhiên tuyệt đẹp với bầu trời đầy sao',
+                download: 'video_nature.mp4'
+            },
+            4: {
+                title: 'Star Party Video',
+                description: 'Video tiệc tùng với hiệu ứng ánh sáng sao rực rỡ',
+                download: 'video_party.mp4'
+            }
         };
 
-        const themeColorMap = {
-            green: { primary: '#00ff9d', glow: '#00ff9d' },
-            purple: { primary: '#a855f7', glow: '#a855f7' },
-            red: { primary: '#ef4444', glow: '#ef4444' }
+        // Nhận video miễn phí
+        function getVideo(videoId, btn) {
+            // Hiệu ứng khi nhận video
+            btn.classList.add('success');
+            const originalText = btn.textContent;
+            btn.textContent = '✓ Đã nhận!';
+            
+            setTimeout(() => {
+                btn.classList.remove('success');
+                btn.textContent = originalText;
+            }, 2000);
+
+            // Hiển thị modal
+            openModal(videoId);
+            
+            // Hiển thị toast
+            showToast('🎉 Bạn đã nhận được video Star miễn phí!');
+        }
+
+        // Mở modal xem video
+        function openModal(videoId) {
+            const modal = document.getElementById('videoModal');
+            const video = videos[videoId];
+            
+            document.getElementById('modalTitle').textContent = video.title;
+            document.getElementById('modalDescription').textContent = video.description;
+            document.getElementById('downloadLink').href = video.download;
+            document.getElementById('videoPlayer').innerHTML = '▶️ Xem trước video';
+            
+            modal.classList.add('show');
+        }
+
+        // Đóng modal
+        function closeModal() {
+            document.getElementById('videoModal').classList.remove('show');
+        }
+
+        // Tải video
+        function downloadVideo(event) {
+            event.preventDefault();
+            showToast('📥 Đang tải video... Vui lòng chờ!');
+            
+            setTimeout(() => {
+                showToast('✅ Video đã tải thành công!');
+            }, 2000);
+        }
+
+        // Hiển thị toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Tạo hiệu ứng cho video preview
+        function animatePreviews() {
+            const previews = document.querySelectorAll('.video-preview');
+            previews.forEach((preview, index) => {
+                setTimeout(() => {
+                    preview.classList.add('play');
+                }, index * 1000);
+            });
+        }
+
+        // Khởi tạo
+        window.onload = function() {
+            createStars();
+            animatePreviews();
+            
+            // Đóng modal khi click ra ngoài
+            document.getElementById('videoModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
         };
-
-        // ========== INITIALIZATION ==========
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                audioContext.resume();
-            }
-        }
-
-        // ========== BUILD AUDIO GRAPH ==========
-        async function startProcessing() {
-            try {
-                // Setup
-                initAudio();
-                if (audioContext.state === 'suspended') await audioContext.resume();
-
-                // Get mic
-                micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
-
-                // Create source
-                nodes.source = audioContext.createMediaStreamSource(micStream);
-
-                // Pre-gain (extreme gain)
-                nodes.preGain = audioContext.createGain();
-                const pregainVal = parseFloat(document.getElementById('pregainSlider').value);
-                nodes.preGain.gain.value = pregainVal;
-
-                // Equalizer filters (10 bands)
-                nodes.eqFilters = [];
-                const eqSliders = document.querySelectorAll('.eq-slider');
-                eqSliders.forEach((slider, idx) => {
-                    const filter = audioContext.createBiquadFilter();
-                    filter.type = 'peaking';
-                    filter.frequency.value = [31, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000][idx];
-                    filter.Q.value = 1.0;
-                    filter.gain.value = parseFloat(slider.value);
-                    nodes.eqFilters.push(filter);
-                });
-
-                // Compressor (to prevent super loud clipping)
-                nodes.compressor = audioContext.createDynamicsCompressor();
-                nodes.compressor.threshold.value = -20;
-                nodes.compressor.knee.value = 30;
-                nodes.compressor.ratio.value = 12;
-                nodes.compressor.attack.value = 0.003;
-                nodes.compressor.release.value = 0.25;
-
-                // Master gain
-                nodes.masterGain = audioContext.createGain();
-                nodes.masterGain.gain.value = 1.0;
-
-                // Build graph: source -> preGain -> eqFilters -> fxChain -> compressor -> masterGain -> destination
-                let currentNode = nodes.source;
-                nodes.source.connect(nodes.preGain);
-                currentNode = nodes.preGain;
-
-                // Connect EQ filters in series
-                for (let i = 0; i < nodes.eqFilters.length; i++) {
-                    currentNode.connect(nodes.eqFilters[i]);
-                    currentNode = nodes.eqFilters[i];
-                }
-
-                // FX chain placeholder (will be configured based on selected effect)
-                // We'll connect FX dynamically
-                nodes.fxChain = [];
-                configureFX(currentNode);
-
-                // Background music
-                const fileInput = document.getElementById('musicFile');
-                if (fileInput.files && fileInput.files[0]) {
-                    const file = fileInput.files[0];
-                    const arrayBuffer = await file.arrayBuffer();
-                    nodes.backgroundBuffer = await audioContext.decodeAudioData(arrayBuffer);
-                    nodes.backgroundGain = audioContext.createGain();
-                    nodes.backgroundGain.gain.value = parseFloat(document.getElementById('musicVolume').value) / 100;
-                    nodes.backgroundSource = audioContext.createBufferSource();
-                    nodes.backgroundSource.buffer = nodes.backgroundBuffer;
-                    nodes.backgroundSource.loop = true;
-                    nodes.backgroundSource.connect(nodes.backgroundGain);
-                    nodes.backgroundGain.connect(nodes.masterGain);
-                    nodes.backgroundSource.start();
-                }
-
-                // Connect master to output
-                nodes.masterGain.connect(audioContext.destination);
-
-                isRunning = true;
-                updateUI(true);
-                document.getElementById('mainToggle').classList.add('stop');
-                document.getElementById('mainToggle').textContent = 'DỪNG XẢ';
-            } catch (err) {
-                console.error('Mic error:', err);
-                alert('Không thể truy cập microphone. Vui lòng kiểm tra quyền truy cập.');
-            }
-        }
-
-        // ========== FX CONFIGURATION ==========
-        function configureFX(inputNode) {
-            // Clear old fx nodes
-            if (nodes.fxChain.length > 0) {
-                nodes.fxChain.forEach(node => {
-                    try { node.disconnect(); } catch(e) {}
-                });
-            }
-            nodes.fxChain = [];
-
-            // Disconnect from previous FX to master
-            // We'll reconnect properly later
-
-            // Get selected effect
-            const fxSelect = document.getElementById('fxSelect').value;
-            const intensity = parseFloat(document.getElementById('intensitySlider').value) / 100;
-
-            // Always apply robot / deep / bright via filters
-            let outputNode = inputNode;
-
-            if (fxSelect === 'robot') {
-                // Use ring modulation: amplitude modulation + highpass/lowpass
-                const ringMod = audioContext.createOscillator();
-                ringMod.frequency.value = 5 + intensity * 20; // 5-25 Hz
-                const ringGain = audioContext.createGain();
-                ringGain.gain.value = 0.5;
-                const ringModGain = audioContext.createGain();
-                ringModGain.gain.value = 1;
-                
-                // We'll create a simple AM effect: modulate amplitude
-                inputNode.connect(ringModGain);
-                ringMod.connect(ringModGain.gain);
-                ringModGain.connect(nodes.fxChain[0] = audioContext.createGain());
-                ringMod.start();
-                
-                // Add a distortion-like saturator (waveshaper)
-                const shaper = audioContext.createWaveShaper();
-                shaper.curve = makeDistortionCurve(50 * intensity);
-                ringModGain.connect(shaper);
-                outputNode = shaper;
-            } else if (fxSelect === 'deep') {
-                const lowpass = audioContext.createBiquadFilter();
-                lowpass.type = 'lowpass';
-                lowpass.frequency.value = 200 + intensity * 500;
-                inputNode.connect(lowpass);
-                outputNode = lowpass;
-            } else if (fxSelect === 'bright') {
-                const highpass = audioContext.createBiquadFilter();
-                highpass.type = 'highpass';
-                highpass.frequency.value = 2000 + intensity * 4000;
-                inputNode.connect(highpass);
-                outputNode = highpass;
-            } else if (fxSelect === 'echo') {
-                const delay = audioContext.createDelay(1.0);
-                delay.delayTime.value = 0.2 + intensity * 0.3;
-                const feedback = audioContext.createGain();
-                feedback.gain.value = 0.3 + intensity * 0.4;
-                inputNode.connect(delay);
-                delay.connect(feedback);
-                feedback.connect(delay);
-                outputNode = delay;
-            } else if (fxSelect === 'reverb') {
-                // simple reverb (using convolver if we had a buffer, but we'll use multiple delays)
-                const convolver = audioContext.createConvolver();
-                convolver.buffer = createReverbIR(audioContext, 2 * intensity + 0.5);
-                inputNode.connect(convolver);
-                outputNode = convolver;
-            }
-
-            // Connect outputNode to compressor
-            outputNode.connect(nodes.compressor);
-        }
-
-        function makeDistortionCurve(amount) {
-            const k = amount;
-            const n = 44100;
-            const curve = new Float32Array(n);
-            const deg = Math.PI / 180;
-            for (let i = 0; i < n; i++) {
-                const x = i * 2 / n - 1;
-                curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
-            }
-            return curve;
-        }
-
-        function createReverbIR(ctx, duration) {
-            const rate = ctx.sampleRate;
-            const length = rate * (duration + 0.5);
-            const impulse = ctx.createBuffer(2, length, rate);
-            for (let channel = 0; channel < 2; channel++) {
-                const data = impulse.getChannelData(channel);
-                for (let i = 0; i < length; i++) {
-                    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.5);
-                }
-            }
-            return impulse;
-        }
-
-        // ========== STOP PROCESSING ==========
-        function stopProcessing() {
-            if (!isRunning) return;
-            
-            if (nodes.source) nodes.source.disconnect();
-            if (nodes.preGain) nodes.preGain.disconnect();
-            if (nodes.eqFilters.length) nodes.eqFilters.forEach(f => f.disconnect());
-            if (nodes.compressor) nodes.compressor.disconnect();
-            if (nodes.masterGain) nodes.masterGain.disconnect();
-            
-            if (nodes.backgroundSource) {
-                nodes.backgroundSource.stop();
-                nodes.backgroundSource.disconnect();
-                nodes.backgroundGain.disconnect();
-            }
-
-            if (micStream) {
-                micStream.getTracks().forEach(track => track.stop());
-            }
-
-            micStream = null;
-            nodes.source = null;
-            nodes.preGain = null;
-            nodes.eqFilters = [];
-            nodes.compressor = null;
-            nodes.masterGain = null;
-            nodes.backgroundSource = null;
-            nodes.backgroundGain = null;
-            nodes.fxChain = [];
-
-            isRunning = false;
-            updateUI(false);
-            document.getElementById('mainToggle').classList.remove('stop');
-            document.getElementById('mainToggle').textContent = 'BẮT ĐẦU XẢ';
-        }
-
-        // ========== UI UPDATE ==========
-        function updateUI(running) {
-            if (running) {
-                document.getElementById('mainToggle').textContent = 'DỪNG XẢ';
-                document.getElementById('mainToggle').classList.add('stop');
-            } else {
-                document.getElementById('mainToggle').textContent = 'BẮT ĐẦU XẢ';
-                document.getElementById('mainToggle').classList.remove('stop');
-            }
-        }
-
-        // ========== EVENT LISTENERS ==========
-        document.getElementById('mainToggle').addEventListener('click', () => {
-            if (isRunning) {
-                stopProcessing();
-            } else {
-                startProcessing();
-            }
-        });
-
-        // PRE GAIN SLIDER
-        document.getElementById('pregainSlider').addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value);
-            const display = val >= 1000000 ? (val/1000000).toFixed(1) + 'M' : val >= 1000 ? (val/1000).toFixed(1) + 'k' : val;
-            document.getElementById('pregainDisplay').textContent = display + 'x';
-            if (nodes.preGain) nodes.preGain.gain.value = val;
-        });
-
-        // EQ SLIDERS
-        document.querySelectorAll('.eq-slider').forEach((slider, idx) => {
-            slider.addEventListener('input', (e) => {
-                if (nodes.eqFilters[idx]) {
-                    nodes.eqFilters[idx].gain.value = parseFloat(e.target.value);
-                }
-            });
-        });
-
-        // FX SELECT
-        document.getElementById('fxSelect').addEventListener('change', (e) => {
-            if (isRunning) {
-                // Reconfigure FX: disconnect from compressor, reconnect
-                // Simplest: restart processing (with same audio source)
-                // But better: we'll just update the FX chain without full restart
-                if (nodes.compressor) {
-                    // Disconnect all fx nodes and reconnect
-                    nodes.eqFilters.forEach(filter => {
-                        filter.disconnect();
-                    });
-                    // Reconnect the last eq to compressor through the new FX
-                    const lastEq = nodes.eqFilters[nodes.eqFilters.length - 1];
-                    configureFX(lastEq);
-                }
-            }
-        });
-
-        // INTENSITY
-        document.getElementById('intensitySlider').addEventListener('input', (e) => {
-            document.getElementById('intensityValue').textContent = e.target.value + '%';
-            if (isRunning) {
-                // Reconfigure FX
-                document.getElementById('fxSelect').dispatchEvent(new Event('change'));
-            }
-        });
-
-        // MUSIC VOLUME
-        document.getElementById('musicVolume').addEventListener('input', (e) => {
-            if (nodes.backgroundGain) {
-                nodes.backgroundGain.gain.value = parseFloat(e.target.value) / 100;
-            }
-        });
-
-        // RESET EQ
-        function resetEQ() {
-            document.querySelectorAll('.eq-slider').forEach((slider, idx) => {
-                slider.value = 0;
-                if (nodes.eqFilters[idx]) {
-                    nodes.eqFilters[idx].gain.value = 0;
-                }
-            });
-        }
-
-        // THEME
-        function setTheme(color) {
-            const themeInfo = themeColorMap[color];
-            document.body.className = `accent-${color}`;
-            document.querySelectorAll('.theme-dot').forEach(dot => dot.classList.remove('active'));
-            document.querySelector(`.theme-dot.${color}`).classList.add('active');
-            
-            // Update colors dynamically for sliders (simplified)
-            const sliderThumbs = document.querySelectorAll('input[type="range"]::-webkit-slider-thumb');
-            // Note: This is complex, we'll use CSS variable approach in a real app
-            // For simplicity, we'll use inline style updates for key elements
-            const primaryColor = themeInfo.primary;
-            document.querySelectorAll('.btn-toggle').forEach(btn => {
-                btn.style.background = `linear-gradient(145deg, ${primaryColor}, ${primaryColor}cc)`;
-            });
-            document.querySelectorAll('.theme-dot.active').forEach(dot => {
-                dot.style.borderColor = '#fff';
-            });
-        }
-
-        // Keep audio context alive when page is hidden
-        document.addEventListener('visibilitychange', () => {
-            if (audioContext && isRunning) {
-                audioContext.resume();
-            }
-        });
-
-        // Initial settings
-        document.getElementById('pregainSlider').dispatchEvent(new Event('input'));
     </script>
 </body>
 </html>
