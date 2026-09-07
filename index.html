@@ -23,9 +23,13 @@
         .video-preview-box {
             background: #1a1a1a; border: 1px solid #333; border-radius: 12px; overflow: hidden; margin-bottom: 15px;
         }
-        .video-preview-content { height: 200px; background: #111; display: flex; align-items: center; justify-content: center; }
-        .clapper-icon { font-size: 50px; color: #444; animation: floatIcon 3s ease-in-out infinite; }
-        @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .video-preview-content { height: 220px; background: #000; position: relative; }
+        .video-preview-content video { width: 100%; height: 100%; object-fit: contain; }
+        
+        .video-preview-label {
+            position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); 
+            color: #fff; padding: 5px 10px; border-radius: 15px; font-size: 12px;
+        }
 
         /* Key Entry */
         .key-section { background: rgba(30, 30, 30, 0.9); border-radius: 15px; padding: 15px; border: 1px solid #333; }
@@ -106,9 +110,14 @@
             <p class="subtitle">Công cụ giải trí & chia sẻ video</p>
         </div>
 
+        <!-- Video Preview thật từ link Discord -->
         <div class="video-preview-box">
             <div class="video-preview-content">
-                <div class="clapper-icon">🎬</div>
+                <span class="video-preview-label">🎬 Preview</span>
+                <video controls autoplay muted loop>
+                    <source src="https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&" type="video/quicktime">
+                    Trình duyệt của bạn không hỗ trợ video.
+                </video>
             </div>
         </div>
 
@@ -186,7 +195,7 @@
                 </select>
                 <div style="margin-bottom:5px; font-size:13px;">
                     <strong>Hoặc chọn Video mẫu:</strong><br>
-                    <button class="sample-btn" onclick="pickSampleVideo(1)">Mẫu 1</button>
+                    <button class="sample-btn" onclick="pickSampleVideo(1)">Video Discord</button>
                     <button class="sample-btn" onclick="pickSampleVideo(2)">Mẫu 2</button>
                     <button class="sample-btn" onclick="pickSampleVideo(3)">Mẫu 3</button>
                 </div>
@@ -209,9 +218,12 @@
         const ADMIN_KEY = 'BL-ADMIN-2024';
         const ADMIN_PHONE = '9275 9472 3';
 
+        // Video Discord bạn cung cấp
+        const discordVideoUrl = "https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&";
+
         const sampleVideos = [
-            { id: 1, title: 'Star Dance Video', desc: 'Video nhảy sôi động', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-            { id: 2, title: 'Star Wedding Video', desc: 'Video đám cưới lãng mạn', cat: 'Wedding', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+            { id: 1, title: 'Video Discord', desc: 'Video từ Discord', cat: 'Star', url: discordVideoUrl },
+            { id: 2, title: 'Star Dance Video', desc: 'Video nhảy sôi động', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
             { id: 3, title: 'Star Nature Video', desc: 'Video thiên nhiên tuyệt đẹp', cat: 'Nature', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
         ];
 
@@ -266,18 +278,17 @@
         function animateParticles() { drawParticles(); requestAnimationFrame(animateParticles); }
         animateParticles();
 
-        // ========== HÀM DÁN KEY (Chạy trên Mobile) ==========
+        // ========== HÀM DÁN KEY ==========
         function pasteKey() {
-            // Thử dùng Clipboard API mới
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText().then(text => {
                     document.getElementById('keyInput').value = text.trim().toUpperCase();
                     showToast('📋 Đã dán key!');
                 }).catch(() => {
-                    showToast('⚠️ Trình duyệt chặn dán!', true);
+                    let text = prompt('Dán key vào đây:');
+                    if (text) document.getElementById('keyInput').value = text.trim().toUpperCase();
                 });
             } else {
-                // Fallback: Dùng prompt
                 let text = prompt('Dán key vào đây:');
                 if (text) document.getElementById('keyInput').value = text.trim().toUpperCase();
             }
@@ -369,7 +380,7 @@
             document.getElementById('timerBox').classList.add('hidden');
         }
 
-        // ========== ADMIN PANEL ==========
+        // ========== ADMIN ==========
         let selectedDuration = 'day';
         function setDuration(duration, btn) {
             selectedDuration = duration;
@@ -413,7 +424,6 @@
             showToast('✅ Key đã tạo!');
         }
 
-        // Sao chép an toàn trên mobile
         function copyText(text) {
             try {
                 const tempInput = document.createElement('input');
@@ -479,6 +489,7 @@
             document.getElementById('newVideoTitle').value = v.title;
             document.getElementById('newVideoDesc').value = v.desc;
             document.getElementById('newVideoCat').value = v.cat;
+            window.selectedSampleUrl = v.url;
         }
 
         function handleUpload(event) {
@@ -499,12 +510,17 @@
             const title = document.getElementById('newVideoTitle').value;
             const desc = document.getElementById('newVideoDesc').value;
             const cat = document.getElementById('newVideoCat').value;
-            const url = window.uploadedVideoUrl || '#';
+            const url = window.uploadedVideoUrl || window.selectedSampleUrl || '#';
+            
             if (!title) { showToast('Vui lòng nhập tên!', true); return; }
+            
             videos.push({ id: Date.now(), title, description: desc, cat, url });
             window.uploadedVideoUrl = null;
+            window.selectedSampleUrl = null;
+            
             document.getElementById('newVideoTitle').value = '';
             document.getElementById('newVideoDesc').value = '';
+            
             saveData(); renderVideoList(); loadVideos();
             showToast('✅ Đã thêm video!');
         }
@@ -535,8 +551,16 @@
             videos.forEach(video => {
                 const card = document.createElement('div');
                 card.className = 'video-card';
+                
+                const videoTag = video.url && video.url !== '#' 
+                    ? `<video controls style="width:100%; max-height:200px; border-radius:8px; margin-bottom:10px; background:#000;">
+                        <source src="${video.url}" type="video/mp4">
+                        Trình duyệt không hỗ trợ.
+                       </video>`
+                    : `<div style="width:100%;height:120px;border-radius:8px;background:#111;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">🎬</div>`;
+
                 card.innerHTML = `
-                    <div style="width:100%;height:120px;border-radius:8px;background:#111;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">🎬</div>
+                    ${videoTag}
                     <div class="video-title">${video.title}</div>
                     <div class="video-desc">${video.description}</div>
                     <div style="margin-top:10px;">
