@@ -33,6 +33,7 @@
         .contact a { color: #a855f7; text-decoration: none; font-weight: 500; }
         .buy-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 15px; }
 
+        /* Dashboard */
         .dashboard { display: none; width: 100%; max-width: 600px; padding: 20px; text-align: center; }
         .dashboard.active { display: block; }
         
@@ -41,13 +42,23 @@
         
         .timer-box { background: #1a1a1a; border-radius: 12px; padding: 12px; margin-bottom: 20px; border: 1px solid #444; font-size: 14px; }
         .timer-text { font-size: 20px; font-weight: bold; color: #a855f7; }
+        .timer-text.warning { color: #ff4d4d; animation: pulse 1s infinite; }
         
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
         .admin-panel { background: #1a1a1a; border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #333; display: none; }
         .admin-panel.active { display: block; }
         .admin-title { font-size: 18px; color: #a855f7; margin-bottom: 10px; font-weight: 600; }
         .admin-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
         .btn-admin { padding: 8px 15px; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 20px; cursor: pointer; font-size: 13px; }
         .btn-admin:active { background: #a855f7; }
+
+        /* Stats */
+        .stats-dashboard { background: #1a1a1a; border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #333; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+        .stat-card { background: #2d2d2d; padding: 10px; border-radius: 8px; text-align: center; }
+        .stat-number { font-size: 20px; font-weight: bold; color: #a855f7; }
+        .stat-label { font-size: 12px; color: #9ca3af; }
 
         .key-generator { background: #1a1a1a; border-radius: 12px; padding: 15px; margin: 10px 0; border: 1px solid #333; display: none; }
         .key-generator.active { display: block; }
@@ -67,6 +78,9 @@
         .btn-delete { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 8px; cursor: pointer; font-size: 11px; }
         .btn-lock { background: #ff9800; color: white; border: none; padding: 4px 8px; border-radius: 8px; cursor: pointer; font-size: 11px; }
         
+        /* Search key */
+        .search-input { width: 100%; padding: 10px; margin: 10px 0; background: #2d2d2d; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 13px; }
+        
         .video-input { width: 100%; padding: 10px; margin: 5px 0; background: #2d2d2d; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 13px; }
         .upload-area { border: 2px dashed #444; border-radius: 8px; padding: 15px; margin: 8px 0; cursor: pointer; text-align: center; font-size: 13px; }
         .sample-btn { background: #333; padding: 6px; margin: 3px; border-radius: 8px; cursor: pointer; font-size: 12px; border: 1px solid #555; }
@@ -76,6 +90,20 @@
         .video-desc { color: #9ca3af; font-size: 12px; margin-bottom: 8px; }
         .video-cat { font-size: 11px; color: #a855f7; background: #2d2d2d; padding: 2px 6px; border-radius: 8px; display: inline-block; margin-bottom: 8px; }
         .vip-badge { font-size: 11px; color: gold; background: #333; padding: 2px 6px; border-radius: 8px; margin-left: 5px; }
+
+        /* Spin Wheel */
+        .spin-section { background: #1a1a1a; border-radius: 12px; padding: 15px; margin: 20px 0; border: 1px solid #444; text-align: center; }
+        .wheel-container { position: relative; width: 250px; height: 250px; margin: 20px auto; }
+        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #444; position: relative; overflow: hidden; transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); }
+        .wheel-segment { position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%; }
+        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: #a855f7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; z-index: 10; box-shadow: 0 0 15px rgba(168, 85, 247, 0.6); }
+        .wheel-pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ff4d4d; z-index: 10; }
+        .spin-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; border: none; padding: 12px 40px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .prize-result { margin-top: 15px; padding: 15px; background: #2d2d2d; border-radius: 10px; display: none; }
+
+        /* Zalo button */
+        .zalo-btn { background: #0068ff; color: white; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: bold; margin-top: 10px; display: inline-block; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -126,9 +154,33 @@
         <!-- VIDEO -->
         <div class="discord-video-box hidden" id="discordVideoBox">
             <video id="mainVideo" controls autoplay playsinline>
+                <source src="https://cdn.discordapp.com/attachments/1546119643113062401/1546630996437245973/VideoStar.mov?ex=6aa07bdc&is=6a9f2a5c&hm=bc4a0750a39b878da48339c7d88904c8f8a8ddce4998273c3038928f408baed7&" type="video/quicktime">
                 <source src="https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&" type="video/quicktime">
                 Trình duyệt của bạn không hỗ trợ video.
             </video>
+        </div>
+
+        <!-- Stats Dashboard (Chỉ Admin thấy) -->
+        <div class="stats-dashboard hidden" id="adminStats">
+            <h3 style="color:#a855f7; margin-bottom:10px;">📊 Thống Kê</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalKeys">0</div>
+                    <div class="stat-label">Tổng Key</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="usedKeys">0</div>
+                    <div class="stat-label">Key Đã Dùng</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeKeys">0</div>
+                    <div class="stat-label">Key Hoạt Động</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="videoCount">0</div>
+                    <div class="stat-label">Tổng Video</div>
+                </div>
+            </div>
         </div>
 
         <div class="admin-panel" id="adminPanel">
@@ -149,7 +201,7 @@
                     <button class="duration-btn" onclick="setDuration('month', this)">🗓️ 1 Tháng</button>
                     <button class="duration-btn" onclick="setDuration('vip', this)">👑 VIP</button>
                 </div>
-                <input type="text" class="video-input" id="keyNote" placeholder="Ghi chú (VD: Tên khách)">
+                <input type="text" class="video-input" id="keyNote" placeholder="Ghi chú (VD: Tên khách, Zalo, SĐT)">
                 <button class="btn-admin" onclick="generateKey()" style="width:100%; margin-top:5px;">Tạo Key</button>
                 <div class="generated-key-box hidden" id="generatedKeyBox"></div>
                 <div class="qr-box hidden" id="qrBox"></div>
@@ -158,6 +210,7 @@
 
             <div class="key-generator" id="keyList">
                 <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Danh Sách Key</h3>
+                <input type="text" class="search-input" id="searchKey" placeholder="🔍 Tìm key hoặc tên khách..." oninput="filterKeys()">
                 <div class="key-list-container" id="keysListContainer"></div>
             </div>
 
@@ -173,9 +226,9 @@
                 </select>
                 <div style="margin-bottom:5px; font-size:13px;">
                     <strong>Hoặc chọn Video mẫu:</strong><br>
-                    <button class="sample-btn" onclick="pickSampleVideo(1)">Mẫu 1</button>
-                    <button class="sample-btn" onclick="pickSampleVideo(2)">Mẫu 2</button>
-                    <button class="sample-btn" onclick="pickSampleVideo(3)">Mẫu 3</button>
+                    <button class="sample-btn" onclick="pickSampleVideo(1)">Video Cube 15s</button>
+                    <button class="sample-btn" onclick="pickSampleVideo(2)">Video Dance</button>
+                    <button class="sample-btn" onclick="pickSampleVideo(3)">Video Nature</button>
                 </div>
                 <div class="upload-area" onclick="document.getElementById('videoUpload').click()">
                     <input type="file" id="videoUpload" accept="video/*" hidden onchange="handleUpload(event)">
@@ -186,6 +239,19 @@
             </div>
         </div>
 
+        <!-- Spin Wheel Section -->
+        <div class="spin-section">
+            <h3 style="color:#a855f7; margin-bottom:15px;">🎡 Vòng Quay May Mắn</h3>
+            <div class="wheel-container">
+                <div class="wheel" id="wheel"></div>
+                <div class="wheel-center">🎁</div>
+                <div class="wheel-pointer"></div>
+            </div>
+            <button class="spin-btn" id="spinBtn" onclick="spinWheel()">Quay Ngay!</button>
+            <div class="prize-result" id="prizeResult"></div>
+        </div>
+
+        <!-- Video Grid -->
         <div id="videoGrid"></div>
     </div>
 
@@ -193,18 +259,25 @@
 
     <script>
         // ========== DATA & LOCALSTORAGE ==========
-        const ADMIN_KEY = 'HUYPHAM2012'; // Đã đổi key admin thành huypham2012 (tự động viết hoa)
+        const ADMIN_KEY = 'HUYPHAM2012'; // Key admin
         const ADMIN_PHONE = '9275 9472 3';
+        const ADMIN_DISCORD = 'xinchao_canha'; // ID Discord Admin
 
-        const discordVideoUrl = "https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&";
+        // DANH SÁCH LINK
+        const oldDiscordUrl = "https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&";
+        const newDiscordUrl = "https://cdn.discordapp.com/attachments/1546119643113062401/1546630996437245973/VideoStar.mov?ex=6aa07bdc&is=6a9f2a5c&hm=bc4a0750a39b878da48339c7d88904c8f8a8ddce4998273c3038928f408baed7&";
+        
+        // Mặc định dùng link mới
+        const discordVideoUrl = newDiscordUrl;
 
         // ===== LƯU TRẠNG THÁI ĐĂNG NHẬP =====
         let currentSession = JSON.parse(localStorage.getItem('currentSession')) || null;
         
+        // Video mẫu (Cube 15s, Dance, Nature)
         const sampleVideos = [
-            { id: 1, title: 'Video Discord', desc: 'Video từ Discord', cat: 'Star', url: discordVideoUrl },
-            { id: 2, title: 'Star Dance Video', desc: 'Video nhảy sôi động', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-            { id: 3, title: 'Star Nature Video', desc: 'Video thiên nhiên tuyệt đẹp', cat: 'Nature', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
+            { id: 1, title: 'Video Cube 15s', desc: 'Video Cube 15 giây', cat: 'Star', url: discordVideoUrl },
+            { id: 2, title: 'Video Dance', desc: 'Video nhảy sôi động', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+            { id: 3, title: 'Video Nature', desc: 'Video thiên nhiên', cat: 'Nature', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
         ];
 
         let videos = JSON.parse(localStorage.getItem('videos')) || sampleVideos.map(v => ({...v, isVip: false, thumb: ''}));
@@ -357,6 +430,8 @@
             
             if (type === 'admin') {
                 document.getElementById('adminPanel').classList.add('active');
+                document.getElementById('adminStats').classList.remove('hidden');
+                updateAdminStats();
                 loadVideos();
                 document.getElementById('timerBox').classList.add('hidden');
             } else {
@@ -382,8 +457,13 @@
                 const hours = Math.floor(diff / 3600000);
                 const mins = Math.floor((diff % 3600000) / 60000);
                 const secs = Math.floor((diff % 60000) / 1000);
-                document.getElementById('timerDisplay').textContent = 
-                    `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+                const timerDisplay = document.getElementById('timerDisplay');
+                timerDisplay.textContent = `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+                
+                // Cảnh báo khi còn < 5 phút
+                if (diff < 300000) {
+                    timerDisplay.classList.add('warning');
+                }
             }, 1000);
         }
 
@@ -397,8 +477,17 @@
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('keyInput').value = '';
             document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('adminStats').classList.add('hidden');
             document.getElementById('timerBox').classList.add('hidden');
             document.getElementById('discordVideoBox').classList.add('hidden');
+        }
+
+        // ========== ADMIN STATS ==========
+        function updateAdminStats() {
+            document.getElementById('totalKeys').textContent = keys.length;
+            document.getElementById('usedKeys').textContent = keys.filter(k => k.used).length;
+            document.getElementById('activeKeys').textContent = keys.filter(k => !k.used && !k.locked && Date.now() < k.expiresAt).length;
+            document.getElementById('videoCount').textContent = videos.length;
         }
 
         // ========== ADMIN ==========
@@ -431,6 +520,7 @@
             
             keys.push(newKey);
             saveData();
+            updateAdminStats();
             
             const box = document.getElementById('generatedKeyBox');
             box.classList.remove('hidden');
@@ -469,6 +559,33 @@
         function showVideoManager() { hideAllPanels(); document.getElementById('videoManager').classList.add('active'); renderVideoList(); }
         function hideAllPanels() { document.querySelectorAll('.key-generator').forEach(el => el.classList.remove('active')); }
 
+        // Tìm kiếm key
+        function filterKeys() {
+            const searchTerm = document.getElementById('searchKey').value.toLowerCase();
+            const container = document.getElementById('keysListContainer');
+            container.innerHTML = '';
+            
+            keys.filter(key => key.code.toLowerCase().includes(searchTerm) || key.note.toLowerCase().includes(searchTerm))
+                .forEach((key, index) => {
+                    const realIndex = keys.indexOf(key);
+                    const item = document.createElement('div');
+                    item.className = 'key-item';
+                    const status = key.locked ? 'Bị khóa' : (key.used ? 'Đã dùng' : 'Hoạt động');
+                    item.innerHTML = `
+                        <div>
+                            <div class="key-code">${key.code}</div>
+                            <div class="key-info">${key.duration === 'vip' ? '👑 VIP' : key.duration} | ${status}</div>
+                            <div class="key-info">📝 ${key.note}</div>
+                        </div>
+                        <div>
+                            <button class="btn-lock" onclick="toggleLock(${realIndex})">${key.locked ? '🔓' : '🔒'}</button>
+                            <button class="btn-delete" onclick="deleteKey(${realIndex})">🗑️</button>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+        }
+
         function renderKeyList() {
             const container = document.getElementById('keysListContainer');
             container.innerHTML = '';
@@ -480,6 +597,7 @@
                     <div>
                         <div class="key-code">${key.code}</div>
                         <div class="key-info">${key.duration === 'vip' ? '👑 VIP' : key.duration} | ${status}</div>
+                        <div class="key-info">📝 ${key.note}</div>
                     </div>
                     <div>
                         <button class="btn-lock" onclick="toggleLock(${index})">${key.locked ? '🔓' : '🔒'}</button>
@@ -492,14 +610,14 @@
 
         function toggleLock(index) {
             keys[index].locked = !keys[index].locked;
-            saveData(); renderKeyList();
+            saveData(); renderKeyList(); updateAdminStats();
             showToast(keys[index].locked ? '🔒 Đã khóa!' : '🔓 Đã mở khóa!');
         }
 
         function deleteKey(index) {
             if (confirm('Xóa key này?')) {
                 keys.splice(index, 1);
-                saveData(); renderKeyList();
+                saveData(); renderKeyList(); updateAdminStats();
                 showToast('Đã xóa key!');
             }
         }
@@ -542,7 +660,7 @@
             document.getElementById('newVideoTitle').value = '';
             document.getElementById('newVideoDesc').value = '';
             
-            saveData(); renderVideoList(); loadVideos();
+            saveData(); renderVideoList(); loadVideos(); updateAdminStats();
             showToast('✅ Đã thêm video!');
         }
 
@@ -560,7 +678,7 @@
         function deleteVideo(index) {
             if (confirm('Xóa video này?')) {
                 videos.splice(index, 1);
-                saveData(); renderVideoList(); loadVideos();
+                saveData(); renderVideoList(); loadVideos(); updateAdminStats();
                 showToast('Đã xóa video!');
             }
         }
@@ -596,6 +714,92 @@
             window.open(url, '_blank');
         }
 
+        // ========== SPIN WHEEL ==========
+        const prizes = [
+            { name: 'Video Cube 15s', color: '#ff6b6b', type: 'video', value: 'cube15' },
+            { name: '1 Video', color: '#4ecdc4', type: 'video', value: '1video' },
+            { name: '2 Videos', color: '#45b7d1', type: 'video', value: '2videos' },
+            { name: '3 Videos', color: '#96ceb4', type: 'video', value: '3videos' },
+            { name: 'Chúc bạn may mắn lần sau!', color: '#feca57', type: 'none', value: 'none' },
+            { name: 'Video Cube 15s', color: '#ff6b6b', type: 'video', value: 'cube15' },
+            { name: '1 Video', color: '#4ecdc4', type: 'video', value: '1video' },
+            { name: 'Chúc bạn may mắn lần sau!', color: '#feca57', type: 'none', value: 'none' }
+        ];
+
+        let isSpinning = false;
+
+        function createWheel() {
+            const wheel = document.getElementById('wheel');
+            wheel.innerHTML = '';
+            
+            const segmentAngle = 360 / prizes.length;
+            
+            prizes.forEach((prize, index) => {
+                const segment = document.createElement('div');
+                segment.className = 'wheel-segment';
+                segment.style.background = `conic-gradient(from ${index * segmentAngle}deg, ${prize.color} 0deg, ${prize.color} ${segmentAngle}deg)`;
+                segment.style.transform = `rotate(${index * segmentAngle}deg)`;
+                
+                const label = document.createElement('span');
+                label.style.position = 'absolute';
+                label.style.top = '15%';
+                label.style.left = '50%';
+                label.style.transform = 'translateX(-50%) rotate(90deg)';
+                label.style.fontSize = '10px';
+                label.style.color = '#fff';
+                label.style.fontWeight = 'bold';
+                label.style.whiteSpace = 'nowrap';
+                label.textContent = prize.name.length > 20 ? prize.name.substring(0, 18) + '...' : prize.name;
+                
+                segment.appendChild(label);
+                wheel.appendChild(segment);
+            });
+        }
+
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            
+            const wheel = document.getElementById('wheel');
+            const spinBtn = document.getElementById('spinBtn');
+            spinBtn.disabled = true;
+            
+            // Random rotation
+            const randomRotation = Math.floor(Math.random() * 3600) + 3600;
+            const currentRotation = parseFloat(wheel.style.transform.replace('rotate(', '').replace('deg)', '')) || 0;
+            const newRotation = currentRotation + randomRotation;
+            
+            wheel.style.transform = `rotate(${newRotation}deg)`;
+            
+            // Calculate prize after spin
+            setTimeout(() => {
+                const finalRotation = newRotation % 360;
+                const segmentAngle = 360 / prizes.length;
+                const winningIndex = Math.floor((360 - (finalRotation % 360)) / segmentAngle) % prizes.length;
+                const prize = prizes[winningIndex];
+                
+                const resultDiv = document.getElementById('prizeResult');
+                resultDiv.style.display = 'block';
+                
+                if (prize.type === 'none') {
+                    resultDiv.innerHTML = `
+                        <strong style="color:${prize.color}">${prize.name}</strong><br>
+                        <span style="color:#9ca3af; font-size:14px;">Liên hệ Discord để biết thêm chi tiết:</span><br>
+                        <a href="https://discord.com/users/xinchao_canha" target="_blank" class="zalo-btn">🎮 Discord: ${ADMIN_DISCORD}</a>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <strong style="color:#a855f7">🎉 Chúc mừng! Bạn đã trúng: ${prize.name}</strong><br>
+                        <span style="color:#9ca3af; font-size:14px;">Liên hệ Discord Admin để nhận:</span><br>
+                        <a href="https://discord.com/users/xinchao_canha" target="_blank" class="zalo-btn">🎮 Discord: ${ADMIN_DISCORD}</a>
+                    `;
+                }
+                
+                isSpinning = false;
+                spinBtn.disabled = false;
+            }, 4000);
+        }
+
         // ========== TOAST ==========
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
@@ -608,6 +812,7 @@
         window.onload = function() {
             saveData();
             loadVideos();
+            createWheel();
             autoLogin(); // Tự động đăng nhập
         };
     </script>
