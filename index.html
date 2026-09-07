@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Star Video - Tặng Video Miễn Phí</title>
+    <title>Free Star Video - Premium Access</title>
     <style>
         * {
             margin: 0;
@@ -65,516 +65,130 @@
             opacity: 0.9;
         }
 
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-
-        .video-card {
+        /* Login/Key Entry Section */
+        .key-section {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .video-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .video-preview {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-            border-radius: 10px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3em;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .video-preview::before {
-            content: '▶';
-            font-size: 50px;
-            color: white;
-            text-shadow: 0 0 20px rgba(255,255,255,0.8);
-            z-index: 2;
-        }
-
-        .video-preview.play {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.5); }
-            50% { box-shadow: 0 0 40px rgba(255,255,255,0.8); }
-        }
-
-        .video-title {
-            font-size: 1.3em;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .video-description {
-            font-size: 0.9em;
-            opacity: 0.8;
-            margin-bottom: 15px;
-            min-height: 40px;
-        }
-
-        .btn-get {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border: none;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-get:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn-get:active {
-            transform: scale(0.95);
-        }
-
-        .btn-get.success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-
-        .video-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .video-modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
             padding: 30px;
-            max-width: 800px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            color: #333;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin: 20px auto;
+            max-width: 600px;
+            backdrop-filter: blur(10px);
+            text-align: center;
         }
 
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #f44336;
-            color: white;
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            font-size: 1.2em;
-            cursor: pointer;
-        }
-
-        .video-player {
-            width: 100%;
-            height: 400px;
-            background: black;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2em;
-        }
-
-        .download-link {
-            display: inline-block;
-            background: #4CAF50;
-            color: white;
-            text-decoration: none;
-            padding: 12px 30px;
+        .key-input {
+            width: 80%;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 25px;
-            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.1em;
+            margin: 15px auto;
+            display: block;
+            text-align: center;
+            outline: none;
             transition: all 0.3s;
         }
 
-        .download-link:hover {
+        .key-input:focus {
+            border-color: #f093fb;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-submit-key {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            padding: 12px 40px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+
+        .btn-submit-key:hover {
             transform: scale(1.05);
-            background: #45a049;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .features-section {
+        .key-error {
+            color: #ff6b6b;
+            margin-top: 10px;
+            font-size: 0.9em;
+            display: none;
+        }
+
+        /* Main Content (hidden until login) */
+        #mainContent {
+            display: none;
+        }
+
+        #mainContent.active {
+            display: block;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             padding: 30px;
             margin: 40px 0;
             backdrop-filter: blur(10px);
+            display: none;
         }
 
-        .features-title {
-            font-size: 2em;
-            margin-bottom: 30px;
-            text-align: center;
+        .admin-panel.active {
+            display: block;
         }
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        .feature-item {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .feature-icon {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .statistics-section {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 30px;
-            margin: 40px 0;
-            backdrop-filter: blur(10px);
-            text-align: center;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .stat-item {
+        .admin-title {
             font-size: 1.5em;
             font-weight: bold;
         }
 
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.8;
+        .btn-admin {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
         }
 
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: white;
-            color: #333;
-            border-radius: 10px;
+        .btn-admin:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-admin.danger {
+            background: linear-gradient(135deg, #f44336 0%, #ff6b6b 100%);
+        }
+
+        /* Key Generator Section */
+        .key-generator {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transform: translateX(400px);
-            transition: transform 0.3s;
-            z-index: 1000;
+            margin: 20px 0;
         }
 
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        footer {
+        .generated-key {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
             text-align: center;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.2);
-            margin-top: 40px;
+            word-break: break-all;
         }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
-            
-            .video-grid {
-                grid-template-columns: 1fr;
-                padding: 0 20px;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Ngôi sao nền -->
-    <div class="stars-bg" id="starsBg"></div>
-
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <h1>⭐ Tặng Video Star Miễn Phí ⭐</h1>
-            <p class="subtitle">Nhận video chất lượng cao miễn phí - Cập nhật mỗi ngày!</p>
-        </header>
-
-        <!-- Video Grid -->
-        <div class="video-grid" id="videoGrid">
-            <!-- Video 1 -->
-            <div class="video-card" data-video-id="1">
-                <div class="video-preview">
-                </div>
-                <h3 class="video-title">Star Dance Video</h3>
-                <p class="video-description">Video biểu diễn âm nhạc sôi động với hiệu ứng sao đẹp mắt</p>
-                <button class="btn-get" onclick="getVideo(1, this)">Nhận Video Miễn Phí</button>
-            </div>
-
-            <!-- Video 2 -->
-            <div class="video-card" data-video-id="2">
-                <div class="video-preview">
-                </div>
-                <h3 class="video-title">Star Wedding Video</h3>
-                <p class="video-description">Video đám cưới lãng mạn với phông nền sao lấp lánh</p>
-                <button class="btn-get" onclick="getVideo(2, this)">Nhận Video Miễn Phí</button>
-            </div>
-
-            <!-- Video 3 -->
-            <div class="video-card" data-video-id="3">
-                <div class="video-preview">
-                </div>
-                <h3 class="video-title">Star Nature Video</h3>
-                <p class="video-description">Video thiên nhiên tuyệt đẹp với bầu trời đầy sao</p>
-                <button class="btn-get" onclick="getVideo(3, this)">Nhận Video Miễn Phí</button>
-            </div>
-
-            <!-- Video 4 -->
-            <div class="video-card" data-video-id="4">
-                <div class="video-preview">
-                </div>
-                <h3 class="video-title">Star Party Video</h3>
-                <p class="video-description">Video tiệc tùng với hiệu ứng ánh sáng sao rực rỡ</p>
-                <button class="btn-get" onclick="getVideo(4, this)">Nhận Video Miễn Phí</button>
-            </div>
-        </div>
-
-        <!-- Features Section -->
-        <div class="features-section">
-            <h2 class="features-title">✨ Tính Năng Nổi Bật ✨</h2>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Miễn Phí 100%</h3>
-                    <p>Không phải trả phí, không giới hạn lượt tải</p>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🎬</div>
-                    <h3>Chất Lượng HD</h3>
-                    <p>Video độ phân giải cao, nét và đẹp</p>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Tải Nhanh</h3>
-                    <p>Tải video nhanh chóng, không mất thời gian</p>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🔄</div>
-                    <h3>Cập Nhật Mới</h3>
-                    <p>Thêm video mới mỗi ngày</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Statistics -->
-        <div class="statistics-section">
-            <h2 class="features-title">📊 Thống Kê 📊</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number">10,000+</div>
-                    <div class="stat-label">Người dùng</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">5,000+</div>
-                    <div class="stat-label">Video đã tải</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">500+</div>
-                    <div class="stat-label">Video Star</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">4.9/5</div>
-                    <div class="stat-label">Đánh giá</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <footer>
-            <p>© 2024 Free Star Video. Tất cả quyền được bảo lưu.</p>
-            <p>Video Star Miễn Phí - Mang niềm vui đến mọi nhà</p>
-        </footer>
-    </div>
-
-    <!-- Modal -->
-    <div class="video-modal" id="videoModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal()">✕</button>
-            <div class="video-player" id="videoPlayer">
-                🎬
-            </div>
-            <h2 id="modalTitle"></h2>
-            <p id="modalDescription"></p>
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="#" class="download-link" id="downloadLink" onclick="downloadVideo(event)">⬇️ Tải Video Ngay</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast notification -->
-    <div class="toast" id="toast"></div>
-
-    <script>
-        // Tạo ngôi sao nền
-        function createStars() {
-            const starsBg = document.getElementById('starsBg');
-            for (let i = 0; i < 50; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.width = Math.random() * 5 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                starsBg.appendChild(star);
-            }
-        }
-
-        // Dữ liệu video
-        const videos = {
-            1: {
-                title: 'Star Dance Video',
-                description: 'Video biểu diễn âm nhạc sôi động với hiệu ứng sao đẹp mắt',
-                download: 'video_dance.mp4'
-            },
-            2: {
-                title: 'Star Wedding Video',
-                description: 'Video đám cưới lãng mạn với phông nền sao lấp lánh',
-                download: 'video_wedding.mp4'
-            },
-            3: {
-                title: 'Star Nature Video',
-                description: 'Video thiên nhiên tuyệt đẹp với bầu trời đầy sao',
-                download: 'video_nature.mp4'
-            },
-            4: {
-                title: 'Star Party Video',
-                description: 'Video tiệc tùng với hiệu ứng ánh sáng sao rực rỡ',
-                download: 'video_party.mp4'
-            }
-        };
-
-        // Nhận video miễn phí
-        function getVideo(videoId, btn) {
-            // Hiệu ứng khi nhận video
-            btn.classList.add('success');
-            const originalText = btn.textContent;
-            btn.textContent = '✓ Đã nhận!';
-            
-            setTimeout(() => {
-                btn.classList.remove('success');
-                btn.textContent = originalText;
-            }, 2000);
-
-            // Hiển thị modal
-            openModal(videoId);
-            
-            // Hiển thị toast
-            showToast('🎉 Bạn đã nhận được video Star miễn phí!');
-        }
-
-        // Mở modal xem video
-        function openModal(videoId) {
-            const modal = document.getElementById('videoModal');
-            const video = videos[videoId];
-            
-            document.getElementById('modalTitle').textContent = video.title;
-            document.getElementById('modalDescription').textContent = video.description;
-            document.getElementById('downloadLink').href = video.download;
-            document.getElementById('videoPlayer').innerHTML = '▶️ Xem trước video';
-            
-            modal.classList.add('show');
-        }
-
-        // Đóng modal
-        function closeModal() {
-            document.getElementById('videoModal').classList.remove('show');
-        }
-
-        // Tải video
-        function downloadVideo(event) {
-            event.preventDefault();
-            showToast('📥 Đang tải video... Vui lòng chờ!');
-            
-            setTimeout(() => {
-                showToast('✅ Video đã tải thành công!');
-            }, 2000);
-        }
-
-        // Hiển thị toast
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // Tạo hiệu ứng cho video preview
-        function animatePreviews() {
-            const previews = document.querySelectorAll('.video-preview');
-            previews.forEach((preview, index) => {
-                setTimeout(() => {
-                    preview.classList.add('play');
-                }, index * 1000);
-            });
-        }
-
-        // Khởi tạo
-        window.onload = function() {
-            createStars();
-            animatePreviews();
-            
-            // Đóng modal khi click ra ngoài
-            document.getElementById('videoModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeModal();
-                }
-            });
-        };
-    </script>
-</body>
-</html>
