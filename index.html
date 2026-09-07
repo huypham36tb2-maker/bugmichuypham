@@ -2,183 +2,123 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bạch Long Minh Tool</title>
+    <!-- Thư viện QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #000; color: #fff; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; position: relative; }
         
-        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         
-        .main-wrapper { position: relative; z-index: 1; width: 100%; max-width: 650px; padding: 20px; text-align: center; }
+        .main-wrapper { position: relative; z-index: 1; width: 100%; max-width: 500px; padding: 20px; text-align: center; }
         
-        /* Header */
-        .logo-container { margin-top: 30px; margin-bottom: 20px; }
-        .logo { width: 70px; height: 70px; background: linear-gradient(135deg, #a855f7, #7c3aed); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; color: #fff; margin: 0 auto 15px; box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4); }
-        h1 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 5px; letter-spacing: 0.5px; }
-        .subtitle { color: #9ca3af; font-size: 15px; margin-bottom: 25px; }
+        .logo-container { margin-top: 20px; margin-bottom: 15px; }
+        .logo { width: 60px; height: 60px; background: linear-gradient(135deg, #a855f7, #7c3aed); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; color: #fff; margin: 0 auto 10px; }
+        h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 5px; }
+        .subtitle { color: #9ca3af; font-size: 14px; margin-bottom: 15px; }
 
-        /* Video Preview Section (Giống cái clapperboard) */
+        /* Video Preview */
         .video-preview-box {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #1a1a1a; border: 1px solid #333; border-radius: 12px; overflow: hidden; margin-bottom: 15px;
         }
-        .video-preview-header { background: #222; padding: 10px; font-size: 14px; color: #888; border-bottom: 1px solid #333; text-align: left; }
-        .video-preview-content {
-            height: 250px;
-            background: #111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        .clapper-icon {
-            font-size: 80px;
-            color: #333;
-            animation: floatIcon 3s ease-in-out infinite;
-        }
-        @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .video-preview-overlay {
-            position: absolute; bottom: 10px; right: 10px;
-            background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 10px;
-            font-size: 12px; color: #888;
-        }
+        .video-preview-content { height: 200px; background: #111; display: flex; align-items: center; justify-content: center; }
+        .clapper-icon { font-size: 50px; color: #444; animation: floatIcon 3s ease-in-out infinite; }
+        @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-        /* Key Entry Section */
-        .key-section {
-            background: rgba(30, 30, 30, 0.9);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #333;
-            backdrop-filter: blur(10px);
-        }
-        .key-label { font-size: 16px; color: #fff; margin-bottom: 15px; font-weight: 600; }
+        /* Key Entry */
+        .key-section { background: rgba(30, 30, 30, 0.9); border-radius: 15px; padding: 15px; border: 1px solid #333; }
+        .key-label { font-size: 16px; color: #fff; margin-bottom: 10px; font-weight: 600; }
         
-        .input-group { position: relative; margin-bottom: 15px; }
-        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
-        .key-input { 
-            width: 100%; padding: 16px 50px 16px 45px; background: #1f1f1f; border: 1px solid #444; border-radius: 30px; 
-            color: #fff; font-size: 16px; outline: none; transition: all 0.3s; font-family: 'Courier New', monospace; letter-spacing: 1px; 
-            text-transform: uppercase;
-        }
-        .key-input::placeholder { color: #6b7280; font-family: -apple-system, sans-serif; letter-spacing: normal; text-transform: none; }
-        .key-input:focus { border-color: #a855f7; box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2); }
+        .input-group { position: relative; margin-bottom: 10px; }
+        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 18px; }
+        .key-input { width: 100%; padding: 15px 45px; background: #1f1f1f; border: 1px solid #444; border-radius: 25px; color: #fff; font-size: 15px; outline: none; font-family: 'Courier New', monospace; letter-spacing: 1px; text-transform: uppercase; }
+        .key-input::placeholder { color: #6b7280; font-family: -apple-system, sans-serif; letter-spacing: normal; text-transform: none; font-size: 14px; }
 
-        /* Nút dán key & sao chép */
-        .icon-btn {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            background: #333; border: none; color: #fff; width: 35px; height: 35px;
-            border-radius: 50%; cursor: pointer; font-size: 16px;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s;
+        .btn-icon {
+            position: absolute; top: 50%; transform: translateY(-50%); background: #333; border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center;
         }
-        .icon-btn:hover { background: #a855f7; }
-        .paste-btn { right: 50px; }
-        .copy-key-btn { right: 10px; }
+        .paste-btn { right: 10px; }
+        .btn-icon:active { background: #a855f7; }
 
-        .btn-submit { 
-            width: 100%; padding: 16px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; border: none; 
-            border-radius: 30px; font-size: 17px; font-weight: 600; cursor: pointer; transition: all 0.3s; 
-            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4); 
-        }
-        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(168, 85, 247, 0.5); }
-        .btn-submit:active { transform: scale(0.98); }
-        .btn-submit.loading::after { content: ''; position: absolute; width: 20px; height: 20px; top: 50%; left: 50%; margin: -10px 0 0 -10px; border: 3px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .btn-submit { width: 100%; padding: 15px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; border: none; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn-submit:active { transform: scale(0.97); }
 
-        .contact { margin-top: 20px; font-size: 14px; color: #9ca3af; }
+        .contact { margin-top: 15px; font-size: 13px; color: #9ca3af; }
         .contact a { color: #a855f7; text-decoration: none; font-weight: 500; }
-        .buy-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; padding: 10px 20px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .buy-btn:hover { transform: scale(1.05); }
+        .buy-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; padding: 8px 15px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; margin-top: 10px; font-size: 14px; }
 
-        /* Dashboard (sau khi đăng nhập) */
-        .dashboard { display: none; width: 100%; max-width: 800px; padding: 20px; text-align: center; }
+        /* Dashboard */
+        .dashboard { display: none; width: 100%; max-width: 600px; padding: 20px; text-align: center; }
         .dashboard.active { display: block; }
         
-        .timer-box { background: #1a1a1a; border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #444; }
-        .timer-text { font-size: 24px; font-weight: bold; color: #a855f7; }
+        .timer-box { background: #1a1a1a; border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid #444; font-size: 14px; }
+        .timer-text { font-size: 20px; font-weight: bold; color: #a855f7; }
         
-        .admin-panel { background: #1a1a1a; border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid #333; display: none; }
+        .admin-panel { background: #1a1a1a; border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #333; display: none; }
         .admin-panel.active { display: block; }
-        .admin-title { font-size: 20px; color: #a855f7; margin-bottom: 15px; font-weight: 600; }
-        .admin-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .btn-admin { padding: 10px 20px; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-size: 14px; }
-        .btn-admin:hover { background: #a855f7; border-color: #a855f7; }
-        .btn-admin.danger { background: #ff4d4d; }
-        .btn-admin.warning { background: #ff9800; }
-        
-        .key-generator { background: #1a1a1a; border-radius: 15px; padding: 20px; margin: 15px 0; border: 1px solid #333; display: none; }
+        .admin-title { font-size: 18px; color: #a855f7; margin-bottom: 10px; font-weight: 600; }
+        .admin-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .btn-admin { padding: 8px 15px; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 20px; cursor: pointer; font-size: 13px; }
+        .btn-admin:active { background: #a855f7; }
+
+        .key-generator { background: #1a1a1a; border-radius: 12px; padding: 15px; margin: 10px 0; border: 1px solid #333; display: none; }
         .key-generator.active { display: block; }
         
-        .duration-btn { padding: 8px 20px; margin: 5px; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 20px; cursor: pointer; transition: all 0.3s; }
-        .duration-btn:hover, .duration-btn.active { background: #a855f7; border-color: #a855f7; }
-        .generated-key-box { background: #2d2d2d; border-radius: 10px; padding: 15px; margin: 15px 0; font-family: 'Courier New', monospace; font-size: 18px; color: #a855f7; word-break: break-all; }
+        .duration-btn { padding: 6px 12px; margin: 3px; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 15px; cursor: pointer; font-size: 12px; }
+        .duration-btn.active { background: #a855f7; border-color: #a855f7; }
         
-        .qr-box { background: #fff; border-radius: 10px; padding: 10px; display: inline-block; margin: 10px auto; }
+        .generated-key-box { background: #2d2d2d; border-radius: 8px; padding: 12px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 16px; color: #a855f7; word-break: break-all; }
+        .qr-box { background: #fff; border-radius: 8px; padding: 8px; display: inline-block; margin: 10px auto; }
         
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #2d2d2d; color: #fff; padding: 15px 25px; border-radius: 30px; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: transform 0.3s ease; z-index: 1000; border-left: 3px solid #a855f7; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #333; color: #fff; padding: 12px 20px; border-radius: 25px; font-size: 14px; transition: transform 0.3s ease; z-index: 1000; border: 1px solid #444; }
         .toast.show { transform: translateX(-50%) translateY(0); }
-        .toast.error { border-left-color: #ff4d4d; }
+        .toast.error { border-color: #ff4d4d; color: #ff6b6b; }
         
-        .key-list-container { max-height: 300px; overflow-y: auto; margin-top: 15px; }
-        .key-item { display: flex; justify-content: space-between; align-items: center; background: #2d2d2d; padding: 10px; margin: 8px 0; border-radius: 10px; flex-wrap: wrap; gap: 5px; }
-        .key-code { font-family: 'Courier New', monospace; color: #a855f7; font-weight: bold; }
-        .key-info { font-size: 12px; color: #9ca3af; }
-        .btn-delete { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 10px; cursor: pointer; font-size: 12px; }
-        .btn-lock { background: #ff9800; color: white; border: none; padding: 5px 10px; border-radius: 10px; cursor: pointer; font-size: 12px; }
+        .key-list-container { max-height: 250px; overflow-y: auto; margin-top: 10px; }
+        .key-item { display: flex; justify-content: space-between; align-items: center; background: #2d2d2d; padding: 8px; margin: 5px 0; border-radius: 8px; gap: 5px; }
+        .key-code { font-family: 'Courier New', monospace; color: #a855f7; font-weight: bold; font-size: 13px; }
+        .key-info { font-size: 11px; color: #9ca3af; }
+        .btn-delete { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 8px; cursor: pointer; font-size: 11px; }
+        .btn-lock { background: #ff9800; color: white; border: none; padding: 4px 8px; border-radius: 8px; cursor: pointer; font-size: 11px; }
         
-        .video-input { width: 100%; padding: 10px; margin: 5px 0; background: #2d2d2d; border: 1px solid #444; border-radius: 10px; color: #fff; font-size: 14px; }
-        .upload-area { border: 2px dashed #444; border-radius: 10px; padding: 20px; margin: 10px 0; cursor: pointer; transition: all 0.3s; }
-        .upload-area:hover { border-color: #a855f7; background: #2d2d2d; }
-        .sample-btn { background: #333; padding: 8px; margin: 5px; border-radius: 10px; cursor: pointer; font-size: 13px; border: 1px solid #555; }
-        .sample-btn:hover { background: #a855f7; }
+        .video-input { width: 100%; padding: 10px; margin: 5px 0; background: #2d2d2d; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 13px; }
+        .upload-area { border: 2px dashed #444; border-radius: 8px; padding: 15px; margin: 8px 0; cursor: pointer; text-align: center; font-size: 13px; }
+        .sample-btn { background: #333; padding: 6px; margin: 3px; border-radius: 8px; cursor: pointer; font-size: 12px; border: 1px solid #555; }
         
-        .video-card { background: #1a1a1a; border-radius: 15px; padding: 15px; margin: 15px 0; border: 1px solid #333; text-align: left; }
-        .video-thumb { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; background: #333; }
-        .video-title { font-weight: bold; color: #fff; margin-bottom: 5px; }
-        .video-desc { color: #9ca3af; font-size: 13px; margin-bottom: 10px; }
-        .video-cat { font-size: 12px; color: #a855f7; background: #2d2d2d; padding: 3px 8px; border-radius: 10px; display: inline-block; margin-bottom: 10px; }
-        .vip-badge { font-size: 12px; color: gold; background: #333; padding: 3px 8px; border-radius: 10px; margin-left: 5px; }
+        .video-card { background: #1a1a1a; border-radius: 12px; padding: 12px; margin: 10px 0; border: 1px solid #333; text-align: left; }
+        .video-title { font-weight: bold; color: #fff; margin-bottom: 5px; font-size: 15px; }
+        .video-desc { color: #9ca3af; font-size: 12px; margin-bottom: 8px; }
+        .video-cat { font-size: 11px; color: #a855f7; background: #2d2d2d; padding: 2px 6px; border-radius: 8px; display: inline-block; margin-bottom: 8px; }
+        .vip-badge { font-size: 11px; color: gold; background: #333; padding: 2px 6px; border-radius: 8px; margin-left: 5px; }
     </style>
 </head>
 <body>
 
     <canvas id="particles-canvas"></canvas>
 
-    <!-- Màn hình chính (Có video xem trước + nhập key) -->
+    <!-- Màn hình chính -->
     <div class="main-wrapper" id="loginScreen">
         <div class="logo-container">
             <div class="logo">BL</div>
             <h1>Bạch Long Minh</h1>
-            <p class="subtitle">Công cụ giải trí & chia sẻ video miễn phí</p>
+            <p class="subtitle">Công cụ giải trí & chia sẻ video</p>
         </div>
 
-        <!-- Video Preview Box (Giống clapperboard) -->
         <div class="video-preview-box">
-            <div class="video-preview-header">🎬 Video giới thiệu / Demo miễn phí</div>
             <div class="video-preview-content">
                 <div class="clapper-icon">🎬</div>
-                <div class="video-preview-overlay">Nhập key để mở khóa video</div>
             </div>
         </div>
 
-        <!-- Key Entry Section -->
         <div class="key-section">
             <div class="key-label">🔑 Nhập License Key</div>
             
             <div class="input-group">
                 <span class="input-icon">🔑</span>
                 <input type="text" class="key-input" id="keyInput" placeholder="BL-XXXX-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false">
-                
-                <!-- Nút Dán key -->
-                <button class="icon-btn paste-btn" onclick="pasteKey()" title="Dán key">📋</button>
-                <!-- Nút Sao chép key -->
-                <button class="icon-btn copy-key-btn" onclick="copyCurrentKey()" title="Sao chép key">📄</button>
+                <button class="btn-icon paste-btn" onclick="pasteKey()">📋</button>
             </div>
 
             <button class="btn-submit" id="loginBtn" onclick="validateKey()">Xác nhận Key</button>
@@ -193,54 +133,49 @@
         </div>
     </div>
 
-    <!-- Dashboard (sau khi đăng nhập) -->
+    <!-- Dashboard -->
     <div class="dashboard" id="dashboard">
         <div class="logo-container">
             <div class="logo">BL</div>
             <h1>Bạch Long Minh</h1>
         </div>
 
-        <!-- Timer -->
         <div class="timer-box hidden" id="timerBox">
             ⏳ Key hết hạn sau: <span class="timer-text" id="timerDisplay">00:00:00</span>
         </div>
 
-        <!-- Admin Panel -->
         <div class="admin-panel" id="adminPanel">
             <div class="admin-title">👑 Quản Trị Viên</div>
             <div class="admin-buttons">
                 <button class="btn-admin" onclick="showKeyGenerator()">🔑 Tạo Key</button>
                 <button class="btn-admin" onclick="showKeyList()">📋 DS Key</button>
                 <button class="btn-admin" onclick="showVideoManager()">🎬 Quản Lý Video</button>
-                <button class="btn-admin danger" onclick="logout()">🚪 Đăng Xuất</button>
+                <button class="btn-admin" onclick="logout()">🚪 Đăng Xuất</button>
             </div>
 
-            <!-- Key Generator -->
             <div class="key-generator" id="keyGenerator">
-                <h3 style="color:#a855f7; margin-bottom:15px;">Tạo Key Mới</h3>
-                <div style="margin-bottom:15px;">
+                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Tạo Key Mới</h3>
+                <div style="margin-bottom:10px;">
                     <button class="duration-btn" onclick="setDuration('hour', this)">⏰ 1 Giờ</button>
                     <button class="duration-btn active" onclick="setDuration('day', this)">📅 1 Ngày</button>
                     <button class="duration-btn" onclick="setDuration('week', this)">📆 1 Tuần</button>
                     <button class="duration-btn" onclick="setDuration('month', this)">🗓️ 1 Tháng</button>
                     <button class="duration-btn" onclick="setDuration('vip', this)">👑 VIP</button>
                 </div>
-                <input type="text" class="video-input" id="keyNote" placeholder="Ghi chú (VD: Tên khách)" style="margin-bottom:10px;">
-                <button class="btn-admin" onclick="generateKey()">Tạo Key</button>
+                <input type="text" class="video-input" id="keyNote" placeholder="Ghi chú (VD: Tên khách)">
+                <button class="btn-admin" onclick="generateKey()" style="width:100%; margin-top:5px;">Tạo Key</button>
                 <div class="generated-key-box hidden" id="generatedKeyBox"></div>
                 <div class="qr-box hidden" id="qrBox"></div>
-                <button class="btn-admin hidden" id="copyBtn" onclick="copyGeneratedKey()">📋 Sao Chép</button>
+                <button class="btn-admin hidden" id="copyBtn" onclick="copyGeneratedKey()" style="width:100%;">📋 Sao Chép</button>
             </div>
 
-            <!-- Key List -->
             <div class="key-generator" id="keyList">
-                <h3 style="color:#a855f7; margin-bottom:15px;">Danh Sách Key</h3>
+                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Danh Sách Key</h3>
                 <div class="key-list-container" id="keysListContainer"></div>
             </div>
 
-            <!-- Video Manager -->
             <div class="key-generator" id="videoManager">
-                <h3 style="color:#a855f7; margin-bottom:15px;">Thêm Video Mới</h3>
+                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Thêm Video Mới</h3>
                 <input type="text" class="video-input" id="newVideoTitle" placeholder="Tên video">
                 <input type="text" class="video-input" id="newVideoDesc" placeholder="Mô tả video">
                 <select class="video-input" id="newVideoCat">
@@ -249,30 +184,28 @@
                     <option value="Wedding">Video Wedding</option>
                     <option value="Nature">Video Thiên Nhiên</option>
                 </select>
-                <div class="sample-videos">
+                <div style="margin-bottom:5px; font-size:13px;">
                     <strong>Hoặc chọn Video mẫu:</strong><br>
-                    <button class="sample-btn" onclick="pickSampleVideo(1)">Mẫu 1 - Dance</button>
-                    <button class="sample-btn" onclick="pickSampleVideo(2)">Mẫu 2 - Wedding</button>
-                    <button class="sample-btn" onclick="pickSampleVideo(3)">Mẫu 3 - Nature</button>
+                    <button class="sample-btn" onclick="pickSampleVideo(1)">Mẫu 1</button>
+                    <button class="sample-btn" onclick="pickSampleVideo(2)">Mẫu 2</button>
+                    <button class="sample-btn" onclick="pickSampleVideo(3)">Mẫu 3</button>
                 </div>
                 <div class="upload-area" onclick="document.getElementById('videoUpload').click()">
                     <input type="file" id="videoUpload" accept="video/*" hidden onchange="handleUpload(event)">
                     📤 Nhấp để Tải Video từ máy lên
                 </div>
-                <button class="btn-admin" onclick="addVideo()">➕ Thêm Video</button>
+                <button class="btn-admin" onclick="addVideo()" style="width:100%; margin-top:5px;">➕ Thêm Video</button>
                 <div class="key-list-container" id="videoListContainer"></div>
             </div>
         </div>
 
-        <!-- Video Grid -->
         <div id="videoGrid"></div>
     </div>
 
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
-        // ========== DATA & LOCALSTORAGE ==========
+        // ========== DATA ==========
         const ADMIN_KEY = 'BL-ADMIN-2024';
         const ADMIN_PHONE = '9275 9472 3';
 
@@ -288,11 +221,11 @@
         ];
 
         function saveData() {
-            localStorage.setItem('videos', JSON.stringify(videos));
-            localStorage.setItem('keys', JSON.stringify(keys));
+            try { localStorage.setItem('videos', JSON.stringify(videos)); } catch(e) {}
+            try { localStorage.setItem('keys', JSON.stringify(keys)); } catch(e) {}
         }
 
-        // ========== PARTICLE BACKGROUND ==========
+        // ========== PARTICLE ==========
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -301,9 +234,9 @@
         
         function createParticles() {
             particles = [];
-            const count = Math.min(80, window.innerWidth / 15);
+            const count = Math.min(50, window.innerWidth / 20);
             for (let i = 0; i < count; i++) {
-                particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1 });
+                particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4, size: Math.random() * 2 + 1 });
             }
         }
         createParticles();
@@ -315,8 +248,8 @@
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 150) {
-                        ctx.beginPath(); ctx.strokeStyle = `rgba(168, 85, 247, ${1 - distance / 150})`; ctx.lineWidth = 0.5;
+                    if (distance < 130) {
+                        ctx.beginPath(); ctx.strokeStyle = `rgba(168, 85, 247, ${1 - distance / 130})`; ctx.lineWidth = 0.5;
                         ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
                     }
                 }
@@ -333,29 +266,21 @@
         function animateParticles() { drawParticles(); requestAnimationFrame(animateParticles); }
         animateParticles();
 
-        // ========== CHẶN COPY, CHUỘT PHẢI ==========
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('copy', e => e.preventDefault());
-        
-        // Hàm Dán Key vào ô input
+        // ========== HÀM DÁN KEY (Chạy trên Mobile) ==========
         function pasteKey() {
-            navigator.clipboard.readText().then(text => {
-                document.getElementById('keyInput').value = text.trim().toUpperCase();
-                showToast('📋 Đã dán key!');
-            }).catch(() => {
-                showToast('⚠️ Trình duyệt chặn đọc clipboard!', true);
-            });
-        }
-
-        // Hàm Sao chép key hiện tại trong ô input
-        function copyCurrentKey() {
-            const inputVal = document.getElementById('keyInput').value.trim();
-            if (!inputVal) {
-                showToast('Ô key đang trống!', true);
-                return;
+            // Thử dùng Clipboard API mới
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText().then(text => {
+                    document.getElementById('keyInput').value = text.trim().toUpperCase();
+                    showToast('📋 Đã dán key!');
+                }).catch(() => {
+                    showToast('⚠️ Trình duyệt chặn dán!', true);
+                });
+            } else {
+                // Fallback: Dùng prompt
+                let text = prompt('Dán key vào đây:');
+                if (text) document.getElementById('keyInput').value = text.trim().toUpperCase();
             }
-            navigator.clipboard.writeText(inputVal);
-            showToast('📄 Đã sao chép key!');
         }
 
         // ========== ĐĂNG NHẬP ==========
@@ -365,11 +290,6 @@
             const inputKey = document.getElementById('keyInput').value.trim().toUpperCase();
             const btn = document.getElementById('loginBtn');
             
-            if (loginAttempts.count >= 5 && Date.now() - loginAttempts.time < 60000) {
-                showToast('⛔ Nhập sai quá nhiều. Chờ 60 giây!', true);
-                return;
-            }
-
             if (!inputKey) { showToast('Vui lòng nhập key!', true); return; }
 
             btn.classList.add('loading');
@@ -399,9 +319,9 @@
                     loginAttempts.count++;
                     loginAttempts.time = Date.now();
                     localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
-                    showToast(`Key không hợp lệ! (${loginAttempts.count}/5 lần sai)`, true);
+                    showToast(`Key không hợp lệ!`, true);
                 }
-            }, 1200);
+            }, 800);
         }
 
         function loginSuccess(type, keyData = null) {
@@ -410,12 +330,12 @@
             
             if (type === 'admin') {
                 document.getElementById('adminPanel').classList.add('active');
+                loadVideos();
             } else {
                 document.getElementById('timerBox').classList.remove('hidden');
                 startTimer(keyData.expiresAt);
+                loadVideos();
             }
-            
-            loadVideos();
         }
 
         // ========== TIMER ==========
@@ -425,14 +345,12 @@
             timerInterval = setInterval(() => {
                 const now = Date.now();
                 const diff = expiresAt - now;
-
                 if (diff <= 0) {
                     clearInterval(timerInterval);
                     showToast('⏰ Key của bạn đã hết hạn!', true);
                     logout();
                     return;
                 }
-
                 const hours = Math.floor(diff / 3600000);
                 const mins = Math.floor((diff % 3600000) / 60000);
                 const secs = Math.floor((diff % 60000) / 1000);
@@ -451,9 +369,8 @@
             document.getElementById('timerBox').classList.add('hidden');
         }
 
-        // ========== TẠO KEY ==========
+        // ========== ADMIN PANEL ==========
         let selectedDuration = 'day';
-
         function setDuration(duration, btn) {
             selectedDuration = duration;
             document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
@@ -493,16 +410,29 @@
             new QRCode(qrBox, code);
             
             document.getElementById('copyBtn').classList.remove('hidden');
-            showToast('✅ Key đã tạo thành công!');
+            showToast('✅ Key đã tạo!');
+        }
+
+        // Sao chép an toàn trên mobile
+        function copyText(text) {
+            try {
+                const tempInput = document.createElement('input');
+                tempInput.value = text;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast('📋 Đã sao chép!');
+            } catch(e) {
+                showToast('⚠️ Không thể sao chép!', true);
+            }
         }
 
         function copyGeneratedKey() {
             const code = document.getElementById('generatedKeyBox').textContent;
-            navigator.clipboard.writeText(code);
-            showToast('📋 Đã sao chép key!');
+            copyText(code);
         }
 
-        // ========== QUẢN LÝ PANEL ==========
         function showKeyGenerator() { hideAllPanels(); document.getElementById('keyGenerator').classList.add('active'); }
         function showKeyList() { hideAllPanels(); document.getElementById('keyList').classList.add('active'); renderKeyList(); }
         function showVideoManager() { hideAllPanels(); document.getElementById('videoManager').classList.add('active'); renderVideoList(); }
@@ -511,17 +441,14 @@
         function renderKeyList() {
             const container = document.getElementById('keysListContainer');
             container.innerHTML = '';
-            
             keys.forEach((key, index) => {
                 const item = document.createElement('div');
                 item.className = 'key-item';
                 const status = key.locked ? 'Bị khóa' : (key.used ? 'Đã dùng' : 'Hoạt động');
-                
                 item.innerHTML = `
                     <div>
                         <div class="key-code">${key.code}</div>
                         <div class="key-info">${key.duration === 'vip' ? '👑 VIP' : key.duration} | ${status}</div>
-                        <div class="key-info">📝 ${key.note}</div>
                     </div>
                     <div>
                         <button class="btn-lock" onclick="toggleLock(${index})">${key.locked ? '🔓' : '🔒'}</button>
@@ -535,7 +462,7 @@
         function toggleLock(index) {
             keys[index].locked = !keys[index].locked;
             saveData(); renderKeyList();
-            showToast(keys[index].locked ? '🔒 Đã khóa key!' : '🔓 Đã mở khóa key!');
+            showToast(keys[index].locked ? '🔒 Đã khóa!' : '🔓 Đã mở khóa!');
         }
 
         function deleteKey(index) {
@@ -546,7 +473,7 @@
             }
         }
 
-        // ========== QUẢN LÝ VIDEO ==========
+        // ========== VIDEO ==========
         function pickSampleVideo(id) {
             const v = sampleVideos.find(v => v.id === id);
             document.getElementById('newVideoTitle').value = v.title;
@@ -561,9 +488,8 @@
                 reader.onload = function(e) {
                     document.getElementById('newVideoTitle').value = file.name.replace(/\.[^/.]+$/, "");
                     document.getElementById('newVideoDesc').value = "Video tải lên bởi Admin";
-                    document.getElementById('newVideoCat').value = "Star";
                     window.uploadedVideoUrl = e.target.result;
-                    showToast('📤 Đã chọn file video!');
+                    showToast('📤 Đã chọn file!');
                 };
                 reader.readAsDataURL(file);
             }
@@ -574,15 +500,11 @@
             const desc = document.getElementById('newVideoDesc').value;
             const cat = document.getElementById('newVideoCat').value;
             const url = window.uploadedVideoUrl || '#';
-
-            if (!title) { showToast('Vui lòng nhập tên video!', true); return; }
-
-            videos.push({ id: Date.now(), title, description: desc, cat, url, isVip: false, thumb: '' });
+            if (!title) { showToast('Vui lòng nhập tên!', true); return; }
+            videos.push({ id: Date.now(), title, description: desc, cat, url });
             window.uploadedVideoUrl = null;
-            
             document.getElementById('newVideoTitle').value = '';
             document.getElementById('newVideoDesc').value = '';
-            
             saveData(); renderVideoList(); loadVideos();
             showToast('✅ Đã thêm video!');
         }
@@ -590,17 +512,10 @@
         function renderVideoList() {
             const container = document.getElementById('videoListContainer');
             container.innerHTML = '';
-            
             videos.forEach((video, index) => {
                 const item = document.createElement('div');
                 item.className = 'key-item';
-                item.innerHTML = `
-                    <div>
-                        <div class="key-code">${video.title}</div>
-                        <div class="key-info">${video.cat}</div>
-                    </div>
-                    <button class="btn-delete" onclick="deleteVideo(${index})">🗑️</button>
-                `;
+                item.innerHTML = `<div><div class="key-code">${video.title}</div></div><button class="btn-delete" onclick="deleteVideo(${index})">🗑️</button>`;
                 container.appendChild(item);
             });
         }
@@ -617,19 +532,15 @@
         function loadVideos() {
             const grid = document.getElementById('videoGrid');
             grid.innerHTML = '';
-            
             videos.forEach(video => {
                 const card = document.createElement('div');
                 card.className = 'video-card';
-                const vipBadge = video.isVip ? '<span class="vip-badge">👑 VIP</span>' : '';
-
                 card.innerHTML = `
-                    <div style="width:100%;height:150px;border-radius:10px;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">🎬</div>
-                    <div class="video-title">${video.title} ${vipBadge}</div>
+                    <div style="width:100%;height:120px;border-radius:8px;background:#111;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">🎬</div>
+                    <div class="video-title">${video.title}</div>
                     <div class="video-desc">${video.description}</div>
-                    <span class="video-cat">${video.cat}</span>
                     <div style="margin-top:10px;">
-                        <button class="btn-submit" style="padding:10px;font-size:14px;" onclick="watchVideo('${video.url}')">▶️ Xem & Tải</button>
+                        <button class="btn-submit" style="padding:8px;font-size:14px;" onclick="watchVideo('${video.url}')">▶️ Xem & Tải</button>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -638,7 +549,6 @@
 
         function watchVideo(url) {
             window.open(url, '_blank');
-            showToast('📥 Đang tải video...');
         }
 
         // ========== TOAST ==========
