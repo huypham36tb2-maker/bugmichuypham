@@ -41,26 +41,9 @@
         .contact a { color: #a855f7; text-decoration: none; }
         .buy-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 15px; display: inline-block; text-decoration: none; }
 
-        /* Turnstile Xác minh bot */
-        .turnstile-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 15px 0;
-            padding: 10px;
-            background: rgba(30, 30, 30, 0.6);
-            border-radius: 15px;
-            border: 1px solid #333;
-        }
-        .turnstile-status {
-            font-size: 12px;
-            color: #ff9800;
-            margin-top: 8px;
-            text-align: center;
-        }
-        .turnstile-status.success {
-            color: #38ef7d;
-        }
+        .turnstile-wrapper { display: flex; flex-direction: column; align-items: center; margin: 15px 0; padding: 10px; background: rgba(30, 30, 30, 0.6); border-radius: 15px; border: 1px solid #333; }
+        .turnstile-status { font-size: 12px; color: #ff9800; margin-top: 8px; text-align: center; }
+        .turnstile-status.success { color: #38ef7d; }
 
         .dashboard { display: none; width: 100%; max-width: 600px; padding: 20px; text-align: center; }
         .dashboard.active { display: block; }
@@ -135,68 +118,16 @@
         .maintenance-zalo { color: #888; font-size: 14px; }
         .maintenance-zalo a { color: #a855f7; text-decoration: none; }
         
-        .skip-btn {
-            background: linear-gradient(135deg, #a855f7, #7c3aed);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.5);
-            margin-top: 20px;
-        }
+        .skip-btn { background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.5); margin-top: 20px; }
         .skip-btn:active { transform: scale(0.97); }
         
-        .skip-form {
-            display: none;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            width: 90%;
-            max-width: 320px;
-        }
+        .skip-form { display: none; background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; margin-top: 20px; width: 90%; max-width: 320px; }
         .skip-form.active { display: block; }
         .skip-form h3 { color: #a855f7; margin-bottom: 15px; font-size: 16px; }
-        .skip-form input {
-            width: 100%;
-            padding: 12px;
-            background: #2d2d2d;
-            border: 1px solid #444;
-            border-radius: 25px;
-            color: #fff;
-            text-align: center;
-            font-family: 'Courier New', monospace;
-            text-transform: uppercase;
-            font-size: 14px;
-            outline: none;
-        }
+        .skip-form input { width: 100%; padding: 12px; background: #2d2d2d; border: 1px solid #444; border-radius: 25px; color: #fff; text-align: center; font-family: 'Courier New', monospace; text-transform: uppercase; font-size: 14px; outline: none; }
         .skip-form input:focus { border-color: #a855f7; }
-        .skip-confirm {
-            flex: 1;
-            padding: 10px;
-            background: linear-gradient(135deg, #11998e, #38ef7d);
-            color: #fff;
-            border: none;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .skip-cancel {
-            flex: 1;
-            padding: 10px;
-            background: #444;
-            color: #fff;
-            border: none;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
-        }
+        .skip-confirm { flex: 1; padding: 10px; background: linear-gradient(135deg, #11998e, #38ef7d); color: #fff; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .skip-cancel { flex: 1; padding: 10px; background: #444; color: #fff; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -299,12 +230,10 @@
 
         <input type="text" class="search-input" id="searchVideo" placeholder="🔍 Tìm video..." oninput="loadVideos()">
 
+        <!-- CHỈ CÒN 2 TAB: TẤT CẢ + STAR -->
         <div class="filter-tabs">
             <div class="filter-tab active" onclick="filterVideos('all', this)">Tất cả</div>
             <div class="filter-tab" onclick="filterVideos('Star', this)">⭐ Star</div>
-            <div class="filter-tab" onclick="filterVideos('Dance', this)">💃 Dance</div>
-            <div class="filter-tab" onclick="filterVideos('Wedding', this)">💍 Wedding</div>
-            <div class="filter-tab" onclick="filterVideos('Nature', this)">🌿 Nature</div>
         </div>
 
         <div class="stats-dashboard" id="adminStats" style="display:none;">
@@ -351,12 +280,12 @@
                 <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Thêm Video</h3>
                 <input type="text" class="video-input" id="newVideoTitle" placeholder="Tên video">
                 <input type="text" class="video-input" id="newVideoDesc" placeholder="Mô tả">
+                
+                <!-- CHỈ CÒN DANH MỤC STAR -->
                 <select class="video-input" id="newVideoCat">
                     <option value="Star">⭐ Star</option>
-                    <option value="Dance">💃 Dance</option>
-                    <option value="Wedding">💍 Wedding</option>
-                    <option value="Nature">🌿 Nature</option>
                 </select>
+                
                 <label style="display:block; margin:8px 0; font-size:13px; text-align:left;">
                     <input type="checkbox" id="newVideoVip"> 👑 Video VIP
                 </label>
@@ -364,7 +293,7 @@
                     <input type="file" id="videoUpload" accept="video/*" hidden onchange="handleUpload(event)">
                     <div class="upload-icon">📤</div>
                     <div class="upload-text">Nhấp để chọn Video</div>
-                    <div style="font-size:12px; color:#888; margin-top:5px;">Video sẽ được lưu tạm (F5 có thể mất)</div>
+                    <div style="font-size:12px; color:#38ef7d; margin-top:5px;">✅ Video lưu vĩnh viễn trên Cloudflare R2</div>
                 </div>
                 <div id="uploadPreview"></div>
                 <button class="btn-admin" onclick="addVideo()" style="width:100%; margin-top:5px;">➕ Thêm Video</button>
@@ -378,6 +307,10 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // ========== CẤU HÌNH CLOUDFLARE R2 ==========
+        // ⚠️ THAY 2 LINK DƯỚI BẰNG LINK CỦA BẠN
+        const R2_WORKER_URL = 'https://blminh-upload.xxxxx.workers.dev'; // ← Link Worker upload
+        
         let ADMIN_KEY = localStorage.getItem('adminKey') || 'HUYPHAM2012';
         
         let videos = JSON.parse(localStorage.getItem('videos')) || [];
@@ -387,7 +320,7 @@
         let currentSession = JSON.parse(localStorage.getItem('currentSession')) || null;
         let isMaintenance = JSON.parse(localStorage.getItem('isMaintenance')) || false;
         let currentFilter = 'all';
-        let uploadedVideoData = null;
+        let uploadedVideoUrl = null; // Link video sau khi upload lên R2
         let selectedDuration = 'day';
         let timerInterval;
 
@@ -420,9 +353,7 @@
             try {
                 localStorage.setItem('videos', JSON.stringify(videos));
                 localStorage.setItem('keys', JSON.stringify(keys));
-            } catch(e) {
-                showToast('⚠️ Bộ nhớ đầy! Xóa bớt video cũ.', true);
-            }
+            } catch(e) {}
         }
         function saveSession(s) { currentSession = s; localStorage.setItem('currentSession', JSON.stringify(s)); }
 
@@ -533,7 +464,6 @@
             const inputKey = document.getElementById('keyInput').value.trim().toUpperCase();
             const btn = document.getElementById('loginBtn');
             
-            // Check Turnstile
             if (!turnstileVerified) {
                 showToast('⚠️ Vui lòng xác minh bạn không phải bot!', true);
                 return;
@@ -635,7 +565,6 @@
             } else {
                 document.getElementById('loginScreen').style.display = 'block';
                 document.getElementById('keyInput').value = '';
-                // Reset Turnstile
                 turnstileVerified = false;
                 document.getElementById('loginBtn').disabled = true;
                 document.getElementById('turnstileStatus').textContent = '⚠️ Vui lòng xác minh bạn không phải bot';
@@ -743,22 +672,54 @@
             showToast(isMaintenance ? '🔧 Đã BẬT bảo trì!' : '✅ Đã TẮT bảo trì!');
         }
 
-        function handleUpload(event) {
+        // ========== UPLOAD VIDEO LÊN CLOUDFLARE R2 ==========
+        async function handleUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-            if (file.size > 5 * 1024 * 1024) {
-                showToast('⚠️ File > 5MB! Chọn file nhỏ hơn.', true);
+            
+            if (file.size > 100 * 1024 * 1024) {
+                showToast('⚠️ File > 100MB! Chọn file nhỏ hơn.', true);
                 return;
             }
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                uploadedVideoData = e.target.result;
-                document.getElementById('newVideoTitle').value = file.name.replace(/\.[^/.]+$/, "");
-                document.getElementById('newVideoDesc').value = "Video " + file.name;
-                document.getElementById('uploadPreview').innerHTML = `<video src="${e.target.result}" controls style="width:100%; max-height:200px; border-radius:8px; margin:10px 0;"></video>`;
-                showToast('📤 Đã chọn file!');
-            };
-            reader.readAsDataURL(file);
+            
+            document.getElementById('newVideoTitle').value = file.name.replace(/\.[^/.]+$/, "");
+            document.getElementById('newVideoDesc').value = "Video " + file.name;
+            
+            const localUrl = URL.createObjectURL(file);
+            document.getElementById('uploadPreview').innerHTML = `
+                <video src="${localUrl}" controls style="width:100%; max-height:200px; border-radius:8px; margin:10px 0;"></video>
+                <p style="color:#a855f7; text-align:center; font-size:13px;">⏳ Đang upload lên Cloudflare R2...</p>
+            `;
+            
+            showToast('📤 Đang upload... Vui lòng chờ!');
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('adminKey', ADMIN_KEY);
+                
+                const response = await fetch(R2_WORKER_URL + '/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    uploadedVideoUrl = result.url;
+                    document.getElementById('uploadPreview').innerHTML = `
+                        <video src="${uploadedVideoUrl}" controls style="width:100%; max-height:200px; border-radius:8px; margin:10px 0;"></video>
+                        <p style="color:#38ef7d; text-align:center; font-size:13px;">✅ Đã upload thành công! Video lưu vĩnh viễn.</p>
+                    `;
+                    showToast('✅ Upload thành công! Video lưu trên Cloudflare R2.');
+                } else {
+                    showToast('❌ Upload lỗi: ' + result.error, true);
+                    document.getElementById('uploadPreview').innerHTML = '<p style="color:#ff4d4d; text-align:center;">❌ Upload thất bại. Thử lại!</p>';
+                }
+            } catch (err) {
+                showToast('❌ Lỗi kết nối: ' + err.message, true);
+                document.getElementById('uploadPreview').innerHTML = '<p style="color:#ff4d4d; text-align:center;">❌ Không kết nối được server!</p>';
+            }
         }
 
         function addVideo() {
@@ -766,18 +727,28 @@
             const desc = document.getElementById('newVideoDesc').value;
             const cat = document.getElementById('newVideoCat').value;
             const isVip = document.getElementById('newVideoVip').checked;
-            if (!title) { showToast('Nhập tên!', true); return; }
-            if (!uploadedVideoData) { showToast('Chưa chọn video!', true); return; }
             
-            videos.push({ id: Date.now(), title, description: desc, cat, url: uploadedVideoData, isVip, views: 0 });
-            uploadedVideoData = null;
+            if (!title) { showToast('Nhập tên!', true); return; }
+            if (!uploadedVideoUrl) { showToast('Chưa upload video!', true); return; }
+            
+            videos.push({ 
+                id: Date.now(), 
+                title, 
+                description: desc, 
+                cat, 
+                url: uploadedVideoUrl,
+                isVip, 
+                views: 0 
+            });
+            
+            uploadedVideoUrl = null;
             document.getElementById('newVideoTitle').value = '';
             document.getElementById('newVideoDesc').value = '';
             document.getElementById('newVideoVip').checked = false;
             document.getElementById('uploadPreview').innerHTML = '';
             
             saveData(); showVideoManager(); loadVideos(); updateAdminStats();
-            showToast('✅ Đã thêm video!');
+            showToast('✅ Đã thêm video! (Lưu vĩnh viễn trên R2)');
         }
 
         function deleteVideo(i) {
@@ -843,7 +814,11 @@
             if (!video) return;
             video.views = (video.views || 0) + 1;
             saveData();
-            document.getElementById('modalVideo').src = video.url;
+            
+            const videoEl = document.getElementById('modalVideo');
+            videoEl.src = video.url;
+            videoEl.load();
+            
             document.getElementById('modalVideoTitle').textContent = video.title;
             document.getElementById('videoModal').classList.add('active');
         }
@@ -868,7 +843,6 @@
             loadVideos();
             checkMaintenanceAndLogin();
             
-            // Enter để submit key admin ở màn hình bảo trì
             const skipInput = document.getElementById('skipKeyInput');
             if (skipInput) {
                 skipInput.addEventListener('keypress', (e) => {
