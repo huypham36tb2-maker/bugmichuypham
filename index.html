@@ -3,306 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#a855f7">
-    <title>Bạch Long Minh Tool - Ultimate</title>
-    <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22B%E1%BA%A1ch%20Long%20Minh%22%2C%22short_name%22%3A%22BL%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23000%22%2C%22theme_color%22%3A%22%23a855f7%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A%2F%2Fwww.w3.org%2F2000%2Fsvg%2527%2520viewBox%253D%25270%25200%2520100%2520100%2527%253E%253Crect%2520width%253D%2527100%2527%2520height%253D%2527100%2527%2520rx%253D%252720%2527%2520fill%253D%2527%2523a855f7%2527%2F%253E%253Ctext%2520x%253D%252750%2527%2520y%253D%252765%2527%2520font-size%253D%252740%2527%2520fill%253D%2527white%2527%2520text-anchor%253D%2527middle%2527%253EBL%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+    <title>Bạch Long Minh Tool</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #000; color: #fff; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; position: relative; transition: background 0.3s; }
-        body.light-mode { background: #f0f0f0; color: #111; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #000; color: #fff; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; position: relative; }
         
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         
-        /* Loading Screen */
         #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
         #loadingScreen.hide { opacity: 0; pointer-events: none; }
         .loading-logo { width: 100px; height: 100px; background: linear-gradient(135deg, #a855f7, #7c3aed); border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: #fff; animation: pulse-logo 1.5s infinite; }
-        .loading-text { margin-top: 20px; color: #a855f7; font-size: 16px; font-weight: bold; }
-        .loading-bar { width: 200px; height: 4px; background: #333; border-radius: 2px; margin-top: 15px; overflow: hidden; }
-        .loading-bar-fill { height: 100%; background: linear-gradient(90deg, #a855f7, #7c3aed); animation: load 1.5s ease-in-out forwards; }
         @keyframes pulse-logo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes load { from { width: 0; } to { width: 100%; } }
-        
-        /* Welcome Countdown */
-        #welcomeScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #000, #1a0033); z-index: 9998; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        #welcomeScreen.active { display: flex; }
-        .welcome-count { font-size: 120px; font-weight: bold; color: #a855f7; animation: countdown 1s ease-in-out; text-shadow: 0 0 30px rgba(168,85,247,0.8); }
-        @keyframes countdown { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
-        .welcome-text { font-size: 20px; color: #fff; margin-top: 20px; }
+        .loading-text { margin-top: 20px; color: #a855f7; font-size: 16px; font-weight: bold; }
         
         .main-wrapper { position: relative; z-index: 1; width: 100%; max-width: 500px; padding: 20px; text-align: center; }
-        
         .logo-container { margin-top: 20px; margin-bottom: 30px; }
         .logo { width: 80px; height: 80px; background: linear-gradient(135deg, #a855f7, #7c3aed); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #fff; margin: 0 auto 15px; }
         h1 { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
         .subtitle { color: #9ca3af; font-size: 15px; margin-bottom: 20px; }
 
-        .top-controls { position: fixed; top: 15px; right: 15px; z-index: 100; display: flex; gap: 8px; }
-        .ctrl-btn { background: #333; border: none; color: #fff; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
-
-        .discord-banner { background: linear-gradient(135deg, #5865F2, #4752c4); border-radius: 12px; padding: 15px; margin-bottom: 20px; text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4); }
-        .discord-banner:hover { transform: scale(1.02); }
+        .discord-banner { background: linear-gradient(135deg, #5865F2, #4752c4); border-radius: 12px; padding: 15px; margin-bottom: 20px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4); }
         .discord-banner-text { font-size: 16px; font-weight: bold; color: #fff; }
         .discord-banner-sub { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 5px; }
 
-        /* Online counter */
-        .online-bar { background: #1a1a1a; border-radius: 12px; padding: 8px 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 13px; }
-        body.light-mode .online-bar { background: #fff; }
-        .online-dot { width: 8px; height: 8px; background: #38ef7d; border-radius: 50%; animation: pulse-dot 1.5s infinite; }
-        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-        /* Price List */
-        .price-section { background: rgba(30, 30, 30, 0.9); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #333; }
-        body.light-mode .price-section { background: #fff; border-color: #ddd; }
-        .price-title { font-size: 18px; color: #a855f7; font-weight: bold; margin-bottom: 15px; }
-        .price-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .price-card { background: #2d2d2d; border-radius: 12px; padding: 12px; text-align: center; border: 2px solid transparent; transition: all 0.3s; cursor: pointer; }
-        body.light-mode .price-card { background: #f0f0f0; }
-        .price-card:hover { border-color: #a855f7; transform: translateY(-3px); }
-        .price-card.best { border-color: gold; background: linear-gradient(135deg, #2d2d2d, #3d3d2d); }
-        .price-duration { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
-        .price-amount { font-size: 16px; color: #38ef7d; font-weight: bold; }
-        .price-note { font-size: 10px; color: #888; margin-top: 3px; }
-
         .key-section { background: rgba(30, 30, 30, 0.9); border-radius: 20px; padding: 25px; border: 1px solid #333; }
-        body.light-mode .key-section { background: rgba(255,255,255,0.9); border-color: #ddd; }
         .key-label { font-size: 18px; margin-bottom: 15px; font-weight: 600; }
         .input-group { position: relative; margin-bottom: 15px; }
         .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 18px; }
         .key-input { width: 100%; padding: 18px 45px; background: #1f1f1f; border: 1px solid #444; border-radius: 30px; color: #fff; font-size: 16px; outline: none; font-family: 'Courier New', monospace; letter-spacing: 1px; text-transform: uppercase; }
-        body.light-mode .key-input { background: #fff; color: #111; border-color: #ccc; }
-        .key-input::placeholder { color: #6b7280; font-family: -apple-system, sans-serif; letter-spacing: normal; text-transform: none; font-size: 14px; }
-        .btn-icon { position: absolute; top: 50%; transform: translateY(-50%); background: #333; border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; }
-        .paste-btn { right: 10px; }
-        .btn-icon:active { background: #a855f7; }
+        .key-input::placeholder { color: #6b7280; font-size: 14px; text-transform: none; }
+        .btn-icon { position: absolute; top: 50%; transform: translateY(-50%); background: #333; border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; right: 10px; }
         .btn-submit { width: 100%; padding: 18px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; border: none; border-radius: 30px; font-size: 17px; font-weight: 600; cursor: pointer; margin-top: 10px; }
-        .btn-submit:active { transform: scale(0.97); }
         .contact { margin-top: 20px; font-size: 14px; color: #9ca3af; }
-        .contact a { color: #a855f7; text-decoration: none; font-weight: 500; }
-        .buy-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 15px; }
+        .contact a { color: #a855f7; text-decoration: none; }
+        .buy-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 15px; display: inline-block; text-decoration: none; }
 
         .dashboard { display: none; width: 100%; max-width: 600px; padding: 20px; text-align: center; }
         .dashboard.active { display: block; }
-        
         .timer-box { background: #1a1a1a; border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid #444; font-size: 14px; }
-        body.light-mode .timer-box { background: #fff; border-color: #ddd; }
         .timer-text { font-size: 20px; font-weight: bold; color: #a855f7; }
-        .timer-text.warning { color: #ff4d4d; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
+        
         .action-buttons { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
         .btn-action { padding: 10px 20px; border: none; border-radius: 25px; font-size: 13px; font-weight: bold; cursor: pointer; }
         .btn-renew { background: linear-gradient(135deg, #11998e, #38ef7d); color: #fff; }
         .btn-logout { background: linear-gradient(135deg, #ff4d4d, #ff6b6b); color: white; }
 
         .admin-panel { background: #1a1a1a; border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #333; display: none; }
-        body.light-mode .admin-panel { background: #fff; border-color: #ddd; }
         .admin-panel.active { display: block; }
         .admin-title { font-size: 18px; color: #a855f7; margin-bottom: 10px; font-weight: 600; }
         .admin-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
         .btn-admin { padding: 8px 15px; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 20px; cursor: pointer; font-size: 13px; }
-        body.light-mode .btn-admin { background: #f0f0f0; color: #111; border-color: #ccc; }
-        .btn-admin:active { background: #a855f7; }
 
         .stats-dashboard { background: #1a1a1a; border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #333; }
-        body.light-mode .stats-dashboard { background: #fff; border-color: #ddd; }
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
         .stat-card { background: #2d2d2d; padding: 10px; border-radius: 8px; text-align: center; }
-        body.light-mode .stat-card { background: #f0f0f0; }
         .stat-number { font-size: 20px; font-weight: bold; color: #a855f7; }
         .stat-label { font-size: 12px; color: #9ca3af; }
 
         .key-generator { background: #1a1a1a; border-radius: 12px; padding: 15px; margin: 10px 0; border: 1px solid #333; display: none; }
-        body.light-mode .key-generator { background: #fff; border-color: #ddd; }
         .key-generator.active { display: block; }
         .duration-btn { padding: 6px 12px; margin: 3px; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 15px; cursor: pointer; font-size: 12px; }
-        body.light-mode .duration-btn { background: #f0f0f0; color: #111; border-color: #ccc; }
         .duration-btn.active { background: #a855f7; border-color: #a855f7; }
         .generated-key-box { background: #2d2d2d; border-radius: 8px; padding: 12px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 16px; color: #a855f7; word-break: break-all; }
-        body.light-mode .generated-key-box { background: #f0f0f0; }
         .qr-box { background: #fff; border-radius: 8px; padding: 8px; display: inline-block; margin: 10px auto; }
-        
+
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #333; color: #fff; padding: 12px 20px; border-radius: 25px; font-size: 14px; transition: transform 0.3s ease; z-index: 10000; border: 1px solid #444; }
         .toast.show { transform: translateX(-50%) translateY(0); }
         .toast.error { border-color: #ff4d4d; color: #ff6b6b; }
-        
+
         .key-list-container { max-height: 250px; overflow-y: auto; margin-top: 10px; }
         .key-item { display: flex; justify-content: space-between; align-items: center; background: #2d2d2d; padding: 8px; margin: 5px 0; border-radius: 8px; gap: 5px; }
-        body.light-mode .key-item { background: #f0f0f0; }
         .key-code { font-family: 'Courier New', monospace; color: #a855f7; font-weight: bold; font-size: 13px; }
         .key-info { font-size: 11px; color: #9ca3af; }
         .btn-delete { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 8px; cursor: pointer; font-size: 11px; }
         .btn-lock { background: #ff9800; color: white; border: none; padding: 4px 8px; border-radius: 8px; cursor: pointer; font-size: 11px; }
-        
-        .search-input { width: 100%; padding: 10px; margin: 10px 0; background: #2d2d2d; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 13px; }
-        body.light-mode .search-input { background: #fff; color: #111; border-color: #ccc; }
-        
+
         .video-input { width: 100%; padding: 10px; margin: 5px 0; background: #2d2d2d; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 13px; }
-        body.light-mode .video-input { background: #fff; color: #111; border-color: #ccc; }
-        
-        .upload-area { border: 3px dashed #a855f7; border-radius: 12px; padding: 30px 15px; margin: 10px 0; cursor: pointer; text-align: center; font-size: 14px; transition: all 0.3s; background: rgba(168, 85, 247, 0.05); }
-        .upload-area:hover { background: rgba(168, 85, 247, 0.15); }
-        .upload-area .upload-icon { font-size: 40px; margin-bottom: 10px; }
-        .upload-area .upload-text { color: #a855f7; font-weight: bold; }
-        .upload-area .upload-sub { font-size: 12px; color: #888; margin-top: 5px; }
-        
+        .upload-area { border: 3px dashed #a855f7; border-radius: 12px; padding: 25px 15px; margin: 10px 0; cursor: pointer; text-align: center; background: rgba(168, 85, 247, 0.05); }
+        .upload-icon { font-size: 40px; margin-bottom: 10px; }
+        .upload-text { color: #a855f7; font-weight: bold; }
+
         .video-card { background: #1a1a1a; border-radius: 12px; padding: 12px; margin: 10px 0; border: 1px solid #333; text-align: left; position: relative; }
-        body.light-mode .video-card { background: #fff; border-color: #ddd; }
         .video-title { font-weight: bold; margin-bottom: 5px; font-size: 15px; }
         .video-desc { color: #9ca3af; font-size: 12px; margin-bottom: 8px; }
         .video-cat { font-size: 11px; color: #a855f7; background: #2d2d2d; padding: 2px 6px; border-radius: 8px; display: inline-block; margin-bottom: 8px; }
-        body.light-mode .video-cat { background: #f0f0f0; }
         .vip-badge { font-size: 11px; color: gold; background: #333; padding: 2px 6px; border-radius: 8px; margin-left: 5px; }
-        
-        /* Delete video button on card */
-        .video-delete-btn { position: absolute; top: 10px; right: 10px; background: #ff4d4d; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 14px; z-index: 10; }
+        .video-delete-btn { position: absolute; top: 10px; right: 10px; background: #ff4d4d; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; z-index: 10; }
 
-        /* Like/Dislike */
-        .video-actions { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
-        .action-btn { background: #2d2d2d; border: 1px solid #444; color: #fff; padding: 5px 12px; border-radius: 15px; cursor: pointer; font-size: 12px; }
-        .action-btn.active-like { background: #38ef7d; color: #000; }
-        .action-btn.active-dislike { background: #ff4d4d; color: #fff; }
-
-        /* Filter */
         .filter-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; }
         .filter-tab { padding: 8px 16px; background: #2d2d2d; border-radius: 20px; font-size: 13px; cursor: pointer; white-space: nowrap; }
-        body.light-mode .filter-tab { background: #e0e0e0; color: #111; }
         .filter-tab.active { background: #a855f7; color: #fff; }
 
-        /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001; align-items: center; justify-content: center; }
-        .modal.active { display: flex; }
-        .modal-content { background: #1a1a1a; border-radius: 15px; padding: 25px; max-width: 400px; width: 90%; text-align: center; border: 1px solid #333; }
-        .modal-content h3 { color: #a855f7; margin-bottom: 15px; }
-        .modal-content p { margin-bottom: 15px; color: #ccc; }
-        .btn-modal { padding: 10px 25px; margin: 5px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; }
-        .btn-yes { background: linear-gradient(135deg, #11998e, #38ef7d); color: #fff; }
-        .btn-no { background: #444; color: #fff; }
+        .search-input { width: 100%; padding: 10px; margin: 10px 0; background: #2d2d2d; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 13px; }
 
-        /* Video Player Modal */
         .video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10005; align-items: center; justify-content: center; flex-direction: column; }
         .video-modal.active { display: flex; }
         .video-modal video { max-width: 95%; max-height: 70vh; border-radius: 10px; }
         .video-modal .close-video { position: absolute; top: 20px; right: 20px; background: #ff4d4d; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; }
         .video-modal .video-title-modal { color: #a855f7; font-size: 18px; font-weight: bold; margin-top: 15px; }
 
-        /* Maintenance */
-        .maintenance-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10002; align-items: center; justify-content: center; flex-direction: column; }
+        .maintenance-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.97); z-index: 10002; align-items: center; justify-content: center; flex-direction: column; padding: 20px; text-align: center; }
         .maintenance-overlay.active { display: flex; }
         .maintenance-overlay h2 { color: #ff9800; font-size: 28px; margin-bottom: 15px; }
-
-        /* Activity Log */
-        .log-item { background: #2d2d2d; border-radius: 8px; padding: 8px; margin: 5px 0; font-size: 12px; text-align: left; }
-        body.light-mode .log-item { background: #f0f0f0; }
-        .log-time { color: #a855f7; font-weight: bold; }
-
-        /* Mascot */
-        .mascot { position: fixed; bottom: 20px; right: 20px; font-size: 60px; z-index: 999; animation: float 3s infinite; pointer-events: none; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-        /* Guess Game */
-        .guess-section { background: #1a1a1a; border-radius: 12px; padding: 15px; margin: 15px 0; border: 1px solid #444; }
-        .guess-input { width: 100px; padding: 10px; background: #2d2d2d; border: 1px solid #444; border-radius: 10px; color: #fff; text-align: center; font-size: 16px; margin: 10px auto; display: block; }
-        .guess-btn { background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none; padding: 10px 25px; border-radius: 20px; cursor: pointer; font-weight: bold; }
-
-        .empty-message { color: #888; padding: 30px; text-align: center; font-size: 14px; }
-
-        /* PWA Install button */
-        .install-btn { position: fixed; bottom: 20px; left: 20px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; z-index: 998; display: none; box-shadow: 0 4px 15px rgba(168,85,247,0.4); }
-        .install-btn.show { display: block; }
+        .maintenance-icon { font-size: 70px; margin-bottom: 20px; animation: spin-wrench 3s infinite linear; }
+        @keyframes spin-wrench { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(30deg); } }
+        .maintenance-msg { color: #ccc; margin-bottom: 20px; max-width: 400px; }
+        .maintenance-zalo { color: #888; font-size: 14px; }
+        .maintenance-zalo a { color: #a855f7; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    
-    <!-- Loading Screen -->
     <div id="loadingScreen">
         <div class="loading-logo">BL</div>
         <div class="loading-text">Đang tải...</div>
-        <div class="loading-bar"><div class="loading-bar-fill"></div></div>
     </div>
 
-    <!-- Welcome Countdown -->
-    <div id="welcomeScreen">
-        <div class="welcome-count" id="welcomeCount">3</div>
-        <div class="welcome-text">Chào mừng đến với Bạch Long Minh!</div>
-    </div>
-
-    <!-- Maintenance Overlay -->
     <div class="maintenance-overlay" id="maintenanceOverlay">
-        <div style="font-size:60px; margin-bottom:20px;">🔧</div>
+        <div class="maintenance-icon">🔧</div>
         <h2>Đang Bảo Trì</h2>
-        <p style="color:#ccc; margin-bottom:20px;">Web đang được Admin nâng cấp. Vui lòng quay lại sau!</p>
-        <p style="color:#888; font-size:14px;">Liên hệ Zalo: 9275 9472 3</p>
+        <p class="maintenance-msg">Web đang được Admin nâng cấp. Vui lòng quay lại sau!</p>
+        <p class="maintenance-zalo">Liên hệ Zalo: <a href="https://zalo.me/927594723">9275 9472 3</a></p>
     </div>
-
-    <!-- Top Controls -->
-    <div class="top-controls">
-        <button class="ctrl-btn" onclick="toggleSound()" id="soundBtn">🔊</button>
-        <button class="ctrl-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
-    </div>
-
-    <!-- Mascot -->
-    <div class="mascot" id="mascot">🐉</div>
-
-    <!-- PWA Install Button -->
-    <button class="install-btn" id="installBtn" onclick="installPWA()">📲 Cài đặt App</button>
 
     <canvas id="particles-canvas"></canvas>
 
-    <!-- Modal Gia hạn -->
-    <div class="modal" id="renewModal">
-        <div class="modal-content">
-            <h3>⏰ Key Sắp Hết Hạn!</h3>
-            <p>Key của bạn chỉ còn dưới 10 phút. Bạn có muốn gia hạn không?</p>
-            <button class="btn-modal btn-yes" onclick="window.open('https://zalo.me/927594723', '_blank')">Gia hạn qua Zalo</button>
-            <button class="btn-modal btn-no" onclick="closeRenewModal()">Để sau</button>
-        </div>
-    </div>
-
-    <!-- Modal Thông báo -->
-    <div class="modal" id="notifyModal">
-        <div class="modal-content">
-            <h3>📢 Thông Báo</h3>
-            <p id="notifyContent"></p>
-            <button class="btn-modal btn-yes" onclick="closeNotifyModal()">Đã hiểu</button>
-        </div>
-    </div>
-
-    <!-- Modal Đoán số -->
-    <div class="modal" id="guessModal">
-        <div class="modal-content">
-            <h3>🎲 Đoán Số May Mắn</h3>
-            <p>Đoán số từ 1 đến 100. Trúng sẽ nhận 1 key VIP miễn phí!</p>
-            <input type="number" class="guess-input" id="guessInput" min="1" max="100" placeholder="?">
-            <button class="guess-btn" onclick="checkGuess()">Đoán Ngay</button>
-            <div id="guessResult" style="margin-top:15px;"></div>
-        </div>
-    </div>
-
-    <!-- Modal Đổi mật khẩu Admin -->
-    <div class="modal" id="changePassModal">
-        <div class="modal-content">
-            <h3>🔐 Đổi Key Admin</h3>
-            <input type="password" class="video-input" id="oldPass" placeholder="Key admin hiện tại" style="margin-bottom:10px;">
-            <input type="password" class="video-input" id="newPass" placeholder="Key admin mới" style="margin-bottom:10px;">
-            <input type="password" class="video-input" id="newPass2" placeholder="Nhập lại key mới" style="margin-bottom:10px;">
-            <button class="btn-modal btn-yes" onclick="changeAdminKey()">Đổi Ngay</button>
-            <button class="btn-modal btn-no" onclick="closeChangePass()">Hủy</button>
-        </div>
-    </div>
-
-    <!-- Modal Xem Video -->
     <div class="video-modal" id="videoModal">
         <button class="close-video" onclick="closeVideoModal()">✕</button>
-        <video id="modalVideo" controls autoplay></video>
+        <video id="modalVideo" controls></video>
         <div class="video-title-modal" id="modalVideoTitle"></div>
-        <button class="btn-modal btn-yes" onclick="downloadCurrentVideo()" style="margin-top:15px;">⬇️ Tải Video</button>
     </div>
 
-    <!-- Màn hình nhập key -->
     <div class="main-wrapper" id="loginScreen">
         <div class="discord-banner" onclick="window.open('https://discord.gg/9kw7E6fUy', '_blank')">
             <div class="discord-banner-text">🎮 Tham gia Server Discord!</div>
@@ -315,63 +147,27 @@
             <p class="subtitle">Nhập License Key để tiếp tục</p>
         </div>
 
-        <!-- Online counter -->
-        <div class="online-bar">
-            <div class="online-dot"></div>
-            <span id="onlineCount">1</span> người đang truy cập
-        </div>
-
-        <!-- Price List -->
-        <div class="price-section">
-            <div class="price-title">💰 Bảng Giá</div>
-            <div class="price-grid">
-                <div class="price-card" onclick="buyNow('1 Ngày','10.000đ')">
-                    <div class="price-duration">📅 1 Ngày</div>
-                    <div class="price-amount">10.000đ</div>
-                </div>
-                <div class="price-card" onclick="buyNow('1 Tuần','50.000đ')">
-                    <div class="price-duration">📆 1 Tuần</div>
-                    <div class="price-amount">50.000đ</div>
-                </div>
-                <div class="price-card" onclick="buyNow('1 Tháng','150.000đ')">
-                    <div class="price-duration">🗓️ 1 Tháng</div>
-                    <div class="price-amount">150.000đ</div>
-                </div>
-                <div class="price-card best" onclick="buyNow('VIP Vĩnh Viễn','500.000đ')">
-                    <div class="price-duration">👑 VIP</div>
-                    <div class="price-amount">500.000đ</div>
-                    <div class="price-note">BEST SELLER</div>
-                </div>
-            </div>
-        </div>
-
         <div class="key-section">
             <div class="key-label">🔑 Nhập Key</div>
-            
             <div class="input-group">
                 <span class="input-icon">🔑</span>
-                <input type="text" class="key-input" id="keyInput" placeholder="BL-XXXX-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false">
-                <button class="btn-icon paste-btn" onclick="pasteKey()">📋</button>
+                <input type="text" class="key-input" id="keyInput" placeholder="BL-XXXX-XXXX-XXXX-XXXX" autocomplete="off">
+                <button class="btn-icon" onclick="pasteKey()">📋</button>
             </div>
-
             <button class="btn-submit" id="loginBtn" onclick="validateKey()">Xác nhận Key</button>
-            
             <div style="margin-top: 15px;">
                 <a href="tel:927594723" class="buy-btn">📞 Gọi mua: 9275 9472 3</a>
             </div>
-
             <div class="contact">
                 Liên hệ Zalo: <a href="https://zalo.me/927594723" target="_blank">9275 9472 3</a>
             </div>
         </div>
     </div>
 
-    <!-- Dashboard -->
     <div class="dashboard" id="dashboard">
         <div class="logo-container">
             <div class="logo">BL</div>
             <h1>Bạch Long Minh</h1>
-            <p class="subtitle">Chào mừng bạn!</p>
         </div>
 
         <div class="discord-banner" onclick="window.open('https://discord.gg/9kw7E6fUy', '_blank')">
@@ -379,7 +175,7 @@
             <div class="discord-banner-sub">discord.gg/9kw7E6fUy</div>
         </div>
 
-        <div class="timer-box hidden" id="timerBox">
+        <div class="timer-box" id="timerBox" style="display:none;">
             ⏳ Key hết hạn sau: <span class="timer-text" id="timerDisplay">00:00:00</span>
         </div>
 
@@ -388,11 +184,9 @@
             <button class="btn-action btn-logout" onclick="logout()">🚪 Đăng Xuất</button>
         </div>
 
-        <!-- Video Search -->
         <input type="text" class="search-input" id="searchVideo" placeholder="🔍 Tìm video..." oninput="loadVideos()">
 
-        <!-- Filter Tabs -->
-        <div class="filter-tabs" id="filterTabs">
+        <div class="filter-tabs">
             <div class="filter-tab active" onclick="filterVideos('all', this)">Tất cả</div>
             <div class="filter-tab" onclick="filterVideos('Star', this)">⭐ Star</div>
             <div class="filter-tab" onclick="filterVideos('Dance', this)">💃 Dance</div>
@@ -400,48 +194,26 @@
             <div class="filter-tab" onclick="filterVideos('Nature', this)">🌿 Nature</div>
         </div>
 
-        <!-- Admin Stats -->
-        <div class="stats-dashboard hidden" id="adminStats">
+        <div class="stats-dashboard" id="adminStats" style="display:none;">
             <h3 style="color:#a855f7; margin-bottom:10px;">📊 Thống Kê</h3>
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalKeys">0</div>
-                    <div class="stat-label">Tổng Key</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="usedKeys">0</div>
-                    <div class="stat-label">Đã Dùng</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="activeKeys">0</div>
-                    <div class="stat-label">Hoạt Động</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="videoCount">0</div>
-                    <div class="stat-label">Tổng Video</div>
-                </div>
+                <div class="stat-card"><div class="stat-number" id="totalKeys">0</div><div class="stat-label">Tổng Key</div></div>
+                <div class="stat-card"><div class="stat-number" id="usedKeys">0</div><div class="stat-label">Đã Dùng</div></div>
+                <div class="stat-card"><div class="stat-number" id="activeKeys">0</div><div class="stat-label">Hoạt Động</div></div>
+                <div class="stat-card"><div class="stat-number" id="videoCount">0</div><div class="stat-label">Tổng Video</div></div>
             </div>
         </div>
 
-        <!-- Admin Panel -->
         <div class="admin-panel" id="adminPanel">
             <div class="admin-title">👑 Quản Trị Viên</div>
             <div class="admin-buttons">
                 <button class="btn-admin" onclick="showKeyGenerator()">🔑 Tạo Key</button>
                 <button class="btn-admin" onclick="showKeyList()">📋 DS Key</button>
                 <button class="btn-admin" onclick="showVideoManager()">🎬 Video</button>
-                <button class="btn-admin" onclick="showActivityLog()">📜 Lịch Sử</button>
-                <button class="btn-admin" onclick="showExpiringKeys()">⚠️ Sắp Hết Hạn</button>
-                <button class="btn-admin" onclick="showNotificationManager()">📢 Thông Báo</button>
-                <button class="btn-admin" onclick="showBlacklist()">🚫 Blacklist</button>
-                <button class="btn-admin" onclick="exportData()">💾 Xuất</button>
-                <button class="btn-admin" onclick="importData()">📂 Nhập</button>
-                <button class="btn-admin" onclick="openChangePass()">🔐 Đổi Key</button>
                 <button class="btn-admin" onclick="toggleMaintenance()" id="maintenanceBtn">🔧 Bảo Trì</button>
                 <button class="btn-admin" onclick="logout()">🚪 Đăng Xuất</button>
             </div>
 
-            <!-- Key Generator -->
             <div class="key-generator" id="keyGenerator">
                 <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Tạo Key Mới</h3>
                 <div style="margin-bottom:10px;">
@@ -451,193 +223,86 @@
                     <button class="duration-btn" onclick="setDuration('month', this)">🗓️ 1 Tháng</button>
                     <button class="duration-btn" onclick="setDuration('vip', this)">👑 VIP</button>
                 </div>
-                <input type="text" class="video-input" id="keyNote" placeholder="Ghi chú (Tên khách, Zalo)">
+                <input type="text" class="video-input" id="keyNote" placeholder="Ghi chú">
                 <button class="btn-admin" onclick="generateKey()" style="width:100%; margin-top:5px;">Tạo Key</button>
-                <div class="generated-key-box hidden" id="generatedKeyBox"></div>
-                <div class="qr-box hidden" id="qrBox"></div>
-                <button class="btn-admin hidden" id="copyBtn" onclick="copyGeneratedKey()" style="width:100%;">📋 Sao Chép</button>
+                <div class="generated-key-box" id="generatedKeyBox" style="display:none;"></div>
+                <div class="qr-box" id="qrBox" style="display:none;"></div>
             </div>
 
-            <!-- Key List -->
             <div class="key-generator" id="keyList">
                 <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Danh Sách Key</h3>
-                <input type="text" class="search-input" id="searchKey" placeholder="🔍 Tìm key..." oninput="filterKeys()">
                 <div class="key-list-container" id="keysListContainer"></div>
             </div>
 
-            <!-- Video Manager -->
             <div class="key-generator" id="videoManager">
-                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Thêm Video Mới</h3>
+                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Thêm Video</h3>
                 <input type="text" class="video-input" id="newVideoTitle" placeholder="Tên video">
-                <input type="text" class="video-input" id="newVideoDesc" placeholder="Mô tả video">
+                <input type="text" class="video-input" id="newVideoDesc" placeholder="Mô tả">
                 <select class="video-input" id="newVideoCat">
-                    <option value="Star">⭐ Video Star</option>
-                    <option value="Dance">💃 Video Dance</option>
-                    <option value="Wedding">💍 Video Wedding</option>
-                    <option value="Nature">🌿 Video Thiên Nhiên</option>
+                    <option value="Star">⭐ Star</option>
+                    <option value="Dance">💃 Dance</option>
+                    <option value="Wedding">💍 Wedding</option>
+                    <option value="Nature">🌿 Nature</option>
                 </select>
                 <label style="display:block; margin:8px 0; font-size:13px; text-align:left;">
-                    <input type="checkbox" id="newVideoVip"> 👑 Video VIP (chỉ key VIP)
+                    <input type="checkbox" id="newVideoVip"> 👑 Video VIP
                 </label>
                 <div class="upload-area" onclick="document.getElementById('videoUpload').click()">
                     <input type="file" id="videoUpload" accept="video/*" hidden onchange="handleUpload(event)">
                     <div class="upload-icon">📤</div>
                     <div class="upload-text">Nhấp để chọn Video</div>
-                    <div class="upload-sub">Hỗ trợ MP4, MOV, WebM (tối đa 5MB)</div>
                 </div>
                 <div id="uploadPreview"></div>
                 <button class="btn-admin" onclick="addVideo()" style="width:100%; margin-top:5px;">➕ Thêm Video</button>
                 <div class="key-list-container" id="videoListContainer"></div>
             </div>
-
-            <!-- Activity Log -->
-            <div class="key-generator" id="activityLogPanel">
-                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">📜 Lịch Sử</h3>
-                <div class="key-list-container" id="activityLogContainer"></div>
-            </div>
-
-            <!-- Expiring Keys -->
-            <div class="key-generator" id="expiringKeysPanel">
-                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">⚠️ Key Sắp Hết Hạn</h3>
-                <div class="key-list-container" id="expiringKeysContainer"></div>
-            </div>
-
-            <!-- Notification Manager -->
-            <div class="key-generator" id="notificationPanel">
-                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">📢 Gửi Thông Báo</h3>
-                <textarea class="video-input" id="notifyMessage" rows="3" placeholder="Nội dung..."></textarea>
-                <button class="btn-admin" onclick="sendNotification()" style="width:100%; margin-top:5px;">📤 Gửi</button>
-            </div>
-
-            <!-- Blacklist -->
-            <div class="key-generator" id="blacklistPanel">
-                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">🚫 Blacklist Thiết Bị</h3>
-                <input type="text" class="video-input" id="blacklistInput" placeholder="Nhập Device ID cần chặn">
-                <button class="btn-admin" onclick="addBlacklist()" style="width:100%; margin-top:5px;">🚫 Chặn Thiết Bị</button>
-                <div class="key-list-container" id="blacklistContainer"></div>
-            </div>
-
-            <!-- Online Users -->
-            <div class="key-generator" id="onlineUsersPanel">
-                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">👥 User Đang Online</h3>
-                <div class="key-list-container" id="onlineUsersContainer"></div>
-            </div>
         </div>
 
-        <!-- Video Grid -->
         <div id="videoGrid"></div>
-
-        <!-- Guess Game -->
-        <div class="guess-section">
-            <h3 style="color:#a855f7; margin-bottom:10px;">🎲 Mini Game: Đoán Số</h3>
-            <p style="font-size:13px; color:#9ca3af; margin-bottom:10px;">Đoán số 1-100, trúng nhận 1 Key VIP!</p>
-            <button class="guess-btn" onclick="openGuessModal()">Chơi Ngay</button>
-        </div>
     </div>
 
     <div class="toast" id="toast"></div>
 
     <script>
-        // ========== CẤU HÌNH ==========
         let ADMIN_KEY = localStorage.getItem('adminKey') || 'HUYPHAM2012';
-        const ADMIN_PHONE = '9275 9472 3';
-        const ADMIN_DISCORD = 'xinchao_canha';
-        const DISCORD_SERVER = 'https://discord.gg/9kw7E6fUy';
-
-        // ========== DATA ==========
+        
         let videos = JSON.parse(localStorage.getItem('videos')) || [];
         let keys = JSON.parse(localStorage.getItem('keys')) || [
-            { code: 'BL-DEMO-1234', duration: 'day', expiresAt: Date.now() + 86400000, used: false, locked: false, note: 'Key demo', deviceId: null, likes: 0, dislikes: 0 }
+            { code: 'BL-DEMO-1234', duration: 'day', expiresAt: Date.now() + 86400000, used: false, locked: false, note: 'Key demo', deviceId: null }
         ];
-        let activityLog = JSON.parse(localStorage.getItem('activityLog')) || [];
-        let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
-        let blacklist = JSON.parse(localStorage.getItem('blacklist')) || [];
-        let videoLikes = JSON.parse(localStorage.getItem('videoLikes')) || {};
-        let soundEnabled = JSON.parse(localStorage.getItem('soundEnabled')) !== false;
-        let darkMode = JSON.parse(localStorage.getItem('darkMode')) !== false;
         let currentSession = JSON.parse(localStorage.getItem('currentSession')) || null;
         let isMaintenance = JSON.parse(localStorage.getItem('isMaintenance')) || false;
         let currentFilter = 'all';
-        let currentPlayingVideo = null;
-        let deferredPrompt = null;
-        let bgMusic = null;
+        let uploadedVideoData = null;
+        let selectedDuration = 'day';
+        let timerInterval;
 
-        // Device ID
-        function getDeviceId() {
-            let deviceId = localStorage.getItem('deviceId');
-            if (!deviceId) {
-                deviceId = 'dev_' + Math.random().toString(36).substr(2, 9) + Date.now();
-                localStorage.setItem('deviceId', deviceId);
-            }
-            return deviceId;
-        }
-        const DEVICE_ID = getDeviceId();
-
-        // ========== LƯU DỮ LIỆU ==========
         function saveData() {
             try {
                 localStorage.setItem('videos', JSON.stringify(videos));
                 localStorage.setItem('keys', JSON.stringify(keys));
-                localStorage.setItem('activityLog', JSON.stringify(activityLog));
-                localStorage.setItem('notifications', JSON.stringify(notifications));
-                localStorage.setItem('blacklist', JSON.stringify(blacklist));
-                localStorage.setItem('videoLikes', JSON.stringify(videoLikes));
-            } catch(e) {
-                showToast('⚠️ Bộ nhớ đầy! Xóa bớt video cũ.', true);
-            }
-        }
-
-        function saveSession(session) {
-            currentSession = session;
-            localStorage.setItem('currentSession', JSON.stringify(session));
-        }
-
-        function addLog(action) {
-            activityLog.unshift({ time: new Date().toLocaleString('vi-VN'), action: action });
-            if (activityLog.length > 100) activityLog.pop();
-            saveData();
-        }
-
-        // ========== ÂM THANH ==========
-        function playSound(type) {
-            if (!soundEnabled) return;
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                if (type === 'success') { osc.frequency.value = 800; gain.gain.value = 0.1; }
-                else if (type === 'error') { osc.frequency.value = 200; gain.gain.value = 0.15; }
-                else if (type === 'click') { osc.frequency.value = 600; gain.gain.value = 0.05; }
-                osc.start();
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-                osc.stop(audioCtx.currentTime + 0.2);
             } catch(e) {}
         }
+        function saveSession(s) { currentSession = s; localStorage.setItem('currentSession', JSON.stringify(s)); }
 
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            localStorage.setItem('soundEnabled', soundEnabled);
-            document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
-            showToast(soundEnabled ? '🔊 Bật âm thanh' : '🔇 Tắt âm thanh');
-        }
-
-        function toggleTheme() {
-            darkMode = !darkMode;
-            localStorage.setItem('darkMode', darkMode);
-            document.body.classList.toggle('light-mode', !darkMode);
-            document.getElementById('themeBtn').textContent = darkMode ? '🌙' : '☀️';
-        }
-
-        // ========== AUTO-LOGIN ==========
-        function autoLogin() {
-            if (!currentSession) return;
-            if (blacklist.includes(DEVICE_ID)) {
-                showToast('🚫 Thiết bị của bạn đã bị chặn!', true);
-                localStorage.removeItem('currentSession');
+        function checkMaintenanceAndLogin() {
+            if (!isMaintenance) {
+                document.getElementById('loginScreen').style.display = 'block';
+                autoLogin();
                 return;
             }
-            if (currentSession.type === 'admin') {
+            const savedSession = JSON.parse(localStorage.getItem('currentSession'));
+            if (savedSession && savedSession.type === 'admin' && savedSession.key === ADMIN_KEY) {
+                loginSuccess('admin');
+                showToast('👑 Admin vào (đang bảo trì)');
+                return;
+            }
+            document.getElementById('maintenanceOverlay').classList.add('active');
+        }
+
+        function autoLogin() {
+            if (!currentSession) return;
+            if (currentSession.type === 'admin' && currentSession.key === ADMIN_KEY) {
                 loginSuccess('admin');
                 return;
             }
@@ -645,29 +310,22 @@
                 const key = keys.find(k => k.code === currentSession.key);
                 if (key && !key.locked && Date.now() < key.expiresAt) {
                     loginSuccess('user', key);
-                } else {
-                    localStorage.removeItem('currentSession');
-                    currentSession = null;
                 }
             }
         }
 
-        // ========== PARTICLE ==========
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas); resizeCanvas();
-        
         function createParticles() {
             particles = [];
-            const count = Math.min(50, window.innerWidth / 20);
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < 50; i++) {
                 particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4, size: Math.random() * 2 + 1 });
             }
         }
         createParticles();
-        
         function drawParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (let i = 0; i < particles.length; i++) {
@@ -693,15 +351,6 @@
         function animateParticles() { drawParticles(); requestAnimationFrame(animateParticles); }
         animateParticles();
 
-        // ========== ĐẾM NGƯỜI ONLINE (Giả lập) ==========
-        function updateOnlineCount() {
-            const base = 5 + Math.floor(Math.random() * 30);
-            document.getElementById('onlineCount').textContent = base;
-        }
-        setInterval(updateOnlineCount, 5000);
-        updateOnlineCount();
-
-        // ========== DÁN KEY ==========
         function pasteKey() {
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText().then(text => {
@@ -717,23 +366,11 @@
             }
         }
 
-        // ========== MUA KEY ==========
-        function buyNow(duration, price) {
-            playSound('click');
-            const msg = `Tôi muốn mua key ${duration} với giá ${price}. Liên hệ: `;
-            window.open('https://zalo.me/927594723', '_blank');
-            showToast(`💳 Liên hệ Zalo để mua: ${duration} - ${price}`);
-        }
-
-        // ========== ĐĂNG NHẬP ==========
         function validateKey() {
             const inputKey = document.getElementById('keyInput').value.trim().toUpperCase();
             const btn = document.getElementById('loginBtn');
             
-            if (blacklist.includes(DEVICE_ID)) {
-                showToast('🚫 Thiết bị bị chặn!', true); return;
-            }
-            if (!inputKey) { showToast('Vui lòng nhập key!', true); playSound('error'); return; }
+            if (!inputKey) { showToast('Vui lòng nhập key!', true); return; }
 
             btn.disabled = true;
             btn.textContent = 'Đang kiểm tra...';
@@ -745,106 +382,61 @@
                 if (inputKey === ADMIN_KEY) {
                     saveSession({ type: 'admin', key: ADMIN_KEY });
                     loginSuccess('admin');
-                    playSound('success');
-                    addLog('Admin đăng nhập');
+                    showToast('👑 Xin chào Admin!');
+                    return;
+                }
+
+                if (isMaintenance) {
+                    showToast('🔧 Web đang bảo trì, chỉ Admin vào được!', true);
                     return;
                 }
 
                 const key = keys.find(k => k.code === inputKey);
                 if (key) {
-                    if (key.locked) { showToast('🔒 Key đã bị khóa!', true); playSound('error'); return; }
-                    if (key.used && key.deviceId !== DEVICE_ID) {
-                        showToast('⚠️ Key đã dùng trên thiết bị khác!', true); playSound('error'); return;
+                    if (key.locked) { showToast('🔒 Key đã bị khóa!', true); return; }
+                    if (key.used && key.deviceId !== localStorage.getItem('deviceId')) {
+                        showToast('⚠️ Key đã dùng trên thiết bị khác!', true); return;
                     }
-                    if (Date.now() > key.expiresAt) { showToast('Key đã hết hạn!', true); playSound('error'); return; }
+                    if (Date.now() > key.expiresAt) { showToast('Key đã hết hạn!', true); return; }
 
                     key.used = true;
-                    key.deviceId = DEVICE_ID;
+                    let deviceId = localStorage.getItem('deviceId');
+                    if (!deviceId) {
+                        deviceId = 'dev_' + Math.random().toString(36).substr(2, 9);
+                        localStorage.setItem('deviceId', deviceId);
+                    }
+                    key.deviceId = deviceId;
                     saveData();
                     saveSession({ type: 'user', key: key.code });
                     loginSuccess('user', key);
-                    playSound('success');
-                    addLog(`Key ${key.code} kích hoạt`);
+                    showToast('✅ Đăng nhập thành công!');
                 } else {
                     showToast('❌ Key không hợp lệ!', true);
-                    playSound('error');
-                    addLog(`Nhập sai key: ${inputKey}`);
                 }
             }, 600);
         }
 
-        // ========== ĐẾM NGƯỢC 3-2-1 ==========
-        function playWelcomeCountdown(callback) {
-            const welcomeScreen = document.getElementById('welcomeScreen');
-            const countEl = document.getElementById('welcomeCount');
-            welcomeScreen.classList.add('active');
-            let count = 3;
-            countEl.textContent = count;
-            const interval = setInterval(() => {
-                count--;
-                if (count > 0) {
-                    countEl.textContent = count;
-                    countEl.style.animation = 'none';
-                    setTimeout(() => countEl.style.animation = 'countdown 1s ease-in-out', 10);
-                } else {
-                    clearInterval(interval);
-                    countEl.textContent = '✓';
-                    setTimeout(() => {
-                        welcomeScreen.classList.remove('active');
-                        if (callback) callback();
-                    }, 500);
-                }
-            }, 1000);
-        }
-
         function loginSuccess(type, keyData = null) {
-            if (isMaintenance && type !== 'admin') {
-                document.getElementById('maintenanceOverlay').classList.add('active');
-                return;
-            }
-            
+            document.getElementById('maintenanceOverlay').classList.remove('active');
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
             
-            // Nhạc nền
-            playBackgroundMusic();
-            
             if (type === 'admin') {
                 document.getElementById('adminPanel').classList.add('active');
-                document.getElementById('adminStats').classList.remove('hidden');
+                document.getElementById('adminStats').style.display = 'block';
                 updateAdminStats();
                 loadVideos();
-                document.getElementById('timerBox').classList.add('hidden');
+                document.getElementById('timerBox').style.display = 'none';
                 document.getElementById('maintenanceBtn').textContent = isMaintenance ? '🔧 Tắt Bảo Trì' : '🔧 Bật Bảo Trì';
             } else {
-                document.getElementById('timerBox').classList.remove('hidden');
+                document.getElementById('timerBox').style.display = 'block';
                 startTimer(keyData.expiresAt);
                 loadVideos();
-                if (notifications.length > 0) {
-                    document.getElementById('notifyContent').textContent = notifications[notifications.length - 1].message;
-                    document.getElementById('notifyModal').classList.add('active');
-                }
             }
         }
 
-        // ========== NHẠC NỀN ==========
-        function playBackgroundMusic() {
-            if (!soundEnabled) return;
-            try {
-                if (bgMusic) bgMusic.pause();
-                bgMusic = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
-                bgMusic.volume = 0.05;
-                bgMusic.loop = true;
-                bgMusic.play().catch(() => {});
-            } catch(e) {}
-        }
-
-        // ========== TIMER ==========
-        let timerInterval;
-        let renewShown = false;
         function startTimer(expiresAt) {
             clearInterval(timerInterval);
-            renewShown = false;
             timerInterval = setInterval(() => {
                 const diff = expiresAt - Date.now();
                 if (diff <= 0) {
@@ -853,48 +445,30 @@
                     logout();
                     return;
                 }
-                const hours = Math.floor(diff / 3600000);
-                const mins = Math.floor((diff % 3600000) / 60000);
-                const secs = Math.floor((diff % 60000) / 1000);
-                const timerDisplay = document.getElementById('timerDisplay');
-                timerDisplay.textContent = `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-                if (diff < 300000) timerDisplay.classList.add('warning');
-                if (diff < 600000 && !renewShown) {
-                    renewShown = true;
-                    document.getElementById('renewModal').classList.add('active');
-                }
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                document.getElementById('timerDisplay').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
             }, 1000);
         }
 
-        function closeRenewModal() { document.getElementById('renewModal').classList.remove('active'); }
-        function closeNotifyModal() { document.getElementById('notifyModal').classList.remove('active'); }
-
-        // ========== CHỐNG QUAY MÀN HÌNH ==========
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden && currentSession && currentSession.type === 'user') {
-                const videos = document.querySelectorAll('video');
-                videos.forEach(v => v.pause());
-                showToast('⚠️ Video tạm dừng (bạn đã rời tab)');
-            }
-        });
-
-        // ========== LOGOUT ==========
         function logout() {
             clearInterval(timerInterval);
-            addLog(currentSession ? (currentSession.type === 'admin' ? 'Admin đăng xuất' : `User ${currentSession.key} đăng xuất`) : 'Đăng xuất');
             localStorage.removeItem('currentSession');
             currentSession = null;
-            if (bgMusic) { bgMusic.pause(); bgMusic = null; }
             
             document.getElementById('dashboard').classList.remove('active');
-            document.getElementById('loginScreen').style.display = 'block';
-            document.getElementById('keyInput').value = '';
             document.getElementById('adminPanel').classList.remove('active');
-            document.getElementById('adminStats').classList.add('hidden');
-            document.getElementById('timerBox').classList.add('hidden');
+            document.getElementById('adminStats').style.display = 'none';
+            
+            if (isMaintenance) {
+                document.getElementById('maintenanceOverlay').classList.add('active');
+            } else {
+                document.getElementById('loginScreen').style.display = 'block';
+                document.getElementById('keyInput').value = '';
+            }
         }
 
-        // ========== ADMIN STATS ==========
         function updateAdminStats() {
             document.getElementById('totalKeys').textContent = keys.length;
             document.getElementById('usedKeys').textContent = keys.filter(k => k.used).length;
@@ -902,8 +476,6 @@
             document.getElementById('videoCount').textContent = videos.length;
         }
 
-        // ========== ADMIN PANEL ==========
-        let selectedDuration = 'day';
         function setDuration(d, btn) {
             selectedDuration = d;
             document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
@@ -917,9 +489,6 @@
                 if (i > 0 && i % 4 === 0) code += '-';
                 code += chars[Math.floor(Math.random() * chars.length)];
             }
-            // Check trùng
-            if (keys.some(k => k.code === code)) { generateKey(); return; }
-            
             let durationMs;
             switch(selectedDuration) {
                 case 'hour': durationMs = 3600000; break;
@@ -929,213 +498,81 @@
                 case 'vip': durationMs = Infinity; break;
             }
             const note = document.getElementById('keyNote').value || 'Không ghi chú';
-            const newKey = { code, duration: selectedDuration, expiresAt: durationMs === Infinity ? Infinity : Date.now() + durationMs, used: false, locked: false, note, deviceId: null };
-            keys.push(newKey);
+            keys.push({ code, duration: selectedDuration, expiresAt: durationMs === Infinity ? Infinity : Date.now() + durationMs, used: false, locked: false, note, deviceId: null });
             saveData(); updateAdminStats();
-            addLog(`Tạo key ${code} (${selectedDuration})`);
             
-            const box = document.getElementById('generatedKeyBox');
-            box.classList.remove('hidden');
-            box.textContent = code;
+            document.getElementById('generatedKeyBox').style.display = 'block';
+            document.getElementById('generatedKeyBox').textContent = code;
             const qrBox = document.getElementById('qrBox');
-            qrBox.classList.remove('hidden'); qrBox.innerHTML = '';
+            qrBox.style.display = 'inline-block';
+            qrBox.innerHTML = '';
             new QRCode(qrBox, code);
-            document.getElementById('copyBtn').classList.remove('hidden');
             showToast('✅ Đã tạo key!');
         }
 
-        function copyText(text) {
-            try {
-                const tempInput = document.createElement('input');
-                tempInput.value = text;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                showToast('📋 Đã sao chép!');
-            } catch(e) {}
-        }
-        function copyGeneratedKey() { copyText(document.getElementById('generatedKeyBox').textContent); }
-
         function hideAllPanels() {
-            ['keyGenerator','keyList','videoManager','activityLogPanel','expiringKeysPanel','notificationPanel','blacklistPanel','onlineUsersPanel'].forEach(id => {
-                document.getElementById(id).classList.remove('active');
-            });
+            ['keyGenerator','keyList','videoManager'].forEach(id => document.getElementById(id).classList.remove('active'));
         }
         function showKeyGenerator() { hideAllPanels(); document.getElementById('keyGenerator').classList.add('active'); }
-        function showKeyList() { hideAllPanels(); document.getElementById('keyList').classList.add('active'); renderKeyList(); }
-        function showVideoManager() { hideAllPanels(); document.getElementById('videoManager').classList.add('active'); renderVideoList(); }
-        function showActivityLog() {
-            hideAllPanels();
-            document.getElementById('activityLogPanel').classList.add('active');
-            const c = document.getElementById('activityLogContainer');
+        function showKeyList() { 
+            hideAllPanels(); 
+            document.getElementById('keyList').classList.add('active'); 
+            const c = document.getElementById('keysListContainer');
             c.innerHTML = '';
-            activityLog.forEach(log => {
-                const div = document.createElement('div');
-                div.className = 'log-item';
-                div.innerHTML = `<span class="log-time">${log.time}</span> - ${log.action}`;
-                c.appendChild(div);
+            keys.forEach((key, index) => {
+                const item = document.createElement('div');
+                item.className = 'key-item';
+                const status = key.locked ? 'Khóa' : (key.used ? 'Đã dùng' : 'Hoạt động');
+                item.innerHTML = `
+                    <div>
+                        <div class="key-code">${key.code}</div>
+                        <div class="key-info">${key.duration === 'vip' ? '👑 VIP' : key.duration} | ${status}</div>
+                    </div>
+                    <div>
+                        <button class="btn-lock" onclick="toggleLock(${index})">${key.locked ? '🔓' : '🔒'}</button>
+                        <button class="btn-delete" onclick="deleteKey(${index})">🗑️</button>
+                    </div>
+                `;
+                c.appendChild(item);
             });
         }
-        function showExpiringKeys() {
-            hideAllPanels();
-            document.getElementById('expiringKeysPanel').classList.add('active');
-            const c = document.getElementById('expiringKeysContainer');
+        function toggleLock(i) {
+            keys[i].locked = !keys[i].locked;
+            saveData(); showKeyList(); updateAdminStats();
+            showToast(keys[i].locked ? '🔒 Đã khóa!' : '🔓 Đã mở!');
+        }
+        function deleteKey(i) {
+            if (confirm('Xóa key này?')) {
+                keys.splice(i, 1);
+                saveData(); showKeyList(); updateAdminStats();
+                showToast('Đã xóa!');
+            }
+        }
+        function showVideoManager() { 
+            hideAllPanels(); 
+            document.getElementById('videoManager').classList.add('active'); 
+            const c = document.getElementById('videoListContainer');
             c.innerHTML = '';
-            const now = Date.now();
-            const expiring = keys.filter(k => !k.used && !k.locked && k.expiresAt > now && k.expiresAt < now + 86400000);
-            if (expiring.length === 0) c.innerHTML = '<p style="color:#888;">Không có key nào sắp hết hạn.</p>';
-            else expiring.forEach(key => {
+            videos.forEach((v, i) => {
                 const div = document.createElement('div');
                 div.className = 'key-item';
-                div.innerHTML = `<div><div class="key-code">${key.code}</div><div class="key-info">${new Date(key.expiresAt).toLocaleString('vi-VN')}</div></div>`;
+                div.innerHTML = `<div><div class="key-code">${v.title}</div></div><button class="btn-delete" onclick="deleteVideo(${i})">🗑️</button>`;
                 c.appendChild(div);
             });
         }
-        function showNotificationManager() { hideAllPanels(); document.getElementById('notificationPanel').classList.add('active'); }
-        function showBlacklist() {
-            hideAllPanels();
-            document.getElementById('blacklistPanel').classList.add('active');
-            const c = document.getElementById('blacklistContainer');
-            c.innerHTML = '';
-            blacklist.forEach((id, index) => {
-                const div = document.createElement('div');
-                div.className = 'key-item';
-                div.innerHTML = `<div><div class="key-code">${id}</div></div><button class="btn-delete" onclick="removeBlacklist(${index})">🗑️</button>`;
-                c.appendChild(div);
-            });
-        }
-        function addBlacklist() {
-            const id = document.getElementById('blacklistInput').value.trim();
-            if (!id) return;
-            blacklist.push(id); saveData();
-            document.getElementById('blacklistInput').value = '';
-            showBlacklist();
-            showToast('🚫 Đã chặn thiết bị!');
-        }
-        function removeBlacklist(i) {
-            blacklist.splice(i, 1); saveData(); showBlacklist();
-            showToast('✅ Đã bỏ chặn');
-        }
 
-        function sendNotification() {
-            const msg = document.getElementById('notifyMessage').value;
-            if (!msg) { showToast('Nhập nội dung!', true); return; }
-            notifications.push({ message: msg, time: Date.now() });
-            saveData();
-            addLog(`Gửi thông báo: ${msg}`);
-            document.getElementById('notifyMessage').value = '';
-            showToast('✅ Đã gửi!');
-        }
-
-        // ========== ĐỔI KEY ADMIN ==========
-        function openChangePass() {
-            hideAllPanels();
-            document.getElementById('changePassModal').classList.add('active');
-        }
-        function closeChangePass() {
-            document.getElementById('changePassModal').classList.remove('active');
-            document.getElementById('oldPass').value = '';
-            document.getElementById('newPass').value = '';
-            document.getElementById('newPass2').value = '';
-        }
-        function changeAdminKey() {
-            const oldP = document.getElementById('oldPass').value.toUpperCase();
-            const newP = document.getElementById('newPass').value.toUpperCase();
-            const newP2 = document.getElementById('newPass2').value.toUpperCase();
-            if (oldP !== ADMIN_KEY) { showToast('❌ Key cũ sai!', true); return; }
-            if (newP.length < 6) { showToast('❌ Key mới phải >= 6 ký tự!', true); return; }
-            if (newP !== newP2) { showToast('❌ Nhập lại không khớp!', true); return; }
-            ADMIN_KEY = newP;
-            localStorage.setItem('adminKey', ADMIN_KEY);
-            saveSession({ type: 'admin', key: ADMIN_KEY });
-            addLog('Đổi key admin');
-            showToast('✅ Đổi key admin thành công!');
-            closeChangePass();
-        }
-
-        // ========== XUẤT/NHẬP DỮ LIỆU ==========
-        function exportData() {
-            const data = { videos, keys, activityLog, notifications, blacklist, videoLikes, exportDate: new Date().toISOString() };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `blminh_backup_${Date.now()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('💾 Đã xuất dữ liệu!');
-        }
-        function importData() {
-            const input = document.createElement('input');
-            input.type = 'file'; input.accept = '.json';
-            input.onchange = e => {
-                const reader = new FileReader();
-                reader.onload = ev => {
-                    try {
-                        const data = JSON.parse(ev.target.result);
-                        if (confirm('GHI ĐÈ toàn bộ dữ liệu hiện tại?')) {
-                            videos = data.videos || [];
-                            keys = data.keys || [];
-                            activityLog = data.activityLog || [];
-                            notifications = data.notifications || [];
-                            blacklist = data.blacklist || [];
-                            videoLikes = data.videoLikes || {};
-                            saveData(); updateAdminStats(); renderKeyList(); loadVideos();
-                            showToast('📂 Đã nhập!');
-                        }
-                    } catch(err) { showToast('❌ File lỗi!', true); }
-                };
-                reader.readAsText(e.target.files[0]);
-            };
-            input.click();
-        }
-
-        // ========== BẢO TRÌ ==========
         function toggleMaintenance() {
             isMaintenance = !isMaintenance;
             localStorage.setItem('isMaintenance', isMaintenance);
             document.getElementById('maintenanceBtn').textContent = isMaintenance ? '🔧 Tắt Bảo Trì' : '🔧 Bật Bảo Trì';
-            showToast(isMaintenance ? '🔧 Đã bật bảo trì!' : '✅ Đã tắt!');
-            addLog(isMaintenance ? 'Bật bảo trì' : 'Tắt bảo trì');
+            showToast(isMaintenance ? '🔧 Đã BẬT bảo trì!' : '✅ Đã TẮT bảo trì!');
         }
 
-        // ========== MINI GAME ==========
-        let correctNumber = 0;
-        function openGuessModal() {
-            correctNumber = Math.floor(Math.random() * 100) + 1;
-            document.getElementById('guessInput').value = '';
-            document.getElementById('guessResult').innerHTML = '';
-            document.getElementById('guessModal').classList.add('active');
-        }
-        function checkGuess() {
-            const guess = parseInt(document.getElementById('guessInput').value);
-            const result = document.getElementById('guessResult');
-            if (!guess || guess < 1 || guess > 100) {
-                result.innerHTML = '<span style="color:#ff6b6b;">Nhập số 1-100!</span>'; return;
-            }
-            if (guess === correctNumber) {
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                let code = 'BL-VIP-';
-                for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
-                keys.push({ code, duration: 'vip', expiresAt: Infinity, used: false, locked: false, note: 'Trúng mini game', deviceId: null });
-                saveData();
-                result.innerHTML = `<span style="color:#38ef7d;">🎉 Trúng! Số đúng: ${correctNumber}<br>Key VIP: <strong>${code}</strong></span>`;
-                addLog(`Trúng game, key VIP: ${code}`);
-            } else if (guess < correctNumber) {
-                result.innerHTML = '<span style="color:#ff9800;">📈 Nhỏ hơn! Thử lại.</span>';
-            } else {
-                result.innerHTML = '<span style="color:#ff9800;">📉 Lớn hơn! Thử lại.</span>';
-            }
-        }
-
-        // ========== VIDEO ==========
-        let uploadedVideoData = null;
         function handleUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
             if (file.size > 5 * 1024 * 1024) {
-                showToast('⚠️ File > 5MB! Nén hoặc chọn file nhỏ hơn.', true);
+                showToast('⚠️ File > 5MB! Chọn file nhỏ hơn.', true);
                 return;
             }
             const reader = new FileReader();
@@ -1143,7 +580,6 @@
                 uploadedVideoData = e.target.result;
                 document.getElementById('newVideoTitle').value = file.name.replace(/\.[^/.]+$/, "");
                 document.getElementById('newVideoDesc').value = "Video " + file.name;
-                // Preview
                 document.getElementById('uploadPreview').innerHTML = `<video src="${e.target.result}" controls style="width:100%; max-height:200px; border-radius:8px; margin:10px 0;"></video>`;
                 showToast('📤 Đã chọn file!');
             };
@@ -1158,34 +594,21 @@
             if (!title) { showToast('Nhập tên!', true); return; }
             if (!uploadedVideoData) { showToast('Chưa chọn video!', true); return; }
             
-            videos.push({ id: Date.now(), title, description: desc, cat, url: uploadedVideoData, isVip, views: 0, likes: 0, dislikes: 0 });
+            videos.push({ id: Date.now(), title, description: desc, cat, url: uploadedVideoData, isVip, views: 0 });
             uploadedVideoData = null;
             document.getElementById('newVideoTitle').value = '';
             document.getElementById('newVideoDesc').value = '';
             document.getElementById('newVideoVip').checked = false;
             document.getElementById('uploadPreview').innerHTML = '';
             
-            saveData(); renderVideoList(); loadVideos(); updateAdminStats();
-            addLog(`Thêm video ${title}`);
+            saveData(); showVideoManager(); loadVideos(); updateAdminStats();
             showToast('✅ Đã thêm video!');
-        }
-
-        function renderVideoList() {
-            const c = document.getElementById('videoListContainer');
-            c.innerHTML = '';
-            videos.forEach((v, i) => {
-                const div = document.createElement('div');
-                div.className = 'key-item';
-                div.innerHTML = `<div><div class="key-code">${v.title} ${v.isVip ? '👑' : ''}</div><div class="key-info">👁️ ${v.views || 0}</div></div><button class="btn-delete" onclick="deleteVideo(${i})">🗑️</button>`;
-                c.appendChild(div);
-            });
         }
 
         function deleteVideo(i) {
             if (confirm(`Xóa video "${videos[i].title}"?`)) {
-                addLog(`Xóa video ${videos[i].title}`);
                 videos.splice(i, 1);
-                saveData(); renderVideoList(); loadVideos(); updateAdminStats();
+                saveData(); showVideoManager(); loadVideos(); updateAdminStats();
                 showToast('Đã xóa!');
             }
         }
@@ -1195,7 +618,6 @@
             if (i >= 0) deleteVideo(i);
         }
 
-        // ========== LỌC VIDEO ==========
         function filterVideos(cat, tab) {
             currentFilter = cat;
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -1203,7 +625,6 @@
             loadVideos();
         }
 
-        // ========== HIỂN THỊ VIDEO ==========
         function loadVideos() {
             const grid = document.getElementById('videoGrid');
             grid.innerHTML = '';
@@ -1213,7 +634,7 @@
             if (searchTerm) filtered = filtered.filter(v => v.title.toLowerCase().includes(searchTerm));
             
             if (filtered.length === 0) {
-                grid.innerHTML = '<div class="empty-message">📭 Chưa có video nào. Admin hãy upload video!</div>';
+                grid.innerHTML = '<div style="color:#888; padding:30px;">📭 Chưa có video. Admin hãy upload!</div>';
                 return;
             }
             
@@ -1226,24 +647,16 @@
                     const k = keys.find(kk => kk.code === currentSession.key);
                     if (k && k.duration !== 'vip') canView = false;
                 }
-                
                 const isAdmin = currentSession && currentSession.type === 'admin';
-                const isLiked = videoLikes[video.id] === 'like';
-                const isDisliked = videoLikes[video.id] === 'dislike';
                 
                 card.innerHTML = `
                     ${isAdmin ? `<button class="video-delete-btn" onclick="deleteVideoFromCard(${video.id})">🗑️</button>` : ''}
                     <div style="width:100%; height:150px; border-radius:8px; background:linear-gradient(135deg,#a855f7,#7c3aed); display:flex; align-items:center; justify-content:center; margin-bottom:10px; font-size:50px;">${canView ? '🎬' : '🔒'}</div>
-                    <div class="video-title">${video.title} ${video.isVip ? '<span class="vip-badge">👑 VIP</span>' : ''}</div>
+                    <div class="video-title">${video.title} ${video.isVip ? '<span class="vip-badge">👑</span>' : ''}</div>
                     <div class="video-desc">${video.description}</div>
                     <div class="video-cat">${video.cat}</div>
-                    <span style="font-size:11px; color:#888; margin-left:8px;">👁️ ${video.views || 0}</span>
                     <div style="margin-top:10px;">
                         ${canView ? `<button class="btn-submit" style="padding:8px;font-size:14px;" onclick="openVideoModal(${video.id})">▶️ Xem Video</button>` : '<p style="color:#ff9800;font-size:13px;">⚠️ Cần key VIP</p>'}
-                    </div>
-                    <div class="video-actions">
-                        <button class="action-btn ${isLiked ? 'active-like' : ''}" onclick="likeVideo(${video.id})">👍 ${video.likes || 0}</button>
-                        <button class="action-btn ${isDisliked ? 'active-dislike' : ''}" onclick="dislikeVideo(${video.id})">👎 ${video.dislikes || 0}</button>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -1255,85 +668,15 @@
             if (!video) return;
             video.views = (video.views || 0) + 1;
             saveData();
-            currentPlayingVideo = video;
             document.getElementById('modalVideo').src = video.url;
             document.getElementById('modalVideoTitle').textContent = video.title;
             document.getElementById('videoModal').classList.add('active');
-            addLog(`Xem video: ${video.title}`);
         }
-
         function closeVideoModal() {
             document.getElementById('videoModal').classList.remove('active');
             document.getElementById('modalVideo').pause();
-            currentPlayingVideo = null;
         }
 
-        function downloadCurrentVideo() {
-            if (!currentPlayingVideo) return;
-            const a = document.createElement('a');
-            a.href = currentPlayingVideo.url;
-            a.download = currentPlayingVideo.title + '.mp4';
-            a.click();
-            showToast('📥 Đang tải...');
-        }
-
-        function likeVideo(id) {
-            const video = videos.find(v => v.id === id);
-            if (!video) return;
-            if (videoLikes[id] === 'like') {
-                video.likes--; delete videoLikes[id];
-            } else {
-                if (videoLikes[id] === 'dislike') video.dislikes--;
-                video.likes = (video.likes || 0) + 1;
-                videoLikes[id] = 'like';
-            }
-            saveData(); loadVideos();
-        }
-
-        function dislikeVideo(id) {
-            const video = videos.find(v => v.id === id);
-            if (!video) return;
-            if (videoLikes[id] === 'dislike') {
-                video.dislikes--; delete videoLikes[id];
-            } else {
-                if (videoLikes[id] === 'like') video.likes--;
-                video.dislikes = (video.dislikes || 0) + 1;
-                videoLikes[id] = 'dislike';
-            }
-            saveData(); loadVideos();
-        }
-
-        // ========== PWA ==========
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBtn').classList.add('show');
-        });
-
-        function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choice) => {
-                    if (choice.outcome === 'accepted') showToast('✅ Đã cài app!');
-                    deferredPrompt = null;
-                    document.getElementById('installBtn').classList.remove('show');
-                });
-            } else {
-                showToast('📱 Mở menu trình duyệt → "Thêm vào màn hình chính"', false);
-            }
-        }
-
-        // ========== BACKUP TỰ ĐỘNG ==========
-        setInterval(() => {
-            const lastBackup = localStorage.getItem('lastBackup');
-            const now = Date.now();
-            if (!lastBackup || now - parseInt(lastBackup) > 86400000) {
-                localStorage.setItem('lastBackup', now);
-                console.log('💾 Đã tự động lưu backup nội bộ');
-            }
-        }, 3600000);
-
-        // ========== TOAST ==========
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -1341,26 +684,14 @@
             setTimeout(() => { toast.className = 'toast'; }, 3000);
         }
 
-        // ========== KHỞI CHẠY ==========
         window.onload = function() {
             setTimeout(() => {
                 document.getElementById('loadingScreen').classList.add('hide');
-            }, 1500);
-            
-            if (!darkMode) document.body.classList.add('light-mode');
-            document.getElementById('themeBtn').textContent = darkMode ? '🌙' : '☀️';
-            document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
-            
-            if (isMaintenance) {
-                const ss = JSON.parse(localStorage.getItem('currentSession'));
-                if (!ss || ss.type !== 'admin') {
-                    document.getElementById('maintenanceOverlay').classList.add('active');
-                }
-            }
+            }, 1200);
             
             saveData();
             loadVideos();
-            autoLogin();
+            checkMaintenanceAndLogin();
         };
     </script>
 </body>
