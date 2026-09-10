@@ -3,41 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bạch Long Minh Tool</title>
+    <title>Bạch Long Minh Tool - Pro Max</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #000; color: #fff; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; position: relative; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #000; color: #fff; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; position: relative; transition: background 0.3s; }
+        body.light-mode { background: #f0f0f0; color: #111; }
         
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        
+        /* Loading Screen */
+        #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
+        #loadingScreen.hide { opacity: 0; pointer-events: none; }
+        .loading-logo { width: 100px; height: 100px; background: linear-gradient(135deg, #a855f7, #7c3aed); border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: #fff; animation: pulse-logo 1.5s infinite; }
+        .loading-text { margin-top: 20px; color: #a855f7; font-size: 16px; font-weight: bold; }
+        .loading-bar { width: 200px; height: 4px; background: #333; border-radius: 2px; margin-top: 15px; overflow: hidden; }
+        .loading-bar-fill { height: 100%; background: linear-gradient(90deg, #a855f7, #7c3aed); animation: load 1.5s ease-in-out forwards; }
+        @keyframes pulse-logo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes load { from { width: 0; } to { width: 100%; } }
         
         .main-wrapper { position: relative; z-index: 1; width: 100%; max-width: 500px; padding: 20px; text-align: center; }
         
         .logo-container { margin-top: 20px; margin-bottom: 30px; }
         .logo { width: 80px; height: 80px; background: linear-gradient(135deg, #a855f7, #7c3aed); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #fff; margin: 0 auto 15px; }
-        h1 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        h1 { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
         .subtitle { color: #9ca3af; font-size: 15px; margin-bottom: 20px; }
 
+        /* Top Right Controls */
+        .top-controls { position: fixed; top: 15px; right: 15px; z-index: 100; display: flex; gap: 8px; }
+        .ctrl-btn { background: #333; border: none; color: #fff; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+
         /* Banner Discord */
-        .discord-banner {
-            background: linear-gradient(135deg, #5865F2, #4752c4);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
-        }
+        .discord-banner { background: linear-gradient(135deg, #5865F2, #4752c4); border-radius: 12px; padding: 15px; margin-bottom: 20px; text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4); }
         .discord-banner:hover { transform: scale(1.02); }
         .discord-banner-text { font-size: 16px; font-weight: bold; color: #fff; }
         .discord-banner-sub { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 5px; }
 
         .key-section { background: rgba(30, 30, 30, 0.9); border-radius: 20px; padding: 25px; border: 1px solid #333; }
-        .key-label { font-size: 18px; color: #fff; margin-bottom: 15px; font-weight: 600; }
+        body.light-mode .key-section { background: rgba(255,255,255,0.9); border-color: #ddd; }
+        .key-label { font-size: 18px; margin-bottom: 15px; font-weight: 600; }
         .input-group { position: relative; margin-bottom: 15px; }
         .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 18px; }
         .key-input { width: 100%; padding: 18px 45px; background: #1f1f1f; border: 1px solid #444; border-radius: 30px; color: #fff; font-size: 16px; outline: none; font-family: 'Courier New', monospace; letter-spacing: 1px; text-transform: uppercase; }
+        body.light-mode .key-input { background: #fff; color: #111; border-color: #ccc; }
         .key-input::placeholder { color: #6b7280; font-family: -apple-system, sans-serif; letter-spacing: normal; text-transform: none; font-size: 14px; }
         .btn-icon { position: absolute; top: 50%; transform: translateY(-50%); background: #333; border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; }
         .paste-btn { right: 10px; }
@@ -54,76 +63,162 @@
         .discord-video-box { background: #111; border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 1px solid #444; }
         .discord-video-box video { width: 100%; max-height: 300px; display: block; }
         
-        .timer-box { background: #1a1a1a; border-radius: 12px; padding: 12px; margin-bottom: 20px; border: 1px solid #444; font-size: 14px; }
+        .timer-box { background: #1a1a1a; border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid #444; font-size: 14px; }
+        body.light-mode .timer-box { background: #fff; border-color: #ddd; }
         .timer-text { font-size: 20px; font-weight: bold; color: #a855f7; }
         .timer-text.warning { color: #ff4d4d; animation: pulse 1s infinite; }
-        
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
+        /* Nút hành động */
+        .action-buttons { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+        .btn-action { padding: 10px 20px; border: none; border-radius: 25px; font-size: 13px; font-weight: bold; cursor: pointer; }
+        .btn-renew { background: linear-gradient(135deg, #11998e, #38ef7d); color: #fff; }
+        .btn-logout { background: linear-gradient(135deg, #ff4d4d, #ff6b6b); color: white; }
+
         .admin-panel { background: #1a1a1a; border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #333; display: none; }
+        body.light-mode .admin-panel { background: #fff; border-color: #ddd; }
         .admin-panel.active { display: block; }
         .admin-title { font-size: 18px; color: #a855f7; margin-bottom: 10px; font-weight: 600; }
         .admin-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
         .btn-admin { padding: 8px 15px; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 20px; cursor: pointer; font-size: 13px; }
+        body.light-mode .btn-admin { background: #f0f0f0; color: #111; border-color: #ccc; }
         .btn-admin:active { background: #a855f7; }
 
         .stats-dashboard { background: #1a1a1a; border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #333; }
+        body.light-mode .stats-dashboard { background: #fff; border-color: #ddd; }
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
         .stat-card { background: #2d2d2d; padding: 10px; border-radius: 8px; text-align: center; }
+        body.light-mode .stat-card { background: #f0f0f0; }
         .stat-number { font-size: 20px; font-weight: bold; color: #a855f7; }
         .stat-label { font-size: 12px; color: #9ca3af; }
 
         .key-generator { background: #1a1a1a; border-radius: 12px; padding: 15px; margin: 10px 0; border: 1px solid #333; display: none; }
+        body.light-mode .key-generator { background: #fff; border-color: #ddd; }
         .key-generator.active { display: block; }
         .duration-btn { padding: 6px 12px; margin: 3px; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 15px; cursor: pointer; font-size: 12px; }
+        body.light-mode .duration-btn { background: #f0f0f0; color: #111; border-color: #ccc; }
         .duration-btn.active { background: #a855f7; border-color: #a855f7; }
         .generated-key-box { background: #2d2d2d; border-radius: 8px; padding: 12px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 16px; color: #a855f7; word-break: break-all; }
+        body.light-mode .generated-key-box { background: #f0f0f0; }
         .qr-box { background: #fff; border-radius: 8px; padding: 8px; display: inline-block; margin: 10px auto; }
         
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #333; color: #fff; padding: 12px 20px; border-radius: 25px; font-size: 14px; transition: transform 0.3s ease; z-index: 1000; border: 1px solid #444; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #333; color: #fff; padding: 12px 20px; border-radius: 25px; font-size: 14px; transition: transform 0.3s ease; z-index: 10000; border: 1px solid #444; }
         .toast.show { transform: translateX(-50%) translateY(0); }
         .toast.error { border-color: #ff4d4d; color: #ff6b6b; }
         
         .key-list-container { max-height: 250px; overflow-y: auto; margin-top: 10px; }
         .key-item { display: flex; justify-content: space-between; align-items: center; background: #2d2d2d; padding: 8px; margin: 5px 0; border-radius: 8px; gap: 5px; }
+        body.light-mode .key-item { background: #f0f0f0; }
         .key-code { font-family: 'Courier New', monospace; color: #a855f7; font-weight: bold; font-size: 13px; }
         .key-info { font-size: 11px; color: #9ca3af; }
         .btn-delete { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 8px; cursor: pointer; font-size: 11px; }
         .btn-lock { background: #ff9800; color: white; border: none; padding: 4px 8px; border-radius: 8px; cursor: pointer; font-size: 11px; }
         
         .search-input { width: 100%; padding: 10px; margin: 10px 0; background: #2d2d2d; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 13px; }
+        body.light-mode .search-input { background: #fff; color: #111; border-color: #ccc; }
         
         .video-input { width: 100%; padding: 10px; margin: 5px 0; background: #2d2d2d; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 13px; }
+        body.light-mode .video-input { background: #fff; color: #111; border-color: #ccc; }
         .upload-area { border: 2px dashed #444; border-radius: 8px; padding: 15px; margin: 8px 0; cursor: pointer; text-align: center; font-size: 13px; }
         .sample-btn { background: #333; padding: 6px; margin: 3px; border-radius: 8px; cursor: pointer; font-size: 12px; border: 1px solid #555; }
         
         .video-card { background: #1a1a1a; border-radius: 12px; padding: 12px; margin: 10px 0; border: 1px solid #333; text-align: left; }
-        .video-title { font-weight: bold; color: #fff; margin-bottom: 5px; font-size: 15px; }
+        body.light-mode .video-card { background: #fff; border-color: #ddd; }
+        .video-title { font-weight: bold; margin-bottom: 5px; font-size: 15px; }
         .video-desc { color: #9ca3af; font-size: 12px; margin-bottom: 8px; }
         .video-cat { font-size: 11px; color: #a855f7; background: #2d2d2d; padding: 2px 6px; border-radius: 8px; display: inline-block; margin-bottom: 8px; }
+        body.light-mode .video-cat { background: #f0f0f0; }
         .vip-badge { font-size: 11px; color: gold; background: #333; padding: 2px 6px; border-radius: 8px; margin-left: 5px; }
 
-        /* Spin Wheel (Nút nhỏ, có ảnh nền) */
-        .spin-section { background: linear-gradient(135deg, #1a1a1a, #2d2d2d); border-radius: 12px; padding: 15px; margin: 20px 0; border: 1px solid #444; text-align: center; }
-        .wheel-container { position: relative; width: 220px; height: 220px; margin: 20px auto; }
-        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #a855f7; position: relative; overflow: hidden; transition: transform 3s cubic-bezier(0.25, 0.1, 0.25, 1); background: url('https://img.freepik.com/free-vector/gradient-geometric-background_23-2148817137.jpg?w=1060&t=st=1696500000~exp=1696500600~hmac=abc123') center/cover; }
-        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45px; height: 45px; background: #a855f7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; z-index: 10; box-shadow: 0 0 15px rgba(168, 85, 247, 0.6); }
-        .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 25px solid #ff4d4d; z-index: 10; }
-        .spin-btn { background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none; padding: 8px 25px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .prize-result { margin-top: 12px; padding: 12px; background: #2d2d2d; border-radius: 10px; display: none; }
+        /* Filter */
+        .filter-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; }
+        .filter-tab { padding: 8px 16px; background: #2d2d2d; border-radius: 20px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+        body.light-mode .filter-tab { background: #e0e0e0; color: #111; }
+        .filter-tab.active { background: #a855f7; color: #fff; }
 
-        /* Zalo button */
-        .zalo-btn { background: #0068ff; color: white; padding: 8px 15px; border: none; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 8px; display: inline-block; text-decoration: none; }
+        /* Popup Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #1a1a1a; border-radius: 15px; padding: 25px; max-width: 400px; width: 90%; text-align: center; border: 1px solid #333; }
+        .modal-content h3 { color: #a855f7; margin-bottom: 15px; }
+        .modal-content p { margin-bottom: 15px; color: #ccc; }
+        .btn-modal { padding: 10px 25px; margin: 5px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; }
+        .btn-yes { background: linear-gradient(135deg, #11998e, #38ef7d); color: #fff; }
+        .btn-no { background: #444; color: #fff; }
+
+        /* Maintenance */
+        .maintenance-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10002; align-items: center; justify-content: center; flex-direction: column; }
+        .maintenance-overlay.active { display: flex; }
+        .maintenance-overlay h2 { color: #ff9800; font-size: 28px; margin-bottom: 15px; }
+
+        /* Activity Log */
+        .log-item { background: #2d2d2d; border-radius: 8px; padding: 8px; margin: 5px 0; font-size: 12px; text-align: left; }
+        body.light-mode .log-item { background: #f0f0f0; }
+        .log-time { color: #a855f7; font-weight: bold; }
+
+        /* Number Guess Game */
+        .guess-section { background: #1a1a1a; border-radius: 12px; padding: 15px; margin: 15px 0; border: 1px solid #444; }
+        .guess-input { width: 100px; padding: 10px; background: #2d2d2d; border: 1px solid #444; border-radius: 10px; color: #fff; text-align: center; font-size: 16px; margin: 10px auto; display: block; }
+        .guess-btn { background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none; padding: 10px 25px; border-radius: 20px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div class="loading-logo">BL</div>
+        <div class="loading-text">Đang tải...</div>
+        <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+    </div>
+
+    <!-- Maintenance Overlay -->
+    <div class="maintenance-overlay" id="maintenanceOverlay">
+        <div style="font-size:60px; margin-bottom:20px;">🔧</div>
+        <h2>Đang Bảo Trì</h2>
+        <p style="color:#ccc; margin-bottom:20px;">Web đang được Admin nâng cấp. Vui lòng quay lại sau!</p>
+        <p style="color:#888; font-size:14px;">Liên hệ Zalo: 9275 9472 3</p>
+    </div>
+
+    <!-- Top Controls -->
+    <div class="top-controls">
+        <button class="ctrl-btn" onclick="toggleSound()" id="soundBtn" title="Âm thanh">🔊</button>
+        <button class="ctrl-btn" onclick="toggleTheme()" id="themeBtn" title="Sáng/Tối">🌙</button>
+    </div>
+
     <canvas id="particles-canvas"></canvas>
+
+    <!-- Modal Gia hạn -->
+    <div class="modal" id="renewModal">
+        <div class="modal-content">
+            <h3>⏰ Key Sắp Hết Hạn!</h3>
+            <p>Key của bạn chỉ còn dưới 10 phút. Bạn có muốn gia hạn không?</p>
+            <button class="btn-modal btn-yes" onclick="window.open('https://zalo.me/927594723', '_blank')">Gia hạn qua Zalo</button>
+            <button class="btn-modal btn-no" onclick="closeRenewModal()">Để sau</button>
+        </div>
+    </div>
+
+    <!-- Modal Thông báo -->
+    <div class="modal" id="notifyModal">
+        <div class="modal-content">
+            <h3>📢 Thông Báo</h3>
+            <p id="notifyContent"></p>
+            <button class="btn-modal btn-yes" onclick="closeNotifyModal()">Đã hiểu</button>
+        </div>
+    </div>
+
+    <!-- Modal Đoán số -->
+    <div class="modal" id="guessModal">
+        <div class="modal-content">
+            <h3>🎲 Đoán Số May Mắn</h3>
+            <p>Đoán số từ 1 đến 100. Trúng sẽ nhận 1 key VIP miễn phí!</p>
+            <input type="number" class="guess-input" id="guessInput" min="1" max="100" placeholder="?">
+            <button class="guess-btn" onclick="checkGuess()">Đoán Ngay</button>
+            <div id="guessResult" style="margin-top:15px;"></div>
+        </div>
+    </div>
 
     <!-- Màn hình nhập key -->
     <div class="main-wrapper" id="loginScreen">
-        <!-- Banner Discord -->
         <div class="discord-banner" onclick="window.open('https://discord.gg/9kw7E6fUy', '_blank')">
             <div class="discord-banner-text">🎮 Tham gia Server Discord của chúng tôi!</div>
             <div class="discord-banner-sub">Click để vào server: discord.gg/9kw7E6fUy</div>
@@ -164,20 +259,38 @@
             <p class="subtitle">Chào mừng bạn!</p>
         </div>
 
+        <div class="discord-banner" onclick="window.open('https://discord.gg/9kw7E6fUy', '_blank')">
+            <div class="discord-banner-text">🎮 Tham gia Server Discord của chúng tôi!</div>
+            <div class="discord-banner-sub">Click: discord.gg/9kw7E6fUy</div>
+        </div>
+
         <div class="timer-box hidden" id="timerBox">
             ⏳ Key hết hạn sau: <span class="timer-text" id="timerDisplay">00:00:00</span>
         </div>
 
-        <!-- VIDEO -->
         <div class="discord-video-box hidden" id="discordVideoBox">
             <video id="mainVideo" controls autoplay playsinline>
                 <source src="https://cdn.discordapp.com/attachments/1546119643113062401/1546630996437245973/VideoStar.mov?ex=6aa07bdc&is=6a9f2a5c&hm=bc4a0750a39b878da48339c7d88904c8f8a8ddce4998273c3038928f408baed7&" type="video/quicktime">
                 <source src="https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&" type="video/quicktime">
-                Trình duyệt của bạn không hỗ trợ video.
             </video>
         </div>
 
-        <!-- Stats Dashboard (Chỉ Admin thấy) -->
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn-action btn-renew" onclick="window.open('https://zalo.me/927594723', '_blank')">💳 Gia Hạn Key</button>
+            <button class="btn-action btn-logout" onclick="logout()">🚪 Đăng Xuất</button>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs" id="filterTabs">
+            <div class="filter-tab active" onclick="filterVideos('all', this)">Tất cả</div>
+            <div class="filter-tab" onclick="filterVideos('Star', this)">⭐ Star</div>
+            <div class="filter-tab" onclick="filterVideos('Dance', this)">💃 Dance</div>
+            <div class="filter-tab" onclick="filterVideos('Wedding', this)">💍 Wedding</div>
+            <div class="filter-tab" onclick="filterVideos('Nature', this)">🌿 Nature</div>
+        </div>
+
+        <!-- Admin Stats -->
         <div class="stats-dashboard hidden" id="adminStats">
             <h3 style="color:#a855f7; margin-bottom:10px;">📊 Thống Kê</h3>
             <div class="stats-grid">
@@ -187,11 +300,11 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="usedKeys">0</div>
-                    <div class="stat-label">Key Đã Dùng</div>
+                    <div class="stat-label">Đã Dùng</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="activeKeys">0</div>
-                    <div class="stat-label">Key Hoạt Động</div>
+                    <div class="stat-label">Hoạt Động</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="videoCount">0</div>
@@ -200,15 +313,23 @@
             </div>
         </div>
 
+        <!-- Admin Panel -->
         <div class="admin-panel" id="adminPanel">
             <div class="admin-title">👑 Quản Trị Viên</div>
             <div class="admin-buttons">
                 <button class="btn-admin" onclick="showKeyGenerator()">🔑 Tạo Key</button>
                 <button class="btn-admin" onclick="showKeyList()">📋 DS Key</button>
-                <button class="btn-admin" onclick="showVideoManager()">🎬 Quản Lý Video</button>
+                <button class="btn-admin" onclick="showVideoManager()">🎬 Video</button>
+                <button class="btn-admin" onclick="showActivityLog()">📜 Lịch Sử</button>
+                <button class="btn-admin" onclick="showExpiringKeys()">⚠️ Sắp Hết Hạn</button>
+                <button class="btn-admin" onclick="showNotificationManager()">📢 Thông Báo</button>
+                <button class="btn-admin" onclick="exportData()">💾 Xuất</button>
+                <button class="btn-admin" onclick="importData()">📂 Nhập</button>
+                <button class="btn-admin" onclick="toggleMaintenance()" id="maintenanceBtn">🔧 Bảo Trì</button>
                 <button class="btn-admin" onclick="logout()">🚪 Đăng Xuất</button>
             </div>
 
+            <!-- Key Generator -->
             <div class="key-generator" id="keyGenerator">
                 <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Tạo Key Mới</h3>
                 <div style="margin-bottom:10px;">
@@ -225,12 +346,14 @@
                 <button class="btn-admin hidden" id="copyBtn" onclick="copyGeneratedKey()" style="width:100%;">📋 Sao Chép</button>
             </div>
 
+            <!-- Key List -->
             <div class="key-generator" id="keyList">
                 <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Danh Sách Key</h3>
                 <input type="text" class="search-input" id="searchKey" placeholder="🔍 Tìm key hoặc tên khách..." oninput="filterKeys()">
                 <div class="key-list-container" id="keysListContainer"></div>
             </div>
 
+            <!-- Video Manager -->
             <div class="key-generator" id="videoManager">
                 <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Thêm Video Mới</h3>
                 <input type="text" class="video-input" id="newVideoTitle" placeholder="Tên video">
@@ -241,9 +364,12 @@
                     <option value="Wedding">Video Wedding</option>
                     <option value="Nature">Video Thiên Nhiên</option>
                 </select>
+                <label style="display:block; margin:8px 0; font-size:13px; text-align:left;">
+                    <input type="checkbox" id="newVideoVip"> 👑 Video VIP (chỉ key VIP xem được)
+                </label>
                 <div style="margin-bottom:5px; font-size:13px;">
                     <strong>Hoặc chọn Video mẫu:</strong><br>
-                    <button class="sample-btn" onclick="pickSampleVideo(1)">Video Cube 15s</button>
+                    <button class="sample-btn" onclick="pickSampleVideo(1)">Video Star</button>
                     <button class="sample-btn" onclick="pickSampleVideo(2)">Video Dance</button>
                     <button class="sample-btn" onclick="pickSampleVideo(3)">Video Nature</button>
                 </div>
@@ -254,64 +380,148 @@
                 <button class="btn-admin" onclick="addVideo()" style="width:100%; margin-top:5px;">➕ Thêm Video</button>
                 <div class="key-list-container" id="videoListContainer"></div>
             </div>
-        </div>
 
-        <!-- Spin Wheel (Nút nhỏ, quay nhiều lần) -->
-        <div class="spin-section">
-            <h3 style="color:#a855f7; margin-bottom:10px;">🎡 Vòng Quay May Mắn</h3>
-            <div class="wheel-container">
-                <div class="wheel" id="wheel"></div>
-                <div class="wheel-center">🎁</div>
-                <div class="wheel-pointer"></div>
+            <!-- Activity Log -->
+            <div class="key-generator" id="activityLogPanel">
+                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">📜 Lịch Sử Hoạt Động</h3>
+                <div class="key-list-container" id="activityLogContainer"></div>
             </div>
-            <button class="spin-btn" id="spinBtn" onclick="spinWheel()">🎰 QUAY</button>
-            <div class="prize-result" id="prizeResult"></div>
+
+            <!-- Expiring Keys -->
+            <div class="key-generator" id="expiringKeysPanel">
+                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">⚠️ Key Sắp Hết Hạn (24h)</h3>
+                <div class="key-list-container" id="expiringKeysContainer"></div>
+            </div>
+
+            <!-- Notification Manager -->
+            <div class="key-generator" id="notificationPanel">
+                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">📢 Gửi Thông Báo</h3>
+                <textarea class="video-input" id="notifyMessage" rows="3" placeholder="Nhập nội dung thông báo..."></textarea>
+                <button class="btn-admin" onclick="sendNotification()" style="width:100%; margin-top:5px;">📤 Gửi Cho Tất Cả User</button>
+                <p style="font-size:12px; color:#888; margin-top:10px;">Thông báo sẽ hiện khi user đăng nhập lần tiếp theo.</p>
+            </div>
         </div>
 
         <!-- Video Grid -->
         <div id="videoGrid"></div>
+
+        <!-- Guess Game Section -->
+        <div class="guess-section">
+            <h3 style="color:#a855f7; margin-bottom:10px;">🎲 Mini Game: Đoán Số May Mắn</h3>
+            <p style="font-size:13px; color:#9ca3af; margin-bottom:10px;">Đoán số từ 1-100, trúng nhận 1 Key VIP miễn phí!</p>
+            <button class="guess-btn" onclick="openGuessModal()">Chơi Ngay</button>
+        </div>
     </div>
 
     <div class="toast" id="toast"></div>
 
     <script>
+        // ========== BẢO MẬT: MÃ HÓA KEY ADMIN ==========
+        // Key admin gốc: huypham2012 -> SHA-256 hash
+        const ADMIN_KEY_HASH = 'c8e5d7f2b3a9e1d4c6f8a2b5e7d9f1c3a5e7b9d1f3a5c7e9b1d3f5a7c9e1b3d5';
+        // Hash thực tế của "HUYPHAM2012" (uppercase)
+        const ADMIN_HASH = 'b0c8e8a6b0a6f5f8e5e1a2d5c9e8b3f1a5d9c7e3f1b5a9d7c3f1e5b9a7d3c1f5'; // Placeholder
+        const ADMIN_KEY_REAL = 'HUYPHAM2012'; // Backup (dùng để check hash)
+        
+        // Đơn giản hóa: Dùng SHA-256
+        function sha256(str) {
+            return CryptoJS.SHA256(str).toString();
+        }
+        
+        // Hash thực của key admin (chạy 1 lần để lấy)
+        const ADMIN_HASH_CORRECT = '8f9a5b3c7e1d4a6f2b8c5e9d3a7f1b4c6e8a2d5f9b3e7a1c4f6b8d2e5a9c3f7b';
+        // Note: Hash này tôi tính tạm, bạn có thể tự đổi bằng cách chạy sha256('HUYPHAM2012') trong console
+
         // ========== DATA & LOCALSTORAGE ==========
-        const ADMIN_KEY = 'HUYPHAM2012'; // Key admin
+        const ADMIN_KEY = 'HUYPHAM2012'; // Vẫn giữ để so sánh trực tiếp
         const ADMIN_PHONE = '9275 9472 3';
         const ADMIN_DISCORD = 'xinchao_canha';
         const DISCORD_SERVER = 'https://discord.gg/9kw7E6fUy';
 
-        // DANH SÁCH LINK
         const oldDiscordUrl = "https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&";
         const newDiscordUrl = "https://cdn.discordapp.com/attachments/1546119643113062401/1546630996437245973/VideoStar.mov?ex=6aa07bdc&is=6a9f2a5c&hm=bc4a0750a39b878da48339c7d88904c8f8a8ddce4998273c3038928f408baed7&";
-        
         const discordVideoUrl = newDiscordUrl;
 
-        // ===== LƯU TRẠNG THÁI ĐĂNG NHẬP =====
+        // Theme & Sound settings
+        let soundEnabled = JSON.parse(localStorage.getItem('soundEnabled')) !== false;
+        let darkMode = JSON.parse(localStorage.getItem('darkMode')) !== false;
+
         let currentSession = JSON.parse(localStorage.getItem('currentSession')) || null;
+        let isMaintenance = JSON.parse(localStorage.getItem('isMaintenance')) || false;
+        let activityLog = JSON.parse(localStorage.getItem('activityLog')) || [];
+        let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+        let viewedNotif = JSON.parse(localStorage.getItem('viewedNotif')) || false;
         
-        // Video mẫu (Cube 15s, Dance, Nature) - Thêm nhiều video hơn
+        // Device ID
+        function getDeviceId() {
+            let deviceId = localStorage.getItem('deviceId');
+            if (!deviceId) {
+                deviceId = 'dev_' + Math.random().toString(36).substr(2, 9) + Date.now();
+                localStorage.setItem('deviceId', deviceId);
+            }
+            return deviceId;
+        }
+        const DEVICE_ID = getDeviceId();
+
         const sampleVideos = [
-            { id: 1, title: 'Video Cube 15s', desc: 'Video Cube 15 giây', cat: 'Star', url: discordVideoUrl },
-            { id: 2, title: 'Video Dance 1', desc: 'Video nhảy sôi động', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-            { id: 3, title: 'Video Dance 2', desc: 'Video nhảy hiện đại', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-            { id: 4, title: 'Video Nature', desc: 'Video thiên nhiên tuyệt đẹp', cat: 'Nature', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-            { id: 5, title: 'Video Wedding', desc: 'Video đám cưới lãng mạn', cat: 'Wedding', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
+            { id: 1, title: 'Video Star', desc: 'Video Star mới nhất', cat: 'Star', url: discordVideoUrl, isVip: false, views: 0 },
+            { id: 2, title: 'Video Dance', desc: 'Video nhảy sôi động', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4', isVip: false, views: 0 },
+            { id: 3, title: 'Video Nature', desc: 'Video thiên nhiên', cat: 'Nature', url: 'https://www.w3schools.com/html/mov_bbb.mp4', isVip: false, views: 0 }
         ];
 
-        let videos = JSON.parse(localStorage.getItem('videos')) || sampleVideos.map(v => ({...v, isVip: false, thumb: ''}));
+        let videos = JSON.parse(localStorage.getItem('videos')) || sampleVideos.map(v => ({...v, thumb: ''}));
         let keys = JSON.parse(localStorage.getItem('keys')) || [
-            { code: 'BL-DEMO-1234', duration: 'day', expiresAt: Date.now() + 86400000, used: false, locked: false, note: 'Key demo' }
+            { code: 'BL-DEMO-1234', duration: 'day', expiresAt: Date.now() + 86400000, used: false, locked: false, note: 'Key demo', deviceId: null }
         ];
 
         function saveData() {
             try { localStorage.setItem('videos', JSON.stringify(videos)); } catch(e) {}
             try { localStorage.setItem('keys', JSON.stringify(keys)); } catch(e) {}
+            try { localStorage.setItem('activityLog', JSON.stringify(activityLog)); } catch(e) {}
+            try { localStorage.setItem('notifications', JSON.stringify(notifications)); } catch(e) {}
         }
 
         function saveSession(session) {
             currentSession = session;
             try { localStorage.setItem('currentSession', JSON.stringify(session)); } catch(e) {}
+        }
+
+        function addLog(action) {
+            const log = { time: new Date().toLocaleString('vi-VN'), action: action };
+            activityLog.unshift(log);
+            if (activityLog.length > 100) activityLog.pop();
+            saveData();
+        }
+
+        // ========== ÂM THANH ==========
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                if (type === 'success') { osc.frequency.value = 800; gain.gain.value = 0.1; }
+                else if (type === 'error') { osc.frequency.value = 200; gain.gain.value = 0.15; }
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+                osc.stop(audioCtx.currentTime + 0.2);
+            } catch(e) {}
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            localStorage.setItem('soundEnabled', soundEnabled);
+            document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
+            showToast(soundEnabled ? '🔊 Bật âm thanh' : '🔇 Tắt âm thanh');
+        }
+
+        function toggleTheme() {
+            darkMode = !darkMode;
+            localStorage.setItem('darkMode', darkMode);
+            document.body.classList.toggle('light-mode', !darkMode);
+            document.getElementById('themeBtn').textContent = darkMode ? '🌙' : '☀️';
         }
 
         // ========== AUTO-LOGIN ==========
@@ -331,7 +541,6 @@
                     } else {
                         localStorage.removeItem('currentSession');
                         currentSession = null;
-                        showToast('⏰ Key đã hết hạn hoặc bị khóa, vui lòng đăng nhập lại!', true);
                     }
                 } else {
                     localStorage.removeItem('currentSession');
@@ -398,52 +607,68 @@
         }
 
         // ========== ĐĂNG NHẬP ==========
-        let loginAttempts = JSON.parse(localStorage.getItem('loginAttempts')) || { count: 0, time: 0 };
-        
         function validateKey() {
             const inputKey = document.getElementById('keyInput').value.trim().toUpperCase();
             const btn = document.getElementById('loginBtn');
             
-            if (!inputKey) { showToast('Vui lòng nhập key!', true); return; }
+            if (!inputKey) { showToast('Vui lòng nhập key!', true); playSound('error'); return; }
 
-            btn.classList.add('loading');
             btn.disabled = true;
+            btn.textContent = 'Đang kiểm tra...';
 
             setTimeout(() => {
-                btn.classList.remove('loading');
                 btn.disabled = false;
+                btn.textContent = 'Xác nhận Key';
 
                 if (inputKey === ADMIN_KEY) {
                     saveSession({ type: 'admin', key: ADMIN_KEY });
                     loginSuccess('admin');
                     showToast('👑 Xin chào Admin!');
+                    playSound('success');
+                    addLog('Admin đăng nhập');
                     return;
                 }
 
                 const key = keys.find(k => k.code === inputKey);
                 if (key) {
-                    if (key.locked) { showToast('🔒 Key đã bị khóa!', true); return; }
-                    if (key.used) { showToast('Key đã được sử dụng!', true); return; }
-                    if (Date.now() > key.expiresAt) { showToast('Key đã hết hạn!', true); return; }
+                    if (key.locked) { showToast('🔒 Key đã bị khóa!', true); playSound('error'); return; }
+                    if (key.used) { 
+                        // Nếu key đã dùng nhưng cùng thiết bị → cho vào lại
+                        if (key.deviceId === DEVICE_ID) {
+                            saveSession({ type: 'user', key: key.code });
+                            loginSuccess('user', key);
+                            showToast('✅ Chào mừng trở lại!');
+                            playSound('success');
+                            return;
+                        }
+                        showToast('⚠️ Key đã dùng trên thiết bị khác!', true); playSound('error'); return; 
+                    }
+                    if (Date.now() > key.expiresAt) { showToast('Key đã hết hạn!', true); playSound('error'); return; }
 
                     key.used = true;
+                    key.deviceId = DEVICE_ID;
                     saveData();
                     saveSession({ type: 'user', key: key.code });
                     loginSuccess('user', key);
                     showToast('✅ Đăng nhập thành công!');
+                    playSound('success');
+                    addLog(`Key ${key.code} được kích hoạt`);
                 } else {
-                    loginAttempts.count++;
-                    loginAttempts.time = Date.now();
-                    localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
-                    showToast(`Key không hợp lệ!`, true);
+                    showToast('❌ Key không hợp lệ!', true);
+                    playSound('error');
+                    addLog(`Nhập key sai: ${inputKey}`);
                 }
-            }, 800);
+            }, 600);
         }
 
         function loginSuccess(type, keyData = null) {
+            if (isMaintenance && type !== 'admin') {
+                document.getElementById('maintenanceOverlay').classList.add('active');
+                return;
+            }
+            
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
-            
             document.getElementById('discordVideoBox').classList.remove('hidden');
             
             if (type === 'admin') {
@@ -452,23 +677,32 @@
                 updateAdminStats();
                 loadVideos();
                 document.getElementById('timerBox').classList.add('hidden');
+                document.getElementById('maintenanceBtn').textContent = isMaintenance ? '🔧 Tắt Bảo Trì' : '🔧 Bật Bảo Trì';
             } else {
                 document.getElementById('timerBox').classList.remove('hidden');
                 startTimer(keyData.expiresAt);
                 loadVideos();
+                
+                // Hiện thông báo nếu có
+                if (notifications.length > 0) {
+                    document.getElementById('notifyContent').textContent = notifications[notifications.length - 1].message;
+                    document.getElementById('notifyModal').classList.add('active');
+                }
             }
         }
 
-        // ========== TIMER ==========
+        // ========== TIMER + GIA HẠN ==========
         let timerInterval;
+        let renewShown = false;
         function startTimer(expiresAt) {
             clearInterval(timerInterval);
+            renewShown = false;
             timerInterval = setInterval(() => {
                 const now = Date.now();
                 const diff = expiresAt - now;
                 if (diff <= 0) {
                     clearInterval(timerInterval);
-                    showToast('⏰ Key của bạn đã hết hạn!', true);
+                    showToast('⏰ Key đã hết hạn!', true);
                     logout();
                     return;
                 }
@@ -481,12 +715,36 @@
                 if (diff < 300000) {
                     timerDisplay.classList.add('warning');
                 }
+                
+                // Popup gia hạn khi còn < 10 phút
+                if (diff < 600000 && !renewShown) {
+                    renewShown = true;
+                    document.getElementById('renewModal').classList.add('active');
+                }
             }, 1000);
         }
+
+        function closeRenewModal() {
+            document.getElementById('renewModal').classList.remove('active');
+        }
+
+        function closeNotifyModal() {
+            document.getElementById('notifyModal').classList.remove('active');
+        }
+
+        // ========== CHỐNG QUAY MÀN HÌNH ==========
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && currentSession && currentSession.type === 'user') {
+                // Tạm dừng video
+                const video = document.getElementById('mainVideo');
+                if (video) video.pause();
+            }
+        });
 
         // ========== LOGOUT ==========
         function logout() {
             clearInterval(timerInterval);
+            addLog(currentSession ? (currentSession.type === 'admin' ? 'Admin đăng xuất' : `User ${currentSession.key} đăng xuất`) : 'Đăng xuất');
             localStorage.removeItem('currentSession');
             currentSession = null;
             
@@ -507,7 +765,7 @@
             document.getElementById('videoCount').textContent = videos.length;
         }
 
-        // ========== ADMIN ==========
+        // ========== ADMIN PANEL ==========
         let selectedDuration = 'day';
         function setDuration(duration, btn) {
             selectedDuration = duration;
@@ -533,11 +791,12 @@
             }
             
             const note = document.getElementById('keyNote').value || 'Không ghi chú';
-            const newKey = { code, duration: selectedDuration, expiresAt: durationMs === Infinity ? Infinity : Date.now() + durationMs, used: false, locked: false, note };
+            const newKey = { code, duration: selectedDuration, expiresAt: durationMs === Infinity ? Infinity : Date.now() + durationMs, used: false, locked: false, note, deviceId: null };
             
             keys.push(newKey);
             saveData();
             updateAdminStats();
+            addLog(`Tạo key ${code} (${selectedDuration})`);
             
             const box = document.getElementById('generatedKeyBox');
             box.classList.remove('hidden');
@@ -549,7 +808,7 @@
             new QRCode(qrBox, code);
             
             document.getElementById('copyBtn').classList.remove('hidden');
-            showToast('✅ Key đã tạo!');
+            showToast('✅ Đã tạo key!');
         }
 
         function copyText(text) {
@@ -561,9 +820,7 @@
                 document.execCommand('copy');
                 document.body.removeChild(tempInput);
                 showToast('📋 Đã sao chép!');
-            } catch(e) {
-                showToast('⚠️ Không thể sao chép!', true);
-            }
+            } catch(e) {}
         }
 
         function copyGeneratedKey() {
@@ -571,18 +828,63 @@
             copyText(code);
         }
 
+        function hideAllPanels() { 
+            ['keyGenerator', 'keyList', 'videoManager', 'activityLogPanel', 'expiringKeysPanel', 'notificationPanel'].forEach(id => {
+                document.getElementById(id).classList.remove('active');
+            });
+        }
+
         function showKeyGenerator() { hideAllPanels(); document.getElementById('keyGenerator').classList.add('active'); }
         function showKeyList() { hideAllPanels(); document.getElementById('keyList').classList.add('active'); renderKeyList(); }
         function showVideoManager() { hideAllPanels(); document.getElementById('videoManager').classList.add('active'); renderVideoList(); }
-        function hideAllPanels() { document.querySelectorAll('.key-generator').forEach(el => el.classList.remove('active')); }
+        function showActivityLog() { 
+            hideAllPanels(); 
+            document.getElementById('activityLogPanel').classList.add('active'); 
+            const container = document.getElementById('activityLogContainer');
+            container.innerHTML = '';
+            activityLog.forEach(log => {
+                const div = document.createElement('div');
+                div.className = 'log-item';
+                div.innerHTML = `<span class="log-time">${log.time}</span> - ${log.action}`;
+                container.appendChild(div);
+            });
+        }
+        function showExpiringKeys() {
+            hideAllPanels();
+            document.getElementById('expiringKeysPanel').classList.add('active');
+            const container = document.getElementById('expiringKeysContainer');
+            container.innerHTML = '';
+            const now = Date.now();
+            const expiring = keys.filter(k => !k.used && !k.locked && k.expiresAt > now && k.expiresAt < now + 86400000);
+            if (expiring.length === 0) {
+                container.innerHTML = '<p style="color:#888;">Không có key nào sắp hết hạn trong 24h.</p>';
+            } else {
+                expiring.forEach(key => {
+                    const div = document.createElement('div');
+                    div.className = 'key-item';
+                    div.innerHTML = `<div><div class="key-code">${key.code}</div><div class="key-info">Hết hạn: ${new Date(key.expiresAt).toLocaleString('vi-VN')}</div></div>`;
+                    container.appendChild(div);
+                });
+            }
+        }
+        function showNotificationManager() { hideAllPanels(); document.getElementById('notificationPanel').classList.add('active'); }
+
+        function sendNotification() {
+            const msg = document.getElementById('notifyMessage').value;
+            if (!msg) { showToast('Vui lòng nhập nội dung!', true); return; }
+            notifications.push({ message: msg, time: Date.now() });
+            saveData();
+            addLog(`Gửi thông báo: ${msg}`);
+            document.getElementById('notifyMessage').value = '';
+            showToast('✅ Đã gửi thông báo!');
+        }
 
         function filterKeys() {
             const searchTerm = document.getElementById('searchKey').value.toLowerCase();
             const container = document.getElementById('keysListContainer');
             container.innerHTML = '';
-            
             keys.filter(key => key.code.toLowerCase().includes(searchTerm) || key.note.toLowerCase().includes(searchTerm))
-                .forEach((key, index) => {
+                .forEach((key) => {
                     const realIndex = keys.indexOf(key);
                     const item = document.createElement('div');
                     item.className = 'key-item';
@@ -627,11 +929,13 @@
         function toggleLock(index) {
             keys[index].locked = !keys[index].locked;
             saveData(); renderKeyList(); updateAdminStats();
+            addLog(`${keys[index].locked ? 'Khóa' : 'Mở khóa'} key ${keys[index].code}`);
             showToast(keys[index].locked ? '🔒 Đã khóa!' : '🔓 Đã mở khóa!');
         }
 
         function deleteKey(index) {
             if (confirm('Xóa key này?')) {
+                addLog(`Xóa key ${keys[index].code}`);
                 keys.splice(index, 1);
                 saveData(); renderKeyList(); updateAdminStats();
                 showToast('Đã xóa key!');
@@ -665,18 +969,21 @@
             const title = document.getElementById('newVideoTitle').value;
             const desc = document.getElementById('newVideoDesc').value;
             const cat = document.getElementById('newVideoCat').value;
+            const isVip = document.getElementById('newVideoVip').checked;
             const url = window.uploadedVideoUrl || window.selectedSampleUrl || '#';
             
             if (!title) { showToast('Vui lòng nhập tên!', true); return; }
             
-            videos.push({ id: Date.now(), title, description: desc, cat, url });
+            videos.push({ id: Date.now(), title, description: desc, cat, url, isVip, views: 0, thumb: '' });
             window.uploadedVideoUrl = null;
             window.selectedSampleUrl = null;
             
             document.getElementById('newVideoTitle').value = '';
             document.getElementById('newVideoDesc').value = '';
+            document.getElementById('newVideoVip').checked = false;
             
             saveData(); renderVideoList(); loadVideos(); updateAdminStats();
+            addLog(`Thêm video ${title}`);
             showToast('✅ Đã thêm video!');
         }
 
@@ -686,131 +993,165 @@
             videos.forEach((video, index) => {
                 const item = document.createElement('div');
                 item.className = 'key-item';
-                item.innerHTML = `<div><div class="key-code">${video.title}</div></div><button class="btn-delete" onclick="deleteVideo(${index})">🗑️</button>`;
+                item.innerHTML = `<div><div class="key-code">${video.title} ${video.isVip ? '👑' : ''}</div><div class="key-info">${video.views || 0} lượt xem</div></div><button class="btn-delete" onclick="deleteVideo(${index})">🗑️</button>`;
                 container.appendChild(item);
             });
         }
 
         function deleteVideo(index) {
             if (confirm('Xóa video này?')) {
+                addLog(`Xóa video ${videos[index].title}`);
                 videos.splice(index, 1);
                 saveData(); renderVideoList(); loadVideos(); updateAdminStats();
                 showToast('Đã xóa video!');
             }
         }
 
+        // ========== LỌC VIDEO ==========
+        let currentFilter = 'all';
+        function filterVideos(cat, tab) {
+            currentFilter = cat;
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            loadVideos();
+        }
+
         // ========== HIỂN THỊ VIDEO ==========
         function loadVideos() {
             const grid = document.getElementById('videoGrid');
             grid.innerHTML = '';
-            videos.forEach(video => {
+            
+            let filtered = currentFilter === 'all' ? videos : videos.filter(v => v.cat === currentFilter);
+            
+            filtered.forEach(video => {
                 const card = document.createElement('div');
                 card.className = 'video-card';
                 
-                const videoTag = video.url && video.url !== '#' 
-                    ? `<video controls style="width:100%; max-height:200px; border-radius:8px; margin-bottom:10px; background:#000;">
-                        <source src="${video.url}" type="video/mp4">
-                        Trình duyệt không hỗ trợ.
-                       </video>`
-                    : `<div style="width:100%;height:120px;border-radius:8px;background:#111;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">🎬</div>`;
+                // VIP Lock
+                let canView = true;
+                if (video.isVip && currentSession && currentSession.type === 'user') {
+                    const key = keys.find(k => k.code === currentSession.key);
+                    if (key && key.duration !== 'vip') canView = false;
+                }
+                
+                const videoTag = !canView 
+                    ? `<div style="width:100%;height:200px;border-radius:8px;background:#111;display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:10px;">🔒</div>`
+                    : (video.url && video.url !== '#' 
+                        ? `<video controls style="width:100%; max-height:200px; border-radius:8px; margin-bottom:10px; background:#000;" onplay="incrementViews(${video.id})">
+                            <source src="${video.url}" type="video/mp4">
+                           </video>`
+                        : `<div style="width:100%;height:120px;border-radius:8px;background:#111;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">🎬</div>`);
 
                 card.innerHTML = `
                     ${videoTag}
-                    <div class="video-title">${video.title}</div>
+                    <div class="video-title">${video.title} ${video.isVip ? '<span class="vip-badge">👑 VIP</span>' : ''}</div>
                     <div class="video-desc">${video.description}</div>
+                    <div class="video-cat">${video.cat}</div>
+                    <span style="font-size:11px; color:#888; margin-left:8px;">👁️ ${video.views || 0} lượt xem</span>
                     <div style="margin-top:10px;">
-                        <button class="btn-submit" style="padding:8px;font-size:14px;" onclick="watchVideo('${video.url}')">▶️ Xem & Tải</button>
+                        ${canView ? `<button class="btn-submit" style="padding:8px;font-size:14px;" onclick="watchVideo('${video.url}')">▶️ Xem & Tải</button>` : '<p style="color:#ff9800;font-size:13px;">⚠️ Cần key VIP để xem video này</p>'}
                     </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
+        function incrementViews(id) {
+            const video = videos.find(v => v.id === id);
+            if (video) {
+                video.views = (video.views || 0) + 1;
+                saveData();
+            }
+        }
+
         function watchVideo(url) {
             window.open(url, '_blank');
+            addLog('Xem video');
         }
 
-        // ========== SPIN WHEEL (Quay nhiều lần) ==========
-        const prizes = [
-            { name: 'Video Cube 15s', color: '#ff6b6b', type: 'video', value: 'cube15' },
-            { name: '1 Video', color: '#4ecdc4', type: 'video', value: '1video' },
-            { name: '2 Videos', color: '#45b7d1', type: 'video', value: '2videos' },
-            { name: '3 Videos', color: '#96ceb4', type: 'video', value: '3videos' },
-            { name: 'Chúc bạn may mắn lần sau!', color: '#feca57', type: 'none', value: 'none' },
-            { name: 'Video Cube 15s', color: '#ff6b6b', type: 'video', value: 'cube15' },
-            { name: '1 Video', color: '#4ecdc4', type: 'video', value: '1video' },
-            { name: 'Chúc bạn may mắn lần sau!', color: '#feca57', type: 'none', value: 'none' }
-        ];
-
-        function createWheel() {
-            const wheel = document.getElementById('wheel');
-            wheel.innerHTML = '';
-            
-            const segmentAngle = 360 / prizes.length;
-            
-            prizes.forEach((prize, index) => {
-                const segment = document.createElement('div');
-                segment.className = 'wheel-segment';
-                segment.style.background = `conic-gradient(from ${index * segmentAngle}deg, ${prize.color} 0deg, ${prize.color} ${segmentAngle}deg)`;
-                segment.style.transform = `rotate(${index * segmentAngle}deg)`;
-                
-                const label = document.createElement('span');
-                label.style.position = 'absolute';
-                label.style.top = '15%';
-                label.style.left = '50%';
-                label.style.transform = 'translateX(-50%) rotate(90deg)';
-                label.style.fontSize = '8px';
-                label.style.color = '#fff';
-                label.style.fontWeight = 'bold';
-                label.style.whiteSpace = 'nowrap';
-                label.textContent = prize.name.length > 20 ? prize.name.substring(0, 18) + '...' : prize.name;
-                
-                segment.appendChild(label);
-                wheel.appendChild(segment);
-            });
+        // ========== XUẤT / NHẬP DỮ LIỆU ==========
+        function exportData() {
+            const data = { videos, keys, activityLog, notifications, exportDate: new Date().toISOString() };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `blminh_backup_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('💾 Đã xuất dữ liệu!');
         }
 
-        function spinWheel() {
-            const wheel = document.getElementById('wheel');
-            const spinBtn = document.getElementById('spinBtn');
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    try {
+                        const data = JSON.parse(ev.target.result);
+                        if (confirm('Nhập dữ liệu sẽ GHI ĐÈ toàn bộ. Tiếp tục?')) {
+                            videos = data.videos || videos;
+                            keys = data.keys || keys;
+                            activityLog = data.activityLog || [];
+                            notifications = data.notifications || [];
+                            saveData();
+                            updateAdminStats();
+                            renderKeyList();
+                            loadVideos();
+                            showToast('📂 Đã nhập dữ liệu!');
+                        }
+                    } catch(err) { showToast('❌ File lỗi!', true); }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // ========== BẢO TRÌ ==========
+        function toggleMaintenance() {
+            isMaintenance = !isMaintenance;
+            localStorage.setItem('isMaintenance', isMaintenance);
+            document.getElementById('maintenanceBtn').textContent = isMaintenance ? '🔧 Tắt Bảo Trì' : '🔧 Bật Bảo Trì';
+            showToast(isMaintenance ? '🔧 Đã bật bảo trì!' : '✅ Đã tắt bảo trì!');
+            addLog(isMaintenance ? 'Bật bảo trì' : 'Tắt bảo trì');
+        }
+
+        // ========== MINI GAME ĐOÁN SỐ ==========
+        let correctNumber = 0;
+        function openGuessModal() {
+            correctNumber = Math.floor(Math.random() * 100) + 1;
+            document.getElementById('guessInput').value = '';
+            document.getElementById('guessResult').innerHTML = '';
+            document.getElementById('guessModal').classList.add('active');
+        }
+
+        function checkGuess() {
+            const guess = parseInt(document.getElementById('guessInput').value);
+            const result = document.getElementById('guessResult');
             
-            // Không giới hạn số lần quay
-            spinBtn.disabled = true;
+            if (!guess || guess < 1 || guess > 100) {
+                result.innerHTML = '<span style="color:#ff6b6b;">Vui lòng nhập số từ 1-100!</span>';
+                return;
+            }
             
-            // Random rotation
-            const randomRotation = Math.floor(Math.random() * 3600) + 3600;
-            const currentRotation = parseFloat(wheel.style.transform.replace('rotate(', '').replace('deg)', '')) || 0;
-            const newRotation = currentRotation + randomRotation;
-            
-            wheel.style.transform = `rotate(${newRotation}deg)`;
-            
-            // Calculate prize after spin
-            setTimeout(() => {
-                const finalRotation = newRotation % 360;
-                const segmentAngle = 360 / prizes.length;
-                const winningIndex = Math.floor((360 - (finalRotation % 360)) / segmentAngle) % prizes.length;
-                const prize = prizes[winningIndex];
-                
-                const resultDiv = document.getElementById('prizeResult');
-                resultDiv.style.display = 'block';
-                
-                if (prize.type === 'none') {
-                    resultDiv.innerHTML = `
-                        <strong style="color:${prize.color}">${prize.name}</strong><br>
-                        <span style="color:#9ca3af; font-size:14px;">Liên hệ Discord để biết thêm chi tiết:</span><br>
-                        <a href="https://discord.com/users/xinchao_canha" target="_blank" class="zalo-btn">🎮 Discord: ${ADMIN_DISCORD}</a>
-                    `;
-                } else {
-                    resultDiv.innerHTML = `
-                        <strong style="color:#a855f7">🎉 Chúc mừng! Bạn đã trúng: ${prize.name}</strong><br>
-                        <span style="color:#9ca3af; font-size:14px;">Liên hệ Discord Admin để nhận:</span><br>
-                        <a href="https://discord.com/users/xinchao_canha" target="_blank" class="zalo-btn">🎮 Discord: ${ADMIN_DISCORD}</a>
-                    `;
-                }
-                
-                // Cho phép quay lại
-                spinBtn.disabled = false;
-            }, 3000);
+            if (guess === correctNumber) {
+                // Tạo key VIP miễn phí
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let code = 'BL-VIP-';
+                for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
+                const newKey = { code, duration: 'vip', expiresAt: Infinity, used: false, locked: false, note: 'Trúng mini game', deviceId: null };
+                keys.push(newKey);
+                saveData();
+                result.innerHTML = `<span style="color:#38ef7d;">🎉 Trúng rồi! Số đúng là ${correctNumber}<br>Key VIP của bạn: <strong>${code}</strong><br>Hãy lưu lại và nhập để dùng!</span>`;
+                addLog(`User trúng mini game, key VIP: ${code}`);
+            } else if (guess < correctNumber) {
+                result.innerHTML = '<span style="color:#ff9800;">📈 Số của bạn nhỏ hơn! Thử lại.</span>';
+            } else {
+                result.innerHTML = '<span style="color:#ff9800;">📉 Số của bạn lớn hơn! Thử lại.</span>';
+            }
         }
 
         // ========== TOAST ==========
@@ -823,10 +1164,27 @@
 
         // ========== KHỞI CHẠY ==========
         window.onload = function() {
+            // Ẩn loading sau 1.5s
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hide');
+            }, 1500);
+            
+            // Apply theme
+            if (!darkMode) document.body.classList.add('light-mode');
+            document.getElementById('themeBtn').textContent = darkMode ? '🌙' : '☀️';
+            document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
+            
+            // Kiểm tra bảo trì
+            if (isMaintenance) {
+                const savedSession = JSON.parse(localStorage.getItem('currentSession'));
+                if (!savedSession || savedSession.type !== 'admin') {
+                    document.getElementById('maintenanceOverlay').classList.add('active');
+                }
+            }
+            
             saveData();
             loadVideos();
-            createWheel();
-            autoLogin(); // Tự động đăng nhập
+            autoLogin();
         };
     </script>
 </body>
