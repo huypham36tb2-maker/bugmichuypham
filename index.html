@@ -111,6 +111,70 @@
         .maintenance-msg { color: #ccc; margin-bottom: 20px; max-width: 400px; }
         .maintenance-zalo { color: #888; font-size: 14px; }
         .maintenance-zalo a { color: #a855f7; text-decoration: none; }
+        
+        /* Nút bỏ qua tạm thời */
+        .skip-btn {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.5);
+            margin-top: 20px;
+        }
+        .skip-btn:active { transform: scale(0.97); }
+        
+        .skip-form {
+            display: none;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            width: 90%;
+            max-width: 320px;
+        }
+        .skip-form.active { display: block; }
+        .skip-form h3 { color: #a855f7; margin-bottom: 15px; font-size: 16px; }
+        .skip-form input {
+            width: 100%;
+            padding: 12px;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 25px;
+            color: #fff;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            font-size: 14px;
+            outline: none;
+        }
+        .skip-form input:focus { border-color: #a855f7; }
+        .skip-confirm {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .skip-cancel {
+            flex: 1;
+            padding: 10px;
+            background: #444;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
@@ -120,11 +184,23 @@
         <div class="loading-text">Đang tải...</div>
     </div>
 
+    <!-- MAINTENANCE OVERLAY - CÓ NÚT BỎ QUA TẠM THỜI -->
     <div class="maintenance-overlay" id="maintenanceOverlay">
         <div class="maintenance-icon">🔧</div>
         <h2>Đang Bảo Trì</h2>
         <p class="maintenance-msg">Web đang được Admin nâng cấp. Vui lòng quay lại sau!</p>
         <p class="maintenance-zalo">Liên hệ Zalo: <a href="https://zalo.me/927594723">9275 9472 3</a></p>
+        
+        <button class="skip-btn" onclick="showSkipLogin()">⏭️ Bỏ qua tạm thời</button>
+        
+        <div class="skip-form" id="skipForm">
+            <h3>🔐 Nhập Key Admin</h3>
+            <input type="text" id="skipKeyInput" placeholder="Nhập key admin...">
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="skip-confirm" onclick="skipMaintenance()">Xác nhận</button>
+                <button class="skip-cancel" onclick="hideSkipLogin()">Hủy</button>
+            </div>
+        </div>
     </div>
 
     <canvas id="particles-canvas"></canvas>
@@ -311,6 +387,32 @@
                 if (key && !key.locked && Date.now() < key.expiresAt) {
                     loginSuccess('user', key);
                 }
+            }
+        }
+
+        // ========== BỎ QUA BẢO TRÌ TẠM THỜI ==========
+        function showSkipLogin() {
+            document.getElementById('skipForm').classList.add('active');
+            document.getElementById('skipKeyInput').focus();
+        }
+        
+        function hideSkipLogin() {
+            document.getElementById('skipForm').classList.remove('active');
+            document.getElementById('skipKeyInput').value = '';
+        }
+        
+        function skipMaintenance() {
+            const inputKey = document.getElementById('skipKeyInput').value.trim().toUpperCase();
+            
+            if (inputKey === ADMIN_KEY) {
+                document.getElementById('maintenanceOverlay').classList.remove('active');
+                saveSession({ type: 'admin', key: ADMIN_KEY });
+                loginSuccess('admin');
+                showToast('👑 Đã bỏ qua bảo trì (Admin)!');
+                hideSkipLogin();
+            } else {
+                showToast('❌ Key admin sai!', true);
+                document.getElementById('skipKeyInput').value = '';
             }
         }
 
@@ -692,6 +794,14 @@
             saveData();
             loadVideos();
             checkMaintenanceAndLogin();
+            
+            // Cho phép nhấn Enter trong ô nhập key admin ở màn hình bảo trì
+            const skipInput = document.getElementById('skipKeyInput');
+            if (skipInput) {
+                skipInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') skipMaintenance();
+                });
+            }
         };
     </script>
 </body>
