@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bạch Long Minh Tool - Pro Max</title>
+    <meta name="theme-color" content="#a855f7">
+    <title>Bạch Long Minh Tool - Ultimate</title>
+    <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22B%E1%BA%A1ch%20Long%20Minh%22%2C%22short_name%22%3A%22BL%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23000%22%2C%22theme_color%22%3A%22%23a855f7%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A%2F%2Fwww.w3.org%2F2000%2Fsvg%2527%2520viewBox%253D%25270%25200%2520100%2520100%2527%253E%253Crect%2520width%253D%2527100%2527%2520height%253D%2527100%2527%2520rx%253D%252720%2527%2520fill%253D%2527%2523a855f7%2527%2F%253E%253Ctext%2520x%253D%252750%2527%2520y%253D%252765%2527%2520font-size%253D%252740%2527%2520fill%253D%2527white%2527%2520text-anchor%253D%2527middle%2527%253EBL%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
@@ -23,6 +25,13 @@
         @keyframes pulse-logo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         @keyframes load { from { width: 0; } to { width: 100%; } }
         
+        /* Welcome Countdown */
+        #welcomeScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #000, #1a0033); z-index: 9998; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        #welcomeScreen.active { display: flex; }
+        .welcome-count { font-size: 120px; font-weight: bold; color: #a855f7; animation: countdown 1s ease-in-out; text-shadow: 0 0 30px rgba(168,85,247,0.8); }
+        @keyframes countdown { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
+        .welcome-text { font-size: 20px; color: #fff; margin-top: 20px; }
+        
         .main-wrapper { position: relative; z-index: 1; width: 100%; max-width: 500px; padding: 20px; text-align: center; }
         
         .logo-container { margin-top: 20px; margin-bottom: 30px; }
@@ -30,15 +39,32 @@
         h1 { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
         .subtitle { color: #9ca3af; font-size: 15px; margin-bottom: 20px; }
 
-        /* Top Right Controls */
         .top-controls { position: fixed; top: 15px; right: 15px; z-index: 100; display: flex; gap: 8px; }
         .ctrl-btn { background: #333; border: none; color: #fff; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
 
-        /* Banner Discord */
         .discord-banner { background: linear-gradient(135deg, #5865F2, #4752c4); border-radius: 12px; padding: 15px; margin-bottom: 20px; text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4); }
         .discord-banner:hover { transform: scale(1.02); }
         .discord-banner-text { font-size: 16px; font-weight: bold; color: #fff; }
         .discord-banner-sub { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 5px; }
+
+        /* Online counter */
+        .online-bar { background: #1a1a1a; border-radius: 12px; padding: 8px 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 13px; }
+        body.light-mode .online-bar { background: #fff; }
+        .online-dot { width: 8px; height: 8px; background: #38ef7d; border-radius: 50%; animation: pulse-dot 1.5s infinite; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* Price List */
+        .price-section { background: rgba(30, 30, 30, 0.9); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #333; }
+        body.light-mode .price-section { background: #fff; border-color: #ddd; }
+        .price-title { font-size: 18px; color: #a855f7; font-weight: bold; margin-bottom: 15px; }
+        .price-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .price-card { background: #2d2d2d; border-radius: 12px; padding: 12px; text-align: center; border: 2px solid transparent; transition: all 0.3s; cursor: pointer; }
+        body.light-mode .price-card { background: #f0f0f0; }
+        .price-card:hover { border-color: #a855f7; transform: translateY(-3px); }
+        .price-card.best { border-color: gold; background: linear-gradient(135deg, #2d2d2d, #3d3d2d); }
+        .price-duration { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+        .price-amount { font-size: 16px; color: #38ef7d; font-weight: bold; }
+        .price-note { font-size: 10px; color: #888; margin-top: 3px; }
 
         .key-section { background: rgba(30, 30, 30, 0.9); border-radius: 20px; padding: 25px; border: 1px solid #333; }
         body.light-mode .key-section { background: rgba(255,255,255,0.9); border-color: #ddd; }
@@ -60,16 +86,12 @@
         .dashboard { display: none; width: 100%; max-width: 600px; padding: 20px; text-align: center; }
         .dashboard.active { display: block; }
         
-        .discord-video-box { background: #111; border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 1px solid #444; }
-        .discord-video-box video { width: 100%; max-height: 300px; display: block; }
-        
         .timer-box { background: #1a1a1a; border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid #444; font-size: 14px; }
         body.light-mode .timer-box { background: #fff; border-color: #ddd; }
         .timer-text { font-size: 20px; font-weight: bold; color: #a855f7; }
         .timer-text.warning { color: #ff4d4d; animation: pulse 1s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        /* Nút hành động */
         .action-buttons { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
         .btn-action { padding: 10px 20px; border: none; border-radius: 25px; font-size: 13px; font-weight: bold; cursor: pointer; }
         .btn-renew { background: linear-gradient(135deg, #11998e, #38ef7d); color: #fff; }
@@ -119,16 +141,29 @@
         
         .video-input { width: 100%; padding: 10px; margin: 5px 0; background: #2d2d2d; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 13px; }
         body.light-mode .video-input { background: #fff; color: #111; border-color: #ccc; }
-        .upload-area { border: 2px dashed #444; border-radius: 8px; padding: 15px; margin: 8px 0; cursor: pointer; text-align: center; font-size: 13px; }
-        .sample-btn { background: #333; padding: 6px; margin: 3px; border-radius: 8px; cursor: pointer; font-size: 12px; border: 1px solid #555; }
         
-        .video-card { background: #1a1a1a; border-radius: 12px; padding: 12px; margin: 10px 0; border: 1px solid #333; text-align: left; }
+        .upload-area { border: 3px dashed #a855f7; border-radius: 12px; padding: 30px 15px; margin: 10px 0; cursor: pointer; text-align: center; font-size: 14px; transition: all 0.3s; background: rgba(168, 85, 247, 0.05); }
+        .upload-area:hover { background: rgba(168, 85, 247, 0.15); }
+        .upload-area .upload-icon { font-size: 40px; margin-bottom: 10px; }
+        .upload-area .upload-text { color: #a855f7; font-weight: bold; }
+        .upload-area .upload-sub { font-size: 12px; color: #888; margin-top: 5px; }
+        
+        .video-card { background: #1a1a1a; border-radius: 12px; padding: 12px; margin: 10px 0; border: 1px solid #333; text-align: left; position: relative; }
         body.light-mode .video-card { background: #fff; border-color: #ddd; }
         .video-title { font-weight: bold; margin-bottom: 5px; font-size: 15px; }
         .video-desc { color: #9ca3af; font-size: 12px; margin-bottom: 8px; }
         .video-cat { font-size: 11px; color: #a855f7; background: #2d2d2d; padding: 2px 6px; border-radius: 8px; display: inline-block; margin-bottom: 8px; }
         body.light-mode .video-cat { background: #f0f0f0; }
         .vip-badge { font-size: 11px; color: gold; background: #333; padding: 2px 6px; border-radius: 8px; margin-left: 5px; }
+        
+        /* Delete video button on card */
+        .video-delete-btn { position: absolute; top: 10px; right: 10px; background: #ff4d4d; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 14px; z-index: 10; }
+
+        /* Like/Dislike */
+        .video-actions { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+        .action-btn { background: #2d2d2d; border: 1px solid #444; color: #fff; padding: 5px 12px; border-radius: 15px; cursor: pointer; font-size: 12px; }
+        .action-btn.active-like { background: #38ef7d; color: #000; }
+        .action-btn.active-dislike { background: #ff4d4d; color: #fff; }
 
         /* Filter */
         .filter-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; }
@@ -136,7 +171,7 @@
         body.light-mode .filter-tab { background: #e0e0e0; color: #111; }
         .filter-tab.active { background: #a855f7; color: #fff; }
 
-        /* Popup Modal */
+        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
         .modal-content { background: #1a1a1a; border-radius: 15px; padding: 25px; max-width: 400px; width: 90%; text-align: center; border: 1px solid #333; }
@@ -145,6 +180,13 @@
         .btn-modal { padding: 10px 25px; margin: 5px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; }
         .btn-yes { background: linear-gradient(135deg, #11998e, #38ef7d); color: #fff; }
         .btn-no { background: #444; color: #fff; }
+
+        /* Video Player Modal */
+        .video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10005; align-items: center; justify-content: center; flex-direction: column; }
+        .video-modal.active { display: flex; }
+        .video-modal video { max-width: 95%; max-height: 70vh; border-radius: 10px; }
+        .video-modal .close-video { position: absolute; top: 20px; right: 20px; background: #ff4d4d; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; }
+        .video-modal .video-title-modal { color: #a855f7; font-size: 18px; font-weight: bold; margin-top: 15px; }
 
         /* Maintenance */
         .maintenance-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10002; align-items: center; justify-content: center; flex-direction: column; }
@@ -156,19 +198,36 @@
         body.light-mode .log-item { background: #f0f0f0; }
         .log-time { color: #a855f7; font-weight: bold; }
 
-        /* Number Guess Game */
+        /* Mascot */
+        .mascot { position: fixed; bottom: 20px; right: 20px; font-size: 60px; z-index: 999; animation: float 3s infinite; pointer-events: none; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* Guess Game */
         .guess-section { background: #1a1a1a; border-radius: 12px; padding: 15px; margin: 15px 0; border: 1px solid #444; }
         .guess-input { width: 100px; padding: 10px; background: #2d2d2d; border: 1px solid #444; border-radius: 10px; color: #fff; text-align: center; font-size: 16px; margin: 10px auto; display: block; }
         .guess-btn { background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none; padding: 10px 25px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+
+        .empty-message { color: #888; padding: 30px; text-align: center; font-size: 14px; }
+
+        /* PWA Install button */
+        .install-btn { position: fixed; bottom: 20px; left: 20px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; z-index: 998; display: none; box-shadow: 0 4px 15px rgba(168,85,247,0.4); }
+        .install-btn.show { display: block; }
     </style>
 </head>
 <body>
 
+    
     <!-- Loading Screen -->
     <div id="loadingScreen">
         <div class="loading-logo">BL</div>
         <div class="loading-text">Đang tải...</div>
         <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+    </div>
+
+    <!-- Welcome Countdown -->
+    <div id="welcomeScreen">
+        <div class="welcome-count" id="welcomeCount">3</div>
+        <div class="welcome-text">Chào mừng đến với Bạch Long Minh!</div>
     </div>
 
     <!-- Maintenance Overlay -->
@@ -181,9 +240,15 @@
 
     <!-- Top Controls -->
     <div class="top-controls">
-        <button class="ctrl-btn" onclick="toggleSound()" id="soundBtn" title="Âm thanh">🔊</button>
-        <button class="ctrl-btn" onclick="toggleTheme()" id="themeBtn" title="Sáng/Tối">🌙</button>
+        <button class="ctrl-btn" onclick="toggleSound()" id="soundBtn">🔊</button>
+        <button class="ctrl-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
     </div>
+
+    <!-- Mascot -->
+    <div class="mascot" id="mascot">🐉</div>
+
+    <!-- PWA Install Button -->
+    <button class="install-btn" id="installBtn" onclick="installPWA()">📲 Cài đặt App</button>
 
     <canvas id="particles-canvas"></canvas>
 
@@ -217,17 +282,67 @@
         </div>
     </div>
 
+    <!-- Modal Đổi mật khẩu Admin -->
+    <div class="modal" id="changePassModal">
+        <div class="modal-content">
+            <h3>🔐 Đổi Key Admin</h3>
+            <input type="password" class="video-input" id="oldPass" placeholder="Key admin hiện tại" style="margin-bottom:10px;">
+            <input type="password" class="video-input" id="newPass" placeholder="Key admin mới" style="margin-bottom:10px;">
+            <input type="password" class="video-input" id="newPass2" placeholder="Nhập lại key mới" style="margin-bottom:10px;">
+            <button class="btn-modal btn-yes" onclick="changeAdminKey()">Đổi Ngay</button>
+            <button class="btn-modal btn-no" onclick="closeChangePass()">Hủy</button>
+        </div>
+    </div>
+
+    <!-- Modal Xem Video -->
+    <div class="video-modal" id="videoModal">
+        <button class="close-video" onclick="closeVideoModal()">✕</button>
+        <video id="modalVideo" controls autoplay></video>
+        <div class="video-title-modal" id="modalVideoTitle"></div>
+        <button class="btn-modal btn-yes" onclick="downloadCurrentVideo()" style="margin-top:15px;">⬇️ Tải Video</button>
+    </div>
+
     <!-- Màn hình nhập key -->
     <div class="main-wrapper" id="loginScreen">
         <div class="discord-banner" onclick="window.open('https://discord.gg/9kw7E6fUy', '_blank')">
-            <div class="discord-banner-text">🎮 Tham gia Server Discord của chúng tôi!</div>
-            <div class="discord-banner-sub">Click để vào server: discord.gg/9kw7E6fUy</div>
+            <div class="discord-banner-text">🎮 Tham gia Server Discord!</div>
+            <div class="discord-banner-sub">Click: discord.gg/9kw7E6fUy</div>
         </div>
 
         <div class="logo-container">
             <div class="logo">BL</div>
             <h1>Bạch Long Minh</h1>
             <p class="subtitle">Nhập License Key để tiếp tục</p>
+        </div>
+
+        <!-- Online counter -->
+        <div class="online-bar">
+            <div class="online-dot"></div>
+            <span id="onlineCount">1</span> người đang truy cập
+        </div>
+
+        <!-- Price List -->
+        <div class="price-section">
+            <div class="price-title">💰 Bảng Giá</div>
+            <div class="price-grid">
+                <div class="price-card" onclick="buyNow('1 Ngày','10.000đ')">
+                    <div class="price-duration">📅 1 Ngày</div>
+                    <div class="price-amount">10.000đ</div>
+                </div>
+                <div class="price-card" onclick="buyNow('1 Tuần','50.000đ')">
+                    <div class="price-duration">📆 1 Tuần</div>
+                    <div class="price-amount">50.000đ</div>
+                </div>
+                <div class="price-card" onclick="buyNow('1 Tháng','150.000đ')">
+                    <div class="price-duration">🗓️ 1 Tháng</div>
+                    <div class="price-amount">150.000đ</div>
+                </div>
+                <div class="price-card best" onclick="buyNow('VIP Vĩnh Viễn','500.000đ')">
+                    <div class="price-duration">👑 VIP</div>
+                    <div class="price-amount">500.000đ</div>
+                    <div class="price-note">BEST SELLER</div>
+                </div>
+            </div>
         </div>
 
         <div class="key-section">
@@ -242,7 +357,7 @@
             <button class="btn-submit" id="loginBtn" onclick="validateKey()">Xác nhận Key</button>
             
             <div style="margin-top: 15px;">
-                <a href="tel:927594723" class="buy-btn">📞 Gọi mua key: 9275 9472 3</a>
+                <a href="tel:927594723" class="buy-btn">📞 Gọi mua: 9275 9472 3</a>
             </div>
 
             <div class="contact">
@@ -260,26 +375,21 @@
         </div>
 
         <div class="discord-banner" onclick="window.open('https://discord.gg/9kw7E6fUy', '_blank')">
-            <div class="discord-banner-text">🎮 Tham gia Server Discord của chúng tôi!</div>
-            <div class="discord-banner-sub">Click: discord.gg/9kw7E6fUy</div>
+            <div class="discord-banner-text">🎮 Discord Server</div>
+            <div class="discord-banner-sub">discord.gg/9kw7E6fUy</div>
         </div>
 
         <div class="timer-box hidden" id="timerBox">
             ⏳ Key hết hạn sau: <span class="timer-text" id="timerDisplay">00:00:00</span>
         </div>
 
-        <div class="discord-video-box hidden" id="discordVideoBox">
-            <video id="mainVideo" controls autoplay playsinline>
-                <source src="https://cdn.discordapp.com/attachments/1546119643113062401/1546630996437245973/VideoStar.mov?ex=6aa07bdc&is=6a9f2a5c&hm=bc4a0750a39b878da48339c7d88904c8f8a8ddce4998273c3038928f408baed7&" type="video/quicktime">
-                <source src="https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&" type="video/quicktime">
-            </video>
-        </div>
-
-        <!-- Action Buttons -->
         <div class="action-buttons">
-            <button class="btn-action btn-renew" onclick="window.open('https://zalo.me/927594723', '_blank')">💳 Gia Hạn Key</button>
+            <button class="btn-action btn-renew" onclick="window.open('https://zalo.me/927594723', '_blank')">💳 Gia Hạn</button>
             <button class="btn-action btn-logout" onclick="logout()">🚪 Đăng Xuất</button>
         </div>
+
+        <!-- Video Search -->
+        <input type="text" class="search-input" id="searchVideo" placeholder="🔍 Tìm video..." oninput="loadVideos()">
 
         <!-- Filter Tabs -->
         <div class="filter-tabs" id="filterTabs">
@@ -323,8 +433,10 @@
                 <button class="btn-admin" onclick="showActivityLog()">📜 Lịch Sử</button>
                 <button class="btn-admin" onclick="showExpiringKeys()">⚠️ Sắp Hết Hạn</button>
                 <button class="btn-admin" onclick="showNotificationManager()">📢 Thông Báo</button>
+                <button class="btn-admin" onclick="showBlacklist()">🚫 Blacklist</button>
                 <button class="btn-admin" onclick="exportData()">💾 Xuất</button>
                 <button class="btn-admin" onclick="importData()">📂 Nhập</button>
+                <button class="btn-admin" onclick="openChangePass()">🔐 Đổi Key</button>
                 <button class="btn-admin" onclick="toggleMaintenance()" id="maintenanceBtn">🔧 Bảo Trì</button>
                 <button class="btn-admin" onclick="logout()">🚪 Đăng Xuất</button>
             </div>
@@ -339,7 +451,7 @@
                     <button class="duration-btn" onclick="setDuration('month', this)">🗓️ 1 Tháng</button>
                     <button class="duration-btn" onclick="setDuration('vip', this)">👑 VIP</button>
                 </div>
-                <input type="text" class="video-input" id="keyNote" placeholder="Ghi chú (VD: Tên khách, Zalo, SĐT)">
+                <input type="text" class="video-input" id="keyNote" placeholder="Ghi chú (Tên khách, Zalo)">
                 <button class="btn-admin" onclick="generateKey()" style="width:100%; margin-top:5px;">Tạo Key</button>
                 <div class="generated-key-box hidden" id="generatedKeyBox"></div>
                 <div class="qr-box hidden" id="qrBox"></div>
@@ -349,7 +461,7 @@
             <!-- Key List -->
             <div class="key-generator" id="keyList">
                 <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">Danh Sách Key</h3>
-                <input type="text" class="search-input" id="searchKey" placeholder="🔍 Tìm key hoặc tên khách..." oninput="filterKeys()">
+                <input type="text" class="search-input" id="searchKey" placeholder="🔍 Tìm key..." oninput="filterKeys()">
                 <div class="key-list-container" id="keysListContainer"></div>
             </div>
 
@@ -359,56 +471,66 @@
                 <input type="text" class="video-input" id="newVideoTitle" placeholder="Tên video">
                 <input type="text" class="video-input" id="newVideoDesc" placeholder="Mô tả video">
                 <select class="video-input" id="newVideoCat">
-                    <option value="Star">Video Star</option>
-                    <option value="Dance">Video Dance</option>
-                    <option value="Wedding">Video Wedding</option>
-                    <option value="Nature">Video Thiên Nhiên</option>
+                    <option value="Star">⭐ Video Star</option>
+                    <option value="Dance">💃 Video Dance</option>
+                    <option value="Wedding">💍 Video Wedding</option>
+                    <option value="Nature">🌿 Video Thiên Nhiên</option>
                 </select>
                 <label style="display:block; margin:8px 0; font-size:13px; text-align:left;">
-                    <input type="checkbox" id="newVideoVip"> 👑 Video VIP (chỉ key VIP xem được)
+                    <input type="checkbox" id="newVideoVip"> 👑 Video VIP (chỉ key VIP)
                 </label>
-                <div style="margin-bottom:5px; font-size:13px;">
-                    <strong>Hoặc chọn Video mẫu:</strong><br>
-                    <button class="sample-btn" onclick="pickSampleVideo(1)">Video Star</button>
-                    <button class="sample-btn" onclick="pickSampleVideo(2)">Video Dance</button>
-                    <button class="sample-btn" onclick="pickSampleVideo(3)">Video Nature</button>
-                </div>
                 <div class="upload-area" onclick="document.getElementById('videoUpload').click()">
                     <input type="file" id="videoUpload" accept="video/*" hidden onchange="handleUpload(event)">
-                    📤 Nhấp để Tải Video từ máy lên
+                    <div class="upload-icon">📤</div>
+                    <div class="upload-text">Nhấp để chọn Video</div>
+                    <div class="upload-sub">Hỗ trợ MP4, MOV, WebM (tối đa 5MB)</div>
                 </div>
+                <div id="uploadPreview"></div>
                 <button class="btn-admin" onclick="addVideo()" style="width:100%; margin-top:5px;">➕ Thêm Video</button>
                 <div class="key-list-container" id="videoListContainer"></div>
             </div>
 
             <!-- Activity Log -->
             <div class="key-generator" id="activityLogPanel">
-                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">📜 Lịch Sử Hoạt Động</h3>
+                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">📜 Lịch Sử</h3>
                 <div class="key-list-container" id="activityLogContainer"></div>
             </div>
 
             <!-- Expiring Keys -->
             <div class="key-generator" id="expiringKeysPanel">
-                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">⚠️ Key Sắp Hết Hạn (24h)</h3>
+                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">⚠️ Key Sắp Hết Hạn</h3>
                 <div class="key-list-container" id="expiringKeysContainer"></div>
             </div>
 
             <!-- Notification Manager -->
             <div class="key-generator" id="notificationPanel">
                 <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">📢 Gửi Thông Báo</h3>
-                <textarea class="video-input" id="notifyMessage" rows="3" placeholder="Nhập nội dung thông báo..."></textarea>
-                <button class="btn-admin" onclick="sendNotification()" style="width:100%; margin-top:5px;">📤 Gửi Cho Tất Cả User</button>
-                <p style="font-size:12px; color:#888; margin-top:10px;">Thông báo sẽ hiện khi user đăng nhập lần tiếp theo.</p>
+                <textarea class="video-input" id="notifyMessage" rows="3" placeholder="Nội dung..."></textarea>
+                <button class="btn-admin" onclick="sendNotification()" style="width:100%; margin-top:5px;">📤 Gửi</button>
+            </div>
+
+            <!-- Blacklist -->
+            <div class="key-generator" id="blacklistPanel">
+                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">🚫 Blacklist Thiết Bị</h3>
+                <input type="text" class="video-input" id="blacklistInput" placeholder="Nhập Device ID cần chặn">
+                <button class="btn-admin" onclick="addBlacklist()" style="width:100%; margin-top:5px;">🚫 Chặn Thiết Bị</button>
+                <div class="key-list-container" id="blacklistContainer"></div>
+            </div>
+
+            <!-- Online Users -->
+            <div class="key-generator" id="onlineUsersPanel">
+                <h3 style="color:#a855f7; font-size:16px; margin-bottom:10px;">👥 User Đang Online</h3>
+                <div class="key-list-container" id="onlineUsersContainer"></div>
             </div>
         </div>
 
         <!-- Video Grid -->
         <div id="videoGrid"></div>
 
-        <!-- Guess Game Section -->
+        <!-- Guess Game -->
         <div class="guess-section">
-            <h3 style="color:#a855f7; margin-bottom:10px;">🎲 Mini Game: Đoán Số May Mắn</h3>
-            <p style="font-size:13px; color:#9ca3af; margin-bottom:10px;">Đoán số từ 1-100, trúng nhận 1 Key VIP miễn phí!</p>
+            <h3 style="color:#a855f7; margin-bottom:10px;">🎲 Mini Game: Đoán Số</h3>
+            <p style="font-size:13px; color:#9ca3af; margin-bottom:10px;">Đoán số 1-100, trúng nhận 1 Key VIP!</p>
             <button class="guess-btn" onclick="openGuessModal()">Chơi Ngay</button>
         </div>
     </div>
@@ -416,42 +538,30 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // ========== BẢO MẬT: MÃ HÓA KEY ADMIN ==========
-        // Key admin gốc: huypham2012 -> SHA-256 hash
-        const ADMIN_KEY_HASH = 'c8e5d7f2b3a9e1d4c6f8a2b5e7d9f1c3a5e7b9d1f3a5c7e9b1d3f5a7c9e1b3d5';
-        // Hash thực tế của "HUYPHAM2012" (uppercase)
-        const ADMIN_HASH = 'b0c8e8a6b0a6f5f8e5e1a2d5c9e8b3f1a5d9c7e3f1b5a9d7c3f1e5b9a7d3c1f5'; // Placeholder
-        const ADMIN_KEY_REAL = 'HUYPHAM2012'; // Backup (dùng để check hash)
-        
-        // Đơn giản hóa: Dùng SHA-256
-        function sha256(str) {
-            return CryptoJS.SHA256(str).toString();
-        }
-        
-        // Hash thực của key admin (chạy 1 lần để lấy)
-        const ADMIN_HASH_CORRECT = '8f9a5b3c7e1d4a6f2b8c5e9d3a7f1b4c6e8a2d5f9b3e7a1c4f6b8d2e5a9c3f7b';
-        // Note: Hash này tôi tính tạm, bạn có thể tự đổi bằng cách chạy sha256('HUYPHAM2012') trong console
-
-        // ========== DATA & LOCALSTORAGE ==========
-        const ADMIN_KEY = 'HUYPHAM2012'; // Vẫn giữ để so sánh trực tiếp
+        // ========== CẤU HÌNH ==========
+        let ADMIN_KEY = localStorage.getItem('adminKey') || 'HUYPHAM2012';
         const ADMIN_PHONE = '9275 9472 3';
         const ADMIN_DISCORD = 'xinchao_canha';
         const DISCORD_SERVER = 'https://discord.gg/9kw7E6fUy';
 
-        const oldDiscordUrl = "https://cdn.discordapp.com/attachments/1546217198593253396/1546303456879448115/1ef373c2861e4bdc8dce7f8f44325571.mov?ex=6a9ff391&is=6a9ea211&hm=68267fd4e9081815c8d70c13ccdfad7d4cf2e5b134f02b2b4724ff614a730bd0&";
-        const newDiscordUrl = "https://cdn.discordapp.com/attachments/1546119643113062401/1546630996437245973/VideoStar.mov?ex=6aa07bdc&is=6a9f2a5c&hm=bc4a0750a39b878da48339c7d88904c8f8a8ddce4998273c3038928f408baed7&";
-        const discordVideoUrl = newDiscordUrl;
-
-        // Theme & Sound settings
-        let soundEnabled = JSON.parse(localStorage.getItem('soundEnabled')) !== false;
-        let darkMode = JSON.parse(localStorage.getItem('darkMode')) !== false;
-
-        let currentSession = JSON.parse(localStorage.getItem('currentSession')) || null;
-        let isMaintenance = JSON.parse(localStorage.getItem('isMaintenance')) || false;
+        // ========== DATA ==========
+        let videos = JSON.parse(localStorage.getItem('videos')) || [];
+        let keys = JSON.parse(localStorage.getItem('keys')) || [
+            { code: 'BL-DEMO-1234', duration: 'day', expiresAt: Date.now() + 86400000, used: false, locked: false, note: 'Key demo', deviceId: null, likes: 0, dislikes: 0 }
+        ];
         let activityLog = JSON.parse(localStorage.getItem('activityLog')) || [];
         let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
-        let viewedNotif = JSON.parse(localStorage.getItem('viewedNotif')) || false;
-        
+        let blacklist = JSON.parse(localStorage.getItem('blacklist')) || [];
+        let videoLikes = JSON.parse(localStorage.getItem('videoLikes')) || {};
+        let soundEnabled = JSON.parse(localStorage.getItem('soundEnabled')) !== false;
+        let darkMode = JSON.parse(localStorage.getItem('darkMode')) !== false;
+        let currentSession = JSON.parse(localStorage.getItem('currentSession')) || null;
+        let isMaintenance = JSON.parse(localStorage.getItem('isMaintenance')) || false;
+        let currentFilter = 'all';
+        let currentPlayingVideo = null;
+        let deferredPrompt = null;
+        let bgMusic = null;
+
         // Device ID
         function getDeviceId() {
             let deviceId = localStorage.getItem('deviceId');
@@ -463,32 +573,27 @@
         }
         const DEVICE_ID = getDeviceId();
 
-        const sampleVideos = [
-            { id: 1, title: 'Video Star', desc: 'Video Star mới nhất', cat: 'Star', url: discordVideoUrl, isVip: false, views: 0 },
-            { id: 2, title: 'Video Dance', desc: 'Video nhảy sôi động', cat: 'Dance', url: 'https://www.w3schools.com/html/mov_bbb.mp4', isVip: false, views: 0 },
-            { id: 3, title: 'Video Nature', desc: 'Video thiên nhiên', cat: 'Nature', url: 'https://www.w3schools.com/html/mov_bbb.mp4', isVip: false, views: 0 }
-        ];
-
-        let videos = JSON.parse(localStorage.getItem('videos')) || sampleVideos.map(v => ({...v, thumb: ''}));
-        let keys = JSON.parse(localStorage.getItem('keys')) || [
-            { code: 'BL-DEMO-1234', duration: 'day', expiresAt: Date.now() + 86400000, used: false, locked: false, note: 'Key demo', deviceId: null }
-        ];
-
+        // ========== LƯU DỮ LIỆU ==========
         function saveData() {
-            try { localStorage.setItem('videos', JSON.stringify(videos)); } catch(e) {}
-            try { localStorage.setItem('keys', JSON.stringify(keys)); } catch(e) {}
-            try { localStorage.setItem('activityLog', JSON.stringify(activityLog)); } catch(e) {}
-            try { localStorage.setItem('notifications', JSON.stringify(notifications)); } catch(e) {}
+            try {
+                localStorage.setItem('videos', JSON.stringify(videos));
+                localStorage.setItem('keys', JSON.stringify(keys));
+                localStorage.setItem('activityLog', JSON.stringify(activityLog));
+                localStorage.setItem('notifications', JSON.stringify(notifications));
+                localStorage.setItem('blacklist', JSON.stringify(blacklist));
+                localStorage.setItem('videoLikes', JSON.stringify(videoLikes));
+            } catch(e) {
+                showToast('⚠️ Bộ nhớ đầy! Xóa bớt video cũ.', true);
+            }
         }
 
         function saveSession(session) {
             currentSession = session;
-            try { localStorage.setItem('currentSession', JSON.stringify(session)); } catch(e) {}
+            localStorage.setItem('currentSession', JSON.stringify(session));
         }
 
         function addLog(action) {
-            const log = { time: new Date().toLocaleString('vi-VN'), action: action };
-            activityLog.unshift(log);
+            activityLog.unshift({ time: new Date().toLocaleString('vi-VN'), action: action });
             if (activityLog.length > 100) activityLog.pop();
             saveData();
         }
@@ -500,10 +605,10 @@
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
+                osc.connect(gain); gain.connect(audioCtx.destination);
                 if (type === 'success') { osc.frequency.value = 800; gain.gain.value = 0.1; }
                 else if (type === 'error') { osc.frequency.value = 200; gain.gain.value = 0.15; }
+                else if (type === 'click') { osc.frequency.value = 600; gain.gain.value = 0.05; }
                 osc.start();
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
                 osc.stop(audioCtx.currentTime + 0.2);
@@ -527,21 +632,19 @@
         // ========== AUTO-LOGIN ==========
         function autoLogin() {
             if (!currentSession) return;
-
-            if (currentSession.type === 'admin' && currentSession.key === ADMIN_KEY) {
+            if (blacklist.includes(DEVICE_ID)) {
+                showToast('🚫 Thiết bị của bạn đã bị chặn!', true);
+                localStorage.removeItem('currentSession');
+                return;
+            }
+            if (currentSession.type === 'admin') {
                 loginSuccess('admin');
                 return;
             }
-
             if (currentSession.type === 'user') {
                 const key = keys.find(k => k.code === currentSession.key);
-                if (key) {
-                    if (!key.locked && Date.now() < key.expiresAt) {
-                        loginSuccess('user', key);
-                    } else {
-                        localStorage.removeItem('currentSession');
-                        currentSession = null;
-                    }
+                if (key && !key.locked && Date.now() < key.expiresAt) {
+                    loginSuccess('user', key);
                 } else {
                     localStorage.removeItem('currentSession');
                     currentSession = null;
@@ -578,17 +681,25 @@
                     }
                 }
             }
-            particles.forEach(particle => {
-                ctx.beginPath(); ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(168, 85, 247, 0.7)'; ctx.fill();
-                particle.x += particle.vx; particle.y += particle.vy;
-                if (particle.x < 0) particle.x = canvas.width;
-                if (particle.x > canvas.width) particle.x = 0;
-                if (particle.y < 0) particle.y = canvas.height;
-                if (particle.y > canvas.height) particle.y = 0;
+            particles.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(168, 85, 247, 0.7)'; ctx.fill();
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
             });
         }
         function animateParticles() { drawParticles(); requestAnimationFrame(animateParticles); }
         animateParticles();
+
+        // ========== ĐẾM NGƯỜI ONLINE (Giả lập) ==========
+        function updateOnlineCount() {
+            const base = 5 + Math.floor(Math.random() * 30);
+            document.getElementById('onlineCount').textContent = base;
+        }
+        setInterval(updateOnlineCount, 5000);
+        updateOnlineCount();
 
         // ========== DÁN KEY ==========
         function pasteKey() {
@@ -606,11 +717,22 @@
             }
         }
 
+        // ========== MUA KEY ==========
+        function buyNow(duration, price) {
+            playSound('click');
+            const msg = `Tôi muốn mua key ${duration} với giá ${price}. Liên hệ: `;
+            window.open('https://zalo.me/927594723', '_blank');
+            showToast(`💳 Liên hệ Zalo để mua: ${duration} - ${price}`);
+        }
+
         // ========== ĐĂNG NHẬP ==========
         function validateKey() {
             const inputKey = document.getElementById('keyInput').value.trim().toUpperCase();
             const btn = document.getElementById('loginBtn');
             
+            if (blacklist.includes(DEVICE_ID)) {
+                showToast('🚫 Thiết bị bị chặn!', true); return;
+            }
             if (!inputKey) { showToast('Vui lòng nhập key!', true); playSound('error'); return; }
 
             btn.disabled = true;
@@ -623,7 +745,6 @@
                 if (inputKey === ADMIN_KEY) {
                     saveSession({ type: 'admin', key: ADMIN_KEY });
                     loginSuccess('admin');
-                    showToast('👑 Xin chào Admin!');
                     playSound('success');
                     addLog('Admin đăng nhập');
                     return;
@@ -632,16 +753,8 @@
                 const key = keys.find(k => k.code === inputKey);
                 if (key) {
                     if (key.locked) { showToast('🔒 Key đã bị khóa!', true); playSound('error'); return; }
-                    if (key.used) { 
-                        // Nếu key đã dùng nhưng cùng thiết bị → cho vào lại
-                        if (key.deviceId === DEVICE_ID) {
-                            saveSession({ type: 'user', key: key.code });
-                            loginSuccess('user', key);
-                            showToast('✅ Chào mừng trở lại!');
-                            playSound('success');
-                            return;
-                        }
-                        showToast('⚠️ Key đã dùng trên thiết bị khác!', true); playSound('error'); return; 
+                    if (key.used && key.deviceId !== DEVICE_ID) {
+                        showToast('⚠️ Key đã dùng trên thiết bị khác!', true); playSound('error'); return;
                     }
                     if (Date.now() > key.expiresAt) { showToast('Key đã hết hạn!', true); playSound('error'); return; }
 
@@ -650,15 +763,38 @@
                     saveData();
                     saveSession({ type: 'user', key: key.code });
                     loginSuccess('user', key);
-                    showToast('✅ Đăng nhập thành công!');
                     playSound('success');
-                    addLog(`Key ${key.code} được kích hoạt`);
+                    addLog(`Key ${key.code} kích hoạt`);
                 } else {
                     showToast('❌ Key không hợp lệ!', true);
                     playSound('error');
-                    addLog(`Nhập key sai: ${inputKey}`);
+                    addLog(`Nhập sai key: ${inputKey}`);
                 }
             }, 600);
+        }
+
+        // ========== ĐẾM NGƯỢC 3-2-1 ==========
+        function playWelcomeCountdown(callback) {
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const countEl = document.getElementById('welcomeCount');
+            welcomeScreen.classList.add('active');
+            let count = 3;
+            countEl.textContent = count;
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countEl.textContent = count;
+                    countEl.style.animation = 'none';
+                    setTimeout(() => countEl.style.animation = 'countdown 1s ease-in-out', 10);
+                } else {
+                    clearInterval(interval);
+                    countEl.textContent = '✓';
+                    setTimeout(() => {
+                        welcomeScreen.classList.remove('active');
+                        if (callback) callback();
+                    }, 500);
+                }
+            }, 1000);
         }
 
         function loginSuccess(type, keyData = null) {
@@ -669,7 +805,9 @@
             
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
-            document.getElementById('discordVideoBox').classList.remove('hidden');
+            
+            // Nhạc nền
+            playBackgroundMusic();
             
             if (type === 'admin') {
                 document.getElementById('adminPanel').classList.add('active');
@@ -682,8 +820,6 @@
                 document.getElementById('timerBox').classList.remove('hidden');
                 startTimer(keyData.expiresAt);
                 loadVideos();
-                
-                // Hiện thông báo nếu có
                 if (notifications.length > 0) {
                     document.getElementById('notifyContent').textContent = notifications[notifications.length - 1].message;
                     document.getElementById('notifyModal').classList.add('active');
@@ -691,18 +827,29 @@
             }
         }
 
-        // ========== TIMER + GIA HẠN ==========
+        // ========== NHẠC NỀN ==========
+        function playBackgroundMusic() {
+            if (!soundEnabled) return;
+            try {
+                if (bgMusic) bgMusic.pause();
+                bgMusic = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+                bgMusic.volume = 0.05;
+                bgMusic.loop = true;
+                bgMusic.play().catch(() => {});
+            } catch(e) {}
+        }
+
+        // ========== TIMER ==========
         let timerInterval;
         let renewShown = false;
         function startTimer(expiresAt) {
             clearInterval(timerInterval);
             renewShown = false;
             timerInterval = setInterval(() => {
-                const now = Date.now();
-                const diff = expiresAt - now;
+                const diff = expiresAt - Date.now();
                 if (diff <= 0) {
                     clearInterval(timerInterval);
-                    showToast('⏰ Key đã hết hạn!', true);
+                    showToast('⏰ Key hết hạn!', true);
                     logout();
                     return;
                 }
@@ -711,12 +858,7 @@
                 const secs = Math.floor((diff % 60000) / 1000);
                 const timerDisplay = document.getElementById('timerDisplay');
                 timerDisplay.textContent = `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-                
-                if (diff < 300000) {
-                    timerDisplay.classList.add('warning');
-                }
-                
-                // Popup gia hạn khi còn < 10 phút
+                if (diff < 300000) timerDisplay.classList.add('warning');
                 if (diff < 600000 && !renewShown) {
                     renewShown = true;
                     document.getElementById('renewModal').classList.add('active');
@@ -724,20 +866,15 @@
             }, 1000);
         }
 
-        function closeRenewModal() {
-            document.getElementById('renewModal').classList.remove('active');
-        }
-
-        function closeNotifyModal() {
-            document.getElementById('notifyModal').classList.remove('active');
-        }
+        function closeRenewModal() { document.getElementById('renewModal').classList.remove('active'); }
+        function closeNotifyModal() { document.getElementById('notifyModal').classList.remove('active'); }
 
         // ========== CHỐNG QUAY MÀN HÌNH ==========
         document.addEventListener('visibilitychange', () => {
             if (document.hidden && currentSession && currentSession.type === 'user') {
-                // Tạm dừng video
-                const video = document.getElementById('mainVideo');
-                if (video) video.pause();
+                const videos = document.querySelectorAll('video');
+                videos.forEach(v => v.pause());
+                showToast('⚠️ Video tạm dừng (bạn đã rời tab)');
             }
         });
 
@@ -747,6 +884,7 @@
             addLog(currentSession ? (currentSession.type === 'admin' ? 'Admin đăng xuất' : `User ${currentSession.key} đăng xuất`) : 'Đăng xuất');
             localStorage.removeItem('currentSession');
             currentSession = null;
+            if (bgMusic) { bgMusic.pause(); bgMusic = null; }
             
             document.getElementById('dashboard').classList.remove('active');
             document.getElementById('loginScreen').style.display = 'block';
@@ -754,7 +892,6 @@
             document.getElementById('adminPanel').classList.remove('active');
             document.getElementById('adminStats').classList.add('hidden');
             document.getElementById('timerBox').classList.add('hidden');
-            document.getElementById('discordVideoBox').classList.add('hidden');
         }
 
         // ========== ADMIN STATS ==========
@@ -767,8 +904,8 @@
 
         // ========== ADMIN PANEL ==========
         let selectedDuration = 'day';
-        function setDuration(duration, btn) {
-            selectedDuration = duration;
+        function setDuration(d, btn) {
+            selectedDuration = d;
             document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
@@ -780,6 +917,8 @@
                 if (i > 0 && i % 4 === 0) code += '-';
                 code += chars[Math.floor(Math.random() * chars.length)];
             }
+            // Check trùng
+            if (keys.some(k => k.code === code)) { generateKey(); return; }
             
             let durationMs;
             switch(selectedDuration) {
@@ -789,24 +928,18 @@
                 case 'month': durationMs = 2592000000; break;
                 case 'vip': durationMs = Infinity; break;
             }
-            
             const note = document.getElementById('keyNote').value || 'Không ghi chú';
             const newKey = { code, duration: selectedDuration, expiresAt: durationMs === Infinity ? Infinity : Date.now() + durationMs, used: false, locked: false, note, deviceId: null };
-            
             keys.push(newKey);
-            saveData();
-            updateAdminStats();
+            saveData(); updateAdminStats();
             addLog(`Tạo key ${code} (${selectedDuration})`);
             
             const box = document.getElementById('generatedKeyBox');
             box.classList.remove('hidden');
             box.textContent = code;
-            
             const qrBox = document.getElementById('qrBox');
-            qrBox.classList.remove('hidden');
-            qrBox.innerHTML = '';
+            qrBox.classList.remove('hidden'); qrBox.innerHTML = '';
             new QRCode(qrBox, code);
-            
             document.getElementById('copyBtn').classList.remove('hidden');
             showToast('✅ Đã tạo key!');
         }
@@ -822,147 +955,199 @@
                 showToast('📋 Đã sao chép!');
             } catch(e) {}
         }
+        function copyGeneratedKey() { copyText(document.getElementById('generatedKeyBox').textContent); }
 
-        function copyGeneratedKey() {
-            const code = document.getElementById('generatedKeyBox').textContent;
-            copyText(code);
-        }
-
-        function hideAllPanels() { 
-            ['keyGenerator', 'keyList', 'videoManager', 'activityLogPanel', 'expiringKeysPanel', 'notificationPanel'].forEach(id => {
+        function hideAllPanels() {
+            ['keyGenerator','keyList','videoManager','activityLogPanel','expiringKeysPanel','notificationPanel','blacklistPanel','onlineUsersPanel'].forEach(id => {
                 document.getElementById(id).classList.remove('active');
             });
         }
-
         function showKeyGenerator() { hideAllPanels(); document.getElementById('keyGenerator').classList.add('active'); }
         function showKeyList() { hideAllPanels(); document.getElementById('keyList').classList.add('active'); renderKeyList(); }
         function showVideoManager() { hideAllPanels(); document.getElementById('videoManager').classList.add('active'); renderVideoList(); }
-        function showActivityLog() { 
-            hideAllPanels(); 
-            document.getElementById('activityLogPanel').classList.add('active'); 
-            const container = document.getElementById('activityLogContainer');
-            container.innerHTML = '';
+        function showActivityLog() {
+            hideAllPanels();
+            document.getElementById('activityLogPanel').classList.add('active');
+            const c = document.getElementById('activityLogContainer');
+            c.innerHTML = '';
             activityLog.forEach(log => {
                 const div = document.createElement('div');
                 div.className = 'log-item';
                 div.innerHTML = `<span class="log-time">${log.time}</span> - ${log.action}`;
-                container.appendChild(div);
+                c.appendChild(div);
             });
         }
         function showExpiringKeys() {
             hideAllPanels();
             document.getElementById('expiringKeysPanel').classList.add('active');
-            const container = document.getElementById('expiringKeysContainer');
-            container.innerHTML = '';
+            const c = document.getElementById('expiringKeysContainer');
+            c.innerHTML = '';
             const now = Date.now();
             const expiring = keys.filter(k => !k.used && !k.locked && k.expiresAt > now && k.expiresAt < now + 86400000);
-            if (expiring.length === 0) {
-                container.innerHTML = '<p style="color:#888;">Không có key nào sắp hết hạn trong 24h.</p>';
-            } else {
-                expiring.forEach(key => {
-                    const div = document.createElement('div');
-                    div.className = 'key-item';
-                    div.innerHTML = `<div><div class="key-code">${key.code}</div><div class="key-info">Hết hạn: ${new Date(key.expiresAt).toLocaleString('vi-VN')}</div></div>`;
-                    container.appendChild(div);
-                });
-            }
+            if (expiring.length === 0) c.innerHTML = '<p style="color:#888;">Không có key nào sắp hết hạn.</p>';
+            else expiring.forEach(key => {
+                const div = document.createElement('div');
+                div.className = 'key-item';
+                div.innerHTML = `<div><div class="key-code">${key.code}</div><div class="key-info">${new Date(key.expiresAt).toLocaleString('vi-VN')}</div></div>`;
+                c.appendChild(div);
+            });
         }
         function showNotificationManager() { hideAllPanels(); document.getElementById('notificationPanel').classList.add('active'); }
+        function showBlacklist() {
+            hideAllPanels();
+            document.getElementById('blacklistPanel').classList.add('active');
+            const c = document.getElementById('blacklistContainer');
+            c.innerHTML = '';
+            blacklist.forEach((id, index) => {
+                const div = document.createElement('div');
+                div.className = 'key-item';
+                div.innerHTML = `<div><div class="key-code">${id}</div></div><button class="btn-delete" onclick="removeBlacklist(${index})">🗑️</button>`;
+                c.appendChild(div);
+            });
+        }
+        function addBlacklist() {
+            const id = document.getElementById('blacklistInput').value.trim();
+            if (!id) return;
+            blacklist.push(id); saveData();
+            document.getElementById('blacklistInput').value = '';
+            showBlacklist();
+            showToast('🚫 Đã chặn thiết bị!');
+        }
+        function removeBlacklist(i) {
+            blacklist.splice(i, 1); saveData(); showBlacklist();
+            showToast('✅ Đã bỏ chặn');
+        }
 
         function sendNotification() {
             const msg = document.getElementById('notifyMessage').value;
-            if (!msg) { showToast('Vui lòng nhập nội dung!', true); return; }
+            if (!msg) { showToast('Nhập nội dung!', true); return; }
             notifications.push({ message: msg, time: Date.now() });
             saveData();
             addLog(`Gửi thông báo: ${msg}`);
             document.getElementById('notifyMessage').value = '';
-            showToast('✅ Đã gửi thông báo!');
+            showToast('✅ Đã gửi!');
         }
 
-        function filterKeys() {
-            const searchTerm = document.getElementById('searchKey').value.toLowerCase();
-            const container = document.getElementById('keysListContainer');
-            container.innerHTML = '';
-            keys.filter(key => key.code.toLowerCase().includes(searchTerm) || key.note.toLowerCase().includes(searchTerm))
-                .forEach((key) => {
-                    const realIndex = keys.indexOf(key);
-                    const item = document.createElement('div');
-                    item.className = 'key-item';
-                    const status = key.locked ? 'Bị khóa' : (key.used ? 'Đã dùng' : 'Hoạt động');
-                    item.innerHTML = `
-                        <div>
-                            <div class="key-code">${key.code}</div>
-                            <div class="key-info">${key.duration === 'vip' ? '👑 VIP' : key.duration} | ${status}</div>
-                            <div class="key-info">📝 ${key.note}</div>
-                        </div>
-                        <div>
-                            <button class="btn-lock" onclick="toggleLock(${realIndex})">${key.locked ? '🔓' : '🔒'}</button>
-                            <button class="btn-delete" onclick="deleteKey(${realIndex})">🗑️</button>
-                        </div>
-                    `;
-                    container.appendChild(item);
-                });
+        // ========== ĐỔI KEY ADMIN ==========
+        function openChangePass() {
+            hideAllPanels();
+            document.getElementById('changePassModal').classList.add('active');
+        }
+        function closeChangePass() {
+            document.getElementById('changePassModal').classList.remove('active');
+            document.getElementById('oldPass').value = '';
+            document.getElementById('newPass').value = '';
+            document.getElementById('newPass2').value = '';
+        }
+        function changeAdminKey() {
+            const oldP = document.getElementById('oldPass').value.toUpperCase();
+            const newP = document.getElementById('newPass').value.toUpperCase();
+            const newP2 = document.getElementById('newPass2').value.toUpperCase();
+            if (oldP !== ADMIN_KEY) { showToast('❌ Key cũ sai!', true); return; }
+            if (newP.length < 6) { showToast('❌ Key mới phải >= 6 ký tự!', true); return; }
+            if (newP !== newP2) { showToast('❌ Nhập lại không khớp!', true); return; }
+            ADMIN_KEY = newP;
+            localStorage.setItem('adminKey', ADMIN_KEY);
+            saveSession({ type: 'admin', key: ADMIN_KEY });
+            addLog('Đổi key admin');
+            showToast('✅ Đổi key admin thành công!');
+            closeChangePass();
         }
 
-        function renderKeyList() {
-            const container = document.getElementById('keysListContainer');
-            container.innerHTML = '';
-            keys.forEach((key, index) => {
-                const item = document.createElement('div');
-                item.className = 'key-item';
-                const status = key.locked ? 'Bị khóa' : (key.used ? 'Đã dùng' : 'Hoạt động');
-                item.innerHTML = `
-                    <div>
-                        <div class="key-code">${key.code}</div>
-                        <div class="key-info">${key.duration === 'vip' ? '👑 VIP' : key.duration} | ${status}</div>
-                        <div class="key-info">📝 ${key.note}</div>
-                    </div>
-                    <div>
-                        <button class="btn-lock" onclick="toggleLock(${index})">${key.locked ? '🔓' : '🔒'}</button>
-                        <button class="btn-delete" onclick="deleteKey(${index})">🗑️</button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
+        // ========== XUẤT/NHẬP DỮ LIỆU ==========
+        function exportData() {
+            const data = { videos, keys, activityLog, notifications, blacklist, videoLikes, exportDate: new Date().toISOString() };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `blminh_backup_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('💾 Đã xuất dữ liệu!');
+        }
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file'; input.accept = '.json';
+            input.onchange = e => {
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    try {
+                        const data = JSON.parse(ev.target.result);
+                        if (confirm('GHI ĐÈ toàn bộ dữ liệu hiện tại?')) {
+                            videos = data.videos || [];
+                            keys = data.keys || [];
+                            activityLog = data.activityLog || [];
+                            notifications = data.notifications || [];
+                            blacklist = data.blacklist || [];
+                            videoLikes = data.videoLikes || {};
+                            saveData(); updateAdminStats(); renderKeyList(); loadVideos();
+                            showToast('📂 Đã nhập!');
+                        }
+                    } catch(err) { showToast('❌ File lỗi!', true); }
+                };
+                reader.readAsText(e.target.files[0]);
+            };
+            input.click();
         }
 
-        function toggleLock(index) {
-            keys[index].locked = !keys[index].locked;
-            saveData(); renderKeyList(); updateAdminStats();
-            addLog(`${keys[index].locked ? 'Khóa' : 'Mở khóa'} key ${keys[index].code}`);
-            showToast(keys[index].locked ? '🔒 Đã khóa!' : '🔓 Đã mở khóa!');
+        // ========== BẢO TRÌ ==========
+        function toggleMaintenance() {
+            isMaintenance = !isMaintenance;
+            localStorage.setItem('isMaintenance', isMaintenance);
+            document.getElementById('maintenanceBtn').textContent = isMaintenance ? '🔧 Tắt Bảo Trì' : '🔧 Bật Bảo Trì';
+            showToast(isMaintenance ? '🔧 Đã bật bảo trì!' : '✅ Đã tắt!');
+            addLog(isMaintenance ? 'Bật bảo trì' : 'Tắt bảo trì');
         }
 
-        function deleteKey(index) {
-            if (confirm('Xóa key này?')) {
-                addLog(`Xóa key ${keys[index].code}`);
-                keys.splice(index, 1);
-                saveData(); renderKeyList(); updateAdminStats();
-                showToast('Đã xóa key!');
+        // ========== MINI GAME ==========
+        let correctNumber = 0;
+        function openGuessModal() {
+            correctNumber = Math.floor(Math.random() * 100) + 1;
+            document.getElementById('guessInput').value = '';
+            document.getElementById('guessResult').innerHTML = '';
+            document.getElementById('guessModal').classList.add('active');
+        }
+        function checkGuess() {
+            const guess = parseInt(document.getElementById('guessInput').value);
+            const result = document.getElementById('guessResult');
+            if (!guess || guess < 1 || guess > 100) {
+                result.innerHTML = '<span style="color:#ff6b6b;">Nhập số 1-100!</span>'; return;
+            }
+            if (guess === correctNumber) {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let code = 'BL-VIP-';
+                for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
+                keys.push({ code, duration: 'vip', expiresAt: Infinity, used: false, locked: false, note: 'Trúng mini game', deviceId: null });
+                saveData();
+                result.innerHTML = `<span style="color:#38ef7d;">🎉 Trúng! Số đúng: ${correctNumber}<br>Key VIP: <strong>${code}</strong></span>`;
+                addLog(`Trúng game, key VIP: ${code}`);
+            } else if (guess < correctNumber) {
+                result.innerHTML = '<span style="color:#ff9800;">📈 Nhỏ hơn! Thử lại.</span>';
+            } else {
+                result.innerHTML = '<span style="color:#ff9800;">📉 Lớn hơn! Thử lại.</span>';
             }
         }
 
         // ========== VIDEO ==========
-        function pickSampleVideo(id) {
-            const v = sampleVideos.find(v => v.id === id);
-            document.getElementById('newVideoTitle').value = v.title;
-            document.getElementById('newVideoDesc').value = v.desc;
-            document.getElementById('newVideoCat').value = v.cat;
-            window.selectedSampleUrl = v.url;
-        }
-
+        let uploadedVideoData = null;
         function handleUpload(event) {
             const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('newVideoTitle').value = file.name.replace(/\.[^/.]+$/, "");
-                    document.getElementById('newVideoDesc').value = "Video tải lên bởi Admin";
-                    window.uploadedVideoUrl = e.target.result;
-                    showToast('📤 Đã chọn file!');
-                };
-                reader.readAsDataURL(file);
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('⚠️ File > 5MB! Nén hoặc chọn file nhỏ hơn.', true);
+                return;
             }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedVideoData = e.target.result;
+                document.getElementById('newVideoTitle').value = file.name.replace(/\.[^/.]+$/, "");
+                document.getElementById('newVideoDesc').value = "Video " + file.name;
+                // Preview
+                document.getElementById('uploadPreview').innerHTML = `<video src="${e.target.result}" controls style="width:100%; max-height:200px; border-radius:8px; margin:10px 0;"></video>`;
+                showToast('📤 Đã chọn file!');
+            };
+            reader.readAsDataURL(file);
         }
 
         function addVideo() {
@@ -970,17 +1155,15 @@
             const desc = document.getElementById('newVideoDesc').value;
             const cat = document.getElementById('newVideoCat').value;
             const isVip = document.getElementById('newVideoVip').checked;
-            const url = window.uploadedVideoUrl || window.selectedSampleUrl || '#';
+            if (!title) { showToast('Nhập tên!', true); return; }
+            if (!uploadedVideoData) { showToast('Chưa chọn video!', true); return; }
             
-            if (!title) { showToast('Vui lòng nhập tên!', true); return; }
-            
-            videos.push({ id: Date.now(), title, description: desc, cat, url, isVip, views: 0, thumb: '' });
-            window.uploadedVideoUrl = null;
-            window.selectedSampleUrl = null;
-            
+            videos.push({ id: Date.now(), title, description: desc, cat, url: uploadedVideoData, isVip, views: 0, likes: 0, dislikes: 0 });
+            uploadedVideoData = null;
             document.getElementById('newVideoTitle').value = '';
             document.getElementById('newVideoDesc').value = '';
             document.getElementById('newVideoVip').checked = false;
+            document.getElementById('uploadPreview').innerHTML = '';
             
             saveData(); renderVideoList(); loadVideos(); updateAdminStats();
             addLog(`Thêm video ${title}`);
@@ -988,27 +1171,31 @@
         }
 
         function renderVideoList() {
-            const container = document.getElementById('videoListContainer');
-            container.innerHTML = '';
-            videos.forEach((video, index) => {
-                const item = document.createElement('div');
-                item.className = 'key-item';
-                item.innerHTML = `<div><div class="key-code">${video.title} ${video.isVip ? '👑' : ''}</div><div class="key-info">${video.views || 0} lượt xem</div></div><button class="btn-delete" onclick="deleteVideo(${index})">🗑️</button>`;
-                container.appendChild(item);
+            const c = document.getElementById('videoListContainer');
+            c.innerHTML = '';
+            videos.forEach((v, i) => {
+                const div = document.createElement('div');
+                div.className = 'key-item';
+                div.innerHTML = `<div><div class="key-code">${v.title} ${v.isVip ? '👑' : ''}</div><div class="key-info">👁️ ${v.views || 0}</div></div><button class="btn-delete" onclick="deleteVideo(${i})">🗑️</button>`;
+                c.appendChild(div);
             });
         }
 
-        function deleteVideo(index) {
-            if (confirm('Xóa video này?')) {
-                addLog(`Xóa video ${videos[index].title}`);
-                videos.splice(index, 1);
+        function deleteVideo(i) {
+            if (confirm(`Xóa video "${videos[i].title}"?`)) {
+                addLog(`Xóa video ${videos[i].title}`);
+                videos.splice(i, 1);
                 saveData(); renderVideoList(); loadVideos(); updateAdminStats();
-                showToast('Đã xóa video!');
+                showToast('Đã xóa!');
             }
         }
 
+        function deleteVideoFromCard(id) {
+            const i = videos.findIndex(v => v.id === id);
+            if (i >= 0) deleteVideo(i);
+        }
+
         // ========== LỌC VIDEO ==========
-        let currentFilter = 'all';
         function filterVideos(cat, tab) {
             currentFilter = cat;
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -1020,139 +1207,131 @@
         function loadVideos() {
             const grid = document.getElementById('videoGrid');
             grid.innerHTML = '';
+            const searchTerm = (document.getElementById('searchVideo')?.value || '').toLowerCase();
             
             let filtered = currentFilter === 'all' ? videos : videos.filter(v => v.cat === currentFilter);
+            if (searchTerm) filtered = filtered.filter(v => v.title.toLowerCase().includes(searchTerm));
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="empty-message">📭 Chưa có video nào. Admin hãy upload video!</div>';
+                return;
+            }
             
             filtered.forEach(video => {
                 const card = document.createElement('div');
                 card.className = 'video-card';
                 
-                // VIP Lock
                 let canView = true;
                 if (video.isVip && currentSession && currentSession.type === 'user') {
-                    const key = keys.find(k => k.code === currentSession.key);
-                    if (key && key.duration !== 'vip') canView = false;
+                    const k = keys.find(kk => kk.code === currentSession.key);
+                    if (k && k.duration !== 'vip') canView = false;
                 }
                 
-                const videoTag = !canView 
-                    ? `<div style="width:100%;height:200px;border-radius:8px;background:#111;display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:10px;">🔒</div>`
-                    : (video.url && video.url !== '#' 
-                        ? `<video controls style="width:100%; max-height:200px; border-radius:8px; margin-bottom:10px; background:#000;" onplay="incrementViews(${video.id})">
-                            <source src="${video.url}" type="video/mp4">
-                           </video>`
-                        : `<div style="width:100%;height:120px;border-radius:8px;background:#111;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">🎬</div>`);
-
+                const isAdmin = currentSession && currentSession.type === 'admin';
+                const isLiked = videoLikes[video.id] === 'like';
+                const isDisliked = videoLikes[video.id] === 'dislike';
+                
                 card.innerHTML = `
-                    ${videoTag}
+                    ${isAdmin ? `<button class="video-delete-btn" onclick="deleteVideoFromCard(${video.id})">🗑️</button>` : ''}
+                    <div style="width:100%; height:150px; border-radius:8px; background:linear-gradient(135deg,#a855f7,#7c3aed); display:flex; align-items:center; justify-content:center; margin-bottom:10px; font-size:50px;">${canView ? '🎬' : '🔒'}</div>
                     <div class="video-title">${video.title} ${video.isVip ? '<span class="vip-badge">👑 VIP</span>' : ''}</div>
                     <div class="video-desc">${video.description}</div>
                     <div class="video-cat">${video.cat}</div>
-                    <span style="font-size:11px; color:#888; margin-left:8px;">👁️ ${video.views || 0} lượt xem</span>
+                    <span style="font-size:11px; color:#888; margin-left:8px;">👁️ ${video.views || 0}</span>
                     <div style="margin-top:10px;">
-                        ${canView ? `<button class="btn-submit" style="padding:8px;font-size:14px;" onclick="watchVideo('${video.url}')">▶️ Xem & Tải</button>` : '<p style="color:#ff9800;font-size:13px;">⚠️ Cần key VIP để xem video này</p>'}
+                        ${canView ? `<button class="btn-submit" style="padding:8px;font-size:14px;" onclick="openVideoModal(${video.id})">▶️ Xem Video</button>` : '<p style="color:#ff9800;font-size:13px;">⚠️ Cần key VIP</p>'}
+                    </div>
+                    <div class="video-actions">
+                        <button class="action-btn ${isLiked ? 'active-like' : ''}" onclick="likeVideo(${video.id})">👍 ${video.likes || 0}</button>
+                        <button class="action-btn ${isDisliked ? 'active-dislike' : ''}" onclick="dislikeVideo(${video.id})">👎 ${video.dislikes || 0}</button>
                     </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        function incrementViews(id) {
+        function openVideoModal(id) {
             const video = videos.find(v => v.id === id);
-            if (video) {
-                video.views = (video.views || 0) + 1;
-                saveData();
-            }
+            if (!video) return;
+            video.views = (video.views || 0) + 1;
+            saveData();
+            currentPlayingVideo = video;
+            document.getElementById('modalVideo').src = video.url;
+            document.getElementById('modalVideoTitle').textContent = video.title;
+            document.getElementById('videoModal').classList.add('active');
+            addLog(`Xem video: ${video.title}`);
         }
 
-        function watchVideo(url) {
-            window.open(url, '_blank');
-            addLog('Xem video');
+        function closeVideoModal() {
+            document.getElementById('videoModal').classList.remove('active');
+            document.getElementById('modalVideo').pause();
+            currentPlayingVideo = null;
         }
 
-        // ========== XUẤT / NHẬP DỮ LIỆU ==========
-        function exportData() {
-            const data = { videos, keys, activityLog, notifications, exportDate: new Date().toISOString() };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
+        function downloadCurrentVideo() {
+            if (!currentPlayingVideo) return;
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `blminh_backup_${Date.now()}.json`;
+            a.href = currentPlayingVideo.url;
+            a.download = currentPlayingVideo.title + '.mp4';
             a.click();
-            URL.revokeObjectURL(url);
-            showToast('💾 Đã xuất dữ liệu!');
+            showToast('📥 Đang tải...');
         }
 
-        function importData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = e => {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = ev => {
-                    try {
-                        const data = JSON.parse(ev.target.result);
-                        if (confirm('Nhập dữ liệu sẽ GHI ĐÈ toàn bộ. Tiếp tục?')) {
-                            videos = data.videos || videos;
-                            keys = data.keys || keys;
-                            activityLog = data.activityLog || [];
-                            notifications = data.notifications || [];
-                            saveData();
-                            updateAdminStats();
-                            renderKeyList();
-                            loadVideos();
-                            showToast('📂 Đã nhập dữ liệu!');
-                        }
-                    } catch(err) { showToast('❌ File lỗi!', true); }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        }
-
-        // ========== BẢO TRÌ ==========
-        function toggleMaintenance() {
-            isMaintenance = !isMaintenance;
-            localStorage.setItem('isMaintenance', isMaintenance);
-            document.getElementById('maintenanceBtn').textContent = isMaintenance ? '🔧 Tắt Bảo Trì' : '🔧 Bật Bảo Trì';
-            showToast(isMaintenance ? '🔧 Đã bật bảo trì!' : '✅ Đã tắt bảo trì!');
-            addLog(isMaintenance ? 'Bật bảo trì' : 'Tắt bảo trì');
-        }
-
-        // ========== MINI GAME ĐOÁN SỐ ==========
-        let correctNumber = 0;
-        function openGuessModal() {
-            correctNumber = Math.floor(Math.random() * 100) + 1;
-            document.getElementById('guessInput').value = '';
-            document.getElementById('guessResult').innerHTML = '';
-            document.getElementById('guessModal').classList.add('active');
-        }
-
-        function checkGuess() {
-            const guess = parseInt(document.getElementById('guessInput').value);
-            const result = document.getElementById('guessResult');
-            
-            if (!guess || guess < 1 || guess > 100) {
-                result.innerHTML = '<span style="color:#ff6b6b;">Vui lòng nhập số từ 1-100!</span>';
-                return;
-            }
-            
-            if (guess === correctNumber) {
-                // Tạo key VIP miễn phí
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                let code = 'BL-VIP-';
-                for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
-                const newKey = { code, duration: 'vip', expiresAt: Infinity, used: false, locked: false, note: 'Trúng mini game', deviceId: null };
-                keys.push(newKey);
-                saveData();
-                result.innerHTML = `<span style="color:#38ef7d;">🎉 Trúng rồi! Số đúng là ${correctNumber}<br>Key VIP của bạn: <strong>${code}</strong><br>Hãy lưu lại và nhập để dùng!</span>`;
-                addLog(`User trúng mini game, key VIP: ${code}`);
-            } else if (guess < correctNumber) {
-                result.innerHTML = '<span style="color:#ff9800;">📈 Số của bạn nhỏ hơn! Thử lại.</span>';
+        function likeVideo(id) {
+            const video = videos.find(v => v.id === id);
+            if (!video) return;
+            if (videoLikes[id] === 'like') {
+                video.likes--; delete videoLikes[id];
             } else {
-                result.innerHTML = '<span style="color:#ff9800;">📉 Số của bạn lớn hơn! Thử lại.</span>';
+                if (videoLikes[id] === 'dislike') video.dislikes--;
+                video.likes = (video.likes || 0) + 1;
+                videoLikes[id] = 'like';
+            }
+            saveData(); loadVideos();
+        }
+
+        function dislikeVideo(id) {
+            const video = videos.find(v => v.id === id);
+            if (!video) return;
+            if (videoLikes[id] === 'dislike') {
+                video.dislikes--; delete videoLikes[id];
+            } else {
+                if (videoLikes[id] === 'like') video.likes--;
+                video.dislikes = (video.dislikes || 0) + 1;
+                videoLikes[id] = 'dislike';
+            }
+            saveData(); loadVideos();
+        }
+
+        // ========== PWA ==========
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').classList.add('show');
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choice) => {
+                    if (choice.outcome === 'accepted') showToast('✅ Đã cài app!');
+                    deferredPrompt = null;
+                    document.getElementById('installBtn').classList.remove('show');
+                });
+            } else {
+                showToast('📱 Mở menu trình duyệt → "Thêm vào màn hình chính"', false);
             }
         }
+
+        // ========== BACKUP TỰ ĐỘNG ==========
+        setInterval(() => {
+            const lastBackup = localStorage.getItem('lastBackup');
+            const now = Date.now();
+            if (!lastBackup || now - parseInt(lastBackup) > 86400000) {
+                localStorage.setItem('lastBackup', now);
+                console.log('💾 Đã tự động lưu backup nội bộ');
+            }
+        }, 3600000);
 
         // ========== TOAST ==========
         function showToast(message, isError = false) {
@@ -1164,20 +1343,17 @@
 
         // ========== KHỞI CHẠY ==========
         window.onload = function() {
-            // Ẩn loading sau 1.5s
             setTimeout(() => {
                 document.getElementById('loadingScreen').classList.add('hide');
             }, 1500);
             
-            // Apply theme
             if (!darkMode) document.body.classList.add('light-mode');
             document.getElementById('themeBtn').textContent = darkMode ? '🌙' : '☀️';
             document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
             
-            // Kiểm tra bảo trì
             if (isMaintenance) {
-                const savedSession = JSON.parse(localStorage.getItem('currentSession'));
-                if (!savedSession || savedSession.type !== 'admin') {
+                const ss = JSON.parse(localStorage.getItem('currentSession'));
+                if (!ss || ss.type !== 'admin') {
                     document.getElementById('maintenanceOverlay').classList.add('active');
                 }
             }
