@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bạch Long Minh Tool</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #000; color: #fff; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; position: relative; }
@@ -35,9 +36,31 @@
         .key-input::placeholder { color: #6b7280; font-size: 14px; text-transform: none; }
         .btn-icon { position: absolute; top: 50%; transform: translateY(-50%); background: #333; border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; right: 10px; }
         .btn-submit { width: 100%; padding: 18px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; border: none; border-radius: 30px; font-size: 17px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; background: #444 !important; }
         .contact { margin-top: 20px; font-size: 14px; color: #9ca3af; }
         .contact a { color: #a855f7; text-decoration: none; }
         .buy-btn { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; padding: 10px 20px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 15px; display: inline-block; text-decoration: none; }
+
+        /* Turnstile Xác minh bot */
+        .turnstile-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+        .turnstile-status {
+            font-size: 12px;
+            color: #ff9800;
+            margin-top: 8px;
+            text-align: center;
+        }
+        .turnstile-status.success {
+            color: #38ef7d;
+        }
 
         .dashboard { display: none; width: 100%; max-width: 600px; padding: 20px; text-align: center; }
         .dashboard.active { display: block; }
@@ -112,7 +135,6 @@
         .maintenance-zalo { color: #888; font-size: 14px; }
         .maintenance-zalo a { color: #a855f7; text-decoration: none; }
         
-        /* Nút bỏ qua tạm thời */
         .skip-btn {
             background: linear-gradient(135deg, #a855f7, #7c3aed);
             color: white;
@@ -184,7 +206,7 @@
         <div class="loading-text">Đang tải...</div>
     </div>
 
-    <!-- MAINTENANCE OVERLAY - CÓ NÚT BỎ QUA TẠM THỜI -->
+    <!-- MAINTENANCE OVERLAY -->
     <div class="maintenance-overlay" id="maintenanceOverlay">
         <div class="maintenance-icon">🔧</div>
         <h2>Đang Bảo Trì</h2>
@@ -211,6 +233,7 @@
         <div class="video-title-modal" id="modalVideoTitle"></div>
     </div>
 
+    <!-- MÀN HÌNH NHẬP KEY -->
     <div class="main-wrapper" id="loginScreen">
         <div class="discord-banner" onclick="window.open('https://discord.gg/9kw7E6fUy', '_blank')">
             <div class="discord-banner-text">🎮 Tham gia Server Discord!</div>
@@ -230,7 +253,20 @@
                 <input type="text" class="key-input" id="keyInput" placeholder="BL-XXXX-XXXX-XXXX-XXXX" autocomplete="off">
                 <button class="btn-icon" onclick="pasteKey()">📋</button>
             </div>
-            <button class="btn-submit" id="loginBtn" onclick="validateKey()">Xác nhận Key</button>
+            
+            <!-- TURNSTILE WIDGET -->
+            <div class="turnstile-wrapper">
+                <div class="cf-turnstile" 
+                     data-sitekey="0x4AAAAAAEvXade543PWa6aF" 
+                     data-theme="dark"
+                     data-callback="onTurnstileSuccess"
+                     data-expired-callback="onTurnstileExpired"
+                     data-error-callback="onTurnstileError">
+                </div>
+                <p class="turnstile-status" id="turnstileStatus">⚠️ Vui lòng xác minh bạn không phải bot</p>
+            </div>
+            
+            <button class="btn-submit" id="loginBtn" onclick="validateKey()" disabled>Xác nhận Key</button>
             <div style="margin-top: 15px;">
                 <a href="tel:927594723" class="buy-btn">📞 Gọi mua: 9275 9472 3</a>
             </div>
@@ -240,6 +276,7 @@
         </div>
     </div>
 
+    <!-- DASHBOARD -->
     <div class="dashboard" id="dashboard">
         <div class="logo-container">
             <div class="logo">BL</div>
@@ -327,6 +364,7 @@
                     <input type="file" id="videoUpload" accept="video/*" hidden onchange="handleUpload(event)">
                     <div class="upload-icon">📤</div>
                     <div class="upload-text">Nhấp để chọn Video</div>
+                    <div style="font-size:12px; color:#888; margin-top:5px;">Video sẽ được lưu tạm (F5 có thể mất)</div>
                 </div>
                 <div id="uploadPreview"></div>
                 <button class="btn-admin" onclick="addVideo()" style="width:100%; margin-top:5px;">➕ Thêm Video</button>
@@ -353,11 +391,38 @@
         let selectedDuration = 'day';
         let timerInterval;
 
+        // ========== XÁC MINH BOT (TURNSTILE) ==========
+        let turnstileVerified = false;
+        
+        function onTurnstileSuccess(token) {
+            turnstileVerified = true;
+            document.getElementById('turnstileStatus').textContent = '✅ Đã xác minh! Bạn không phải bot.';
+            document.getElementById('turnstileStatus').classList.add('success');
+            document.getElementById('loginBtn').disabled = false;
+            showToast('✅ Xác minh thành công!');
+        }
+        
+        function onTurnstileExpired() {
+            turnstileVerified = false;
+            document.getElementById('turnstileStatus').textContent = '⚠️ Xác minh hết hạn. Vui lòng xác minh lại!';
+            document.getElementById('turnstileStatus').classList.remove('success');
+            document.getElementById('loginBtn').disabled = true;
+        }
+        
+        function onTurnstileError() {
+            turnstileVerified = false;
+            document.getElementById('turnstileStatus').textContent = '❌ Lỗi xác minh. Vui lòng thử lại!';
+            document.getElementById('turnstileStatus').classList.remove('success');
+            document.getElementById('loginBtn').disabled = true;
+        }
+
         function saveData() {
             try {
                 localStorage.setItem('videos', JSON.stringify(videos));
                 localStorage.setItem('keys', JSON.stringify(keys));
-            } catch(e) {}
+            } catch(e) {
+                showToast('⚠️ Bộ nhớ đầy! Xóa bớt video cũ.', true);
+            }
         }
         function saveSession(s) { currentSession = s; localStorage.setItem('currentSession', JSON.stringify(s)); }
 
@@ -390,20 +455,16 @@
             }
         }
 
-        // ========== BỎ QUA BẢO TRÌ TẠM THỜI ==========
         function showSkipLogin() {
             document.getElementById('skipForm').classList.add('active');
             document.getElementById('skipKeyInput').focus();
         }
-        
         function hideSkipLogin() {
             document.getElementById('skipForm').classList.remove('active');
             document.getElementById('skipKeyInput').value = '';
         }
-        
         function skipMaintenance() {
             const inputKey = document.getElementById('skipKeyInput').value.trim().toUpperCase();
-            
             if (inputKey === ADMIN_KEY) {
                 document.getElementById('maintenanceOverlay').classList.remove('active');
                 saveSession({ type: 'admin', key: ADMIN_KEY });
@@ -471,6 +532,12 @@
         function validateKey() {
             const inputKey = document.getElementById('keyInput').value.trim().toUpperCase();
             const btn = document.getElementById('loginBtn');
+            
+            // Check Turnstile
+            if (!turnstileVerified) {
+                showToast('⚠️ Vui lòng xác minh bạn không phải bot!', true);
+                return;
+            }
             
             if (!inputKey) { showToast('Vui lòng nhập key!', true); return; }
 
@@ -568,6 +635,12 @@
             } else {
                 document.getElementById('loginScreen').style.display = 'block';
                 document.getElementById('keyInput').value = '';
+                // Reset Turnstile
+                turnstileVerified = false;
+                document.getElementById('loginBtn').disabled = true;
+                document.getElementById('turnstileStatus').textContent = '⚠️ Vui lòng xác minh bạn không phải bot';
+                document.getElementById('turnstileStatus').classList.remove('success');
+                if (window.turnstile) window.turnstile.reset();
             }
         }
 
@@ -795,7 +868,7 @@
             loadVideos();
             checkMaintenanceAndLogin();
             
-            // Cho phép nhấn Enter trong ô nhập key admin ở màn hình bảo trì
+            // Enter để submit key admin ở màn hình bảo trì
             const skipInput = document.getElementById('skipKeyInput');
             if (skipInput) {
                 skipInput.addEventListener('keypress', (e) => {
